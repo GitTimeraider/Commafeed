@@ -109,6 +109,7 @@ All CommaFeed settings, with their defaults and descriptions, are listed in
 |------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
 | `QUARKUS_HTTP_AUTH_SESSION_ENCRYPTION_KEY`     | Secret used to encrypt the login cookie, at least 16 characters. Without it, a random key is generated at each start and everyone has to log in again after a restart. |
 | `COMMAFEED_ALLOWED_NETWORKS`                   | Networks allowed to use the application and the login page. See [Restricting access](#restricting-access-to-your-networks).               |
+| `COMMAFEED_PASSKEY_ALLOWED_FRAME_ORIGINS`      | Dashboards (e.g. Organizr) allowed to show CommaFeed in an iframe when using a passkey. See [Passkeys inside a dashboard](#passkeys-inside-a-dashboard-organizr-). |
 | `COMMAFEED_USERS_ALLOW_REGISTRATIONS`          | Whether visitors can create their own account (`false` by default).                                                                       |
 | `COMMAFEED_HTTP_CLIENT_BLOCK_LOCAL_ADDRESSES`  | Set to `false` to follow feeds hosted on your local network. See the [FAQ](#getting-access-to-local-address-blocked-when-adding-a-feed). |
 
@@ -163,6 +164,36 @@ docker logs <container-name> 2>&1 | grep "Reset code"
 
 On unRAID: **Docker** tab → click the CommaFeed icon → **Logs**. Entering the code on the login page turns two-factor
 authentication off for that account and logs you in, so you can set it up again.
+
+### Passkeys inside a dashboard (Organizr, ...)
+
+Browsers mark a passkey used inside an iframe of another web address, and CommaFeed refuses it by default so that
+another site can't trick you into logging in through a hidden frame. To use passkeys while CommaFeed is shown inside a
+dashboard:
+
+1. Tell CommaFeed which dashboard to trust, as a comma-separated list of addresses (scheme, host and port only, no
+   path):
+
+   ```sh
+   --env COMMAFEED_PASSKEY_ALLOWED_FRAME_ORIGINS=https://dashboard.example.com
+   ```
+
+2. Allow passkeys in the dashboard's iframe: it needs
+   `allow="publickey-credentials-get; publickey-credentials-create"`. Organizr doesn't offer these in **Settings →
+   Customize → Tabs → iFrame Allow**, but it copies the stored value as is into the iframe, so you can add them to its
+   configuration file. On the Docker host, find the file and the current value:
+
+   ```sh
+   docker exec <organizr-container> sh -c 'grep -rl "iframeAllow" /config --include=config.php'
+   docker exec <organizr-container> sh -c 'grep "iframeAllow" <file found above>'
+   ```
+
+   Then edit that line (in the mapped config folder on the host, or with `docker exec -it <organizr-container> vi
+   <file>`) and append `,publickey-credentials-get,publickey-credentials-create` inside the quotes, e.g.
+   `'iframeAllow' => 'clipboard-read,clipboard-write,publickey-credentials-get,publickey-credentials-create',`. Reload
+   Organizr in the browser. Saving the iFrame Allow setting again in Organizr's UI may drop the extra values.
+
+A rejected passkey is written to the CommaFeed log (`passkey verification failed ...`) with the reason.
 
 ### Restricting access to your networks
 

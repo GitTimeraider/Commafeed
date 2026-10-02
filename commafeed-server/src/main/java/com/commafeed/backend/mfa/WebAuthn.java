@@ -66,7 +66,26 @@ public final class WebAuthn {
     public static RegisteredCredential verifyRegistration(
             byte[] clientDataJson, byte[] attestationObject, String expectedChallenge)
             throws WebAuthnException {
-        String origin = verifyClientData(clientDataJson, "webauthn.create", expectedChallenge);
+        return verifyRegistration(clientDataJson, attestationObject, expectedChallenge, Set.of());
+    }
+
+    /**
+     * verify the response of navigator.credentials.create()
+     *
+     * @param expectedChallenge base64url encoded challenge sent to the browser
+     * @param allowedTopOrigins normalized origins of the pages allowed to embed the application in
+     *     an iframe (see {@link #normalizeOrigin(String)})
+     * @return the credential to store, bound to the host name of the page that created it
+     */
+    public static RegisteredCredential verifyRegistration(
+            byte[] clientDataJson,
+            byte[] attestationObject,
+            String expectedChallenge,
+            Set<String> allowedTopOrigins)
+            throws WebAuthnException {
+        String origin =
+                verifyClientData(
+                        clientDataJson, "webauthn.create", expectedChallenge, allowedTopOrigins);
         String rpId = getHost(origin);
         verifyOrigin(origin, rpId);
 
@@ -133,7 +152,34 @@ public final class WebAuthn {
             byte[] signature,
             String expectedChallenge)
             throws WebAuthnException {
-        String origin = verifyClientData(clientDataJson, "webauthn.get", expectedChallenge);
+        return verifyAssertion(
+                credential,
+                clientDataJson,
+                authenticatorData,
+                signature,
+                expectedChallenge,
+                Set.of());
+    }
+
+    /**
+     * verify the response of navigator.credentials.get()
+     *
+     * @param expectedChallenge base64url encoded challenge sent to the browser
+     * @param allowedTopOrigins normalized origins of the pages allowed to embed the application in
+     *     an iframe (see {@link #normalizeOrigin(String)})
+     * @return the new signature counter of the credential
+     */
+    public static long verifyAssertion(
+            RegisteredCredential credential,
+            byte[] clientDataJson,
+            byte[] authenticatorData,
+            byte[] signature,
+            String expectedChallenge,
+            Set<String> allowedTopOrigins)
+            throws WebAuthnException {
+        String origin =
+                verifyClientData(
+                        clientDataJson, "webauthn.get", expectedChallenge, allowedTopOrigins);
         verifyOrigin(origin, credential.rpId());
         verifyAuthenticatorData(authenticatorData, credential.rpId());
 
@@ -176,10 +222,51 @@ public final class WebAuthn {
     }
 
     /**
+     * @return the origin in its normalized form (lowercase scheme://host[:port], without the
+     *     default port and without path)
+     * @throws IllegalArgumentException if the value is not a valid http(s) origin
+     */
+    public static String normalizeOrigin(String origin) {
+        String value = origin.trim();
+        if (value.endsWith("/")) {
+            value = value.substring(0, value.length() - 1);
+        }
+
+        URI uri;
+        try {
+            uri = new URI(value);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("invalid origin: " + origin);
+        }
+
+        String scheme = uri.getScheme() == null ? "" : uri.getScheme().toLowerCase(Locale.ROOT);
+        String host = uri.getHost();
+        boolean hasPath = uri.getRawPath() != null && !uri.getRawPath().isEmpty();
+        if (!Set.of("http", "https").contains(scheme)
+                || host == null
+                || hasPath
+                || uri.getRawQuery() != null
+                || uri.getRawFragment() != null
+                || uri.getRawUserInfo() != null) {
+            throw new IllegalArgumentException("invalid origin: " + origin);
+        }
+
+        int port = uri.getPort();
+        boolean defaultPort =
+                port == -1
+                        || "http".equals(scheme) && port == 80
+                        || "https".equals(scheme) && port == 443;
+        return scheme + "://" + host.toLowerCase(Locale.ROOT) + (defaultPort ? "" : ":" + port);
+    }
+
+    /**
      * @return the origin of the client data
      */
     private static String verifyClientData(
-            byte[] clientDataJson, String expectedType, String expectedChallenge)
+            byte[] clientDataJson,
+            String expectedType,
+            String expectedChallenge,
+            Set<String> allowedTopOrigins)
             throws WebAuthnException {
         JsonNode clientData;
         try {
@@ -203,7 +290,24 @@ public final class WebAuthn {
         }
 
         if (clientData.path("crossOrigin").asBoolean(false)) {
-            throw new WebAuthnException("cross origin requests are not allowed");
+            // the application is embedded in an iframe of another origin, only accept it when the
+            // top level page is explicitly trusted
+            String topOrigin = clientData.path("topOrigin").asText("");
+            if (topOrigin.isEmpty()) {
+                throw new WebAuthnException(
+                        "cross origin requests are not allowed (the browser did not send the"
+                                + " origin of the top level page)");
+            }
+            String normalizedTopOrigin;
+            try {
+                normalizedTopOrigin = normalizeOrigin(topOrigin);
+            } catch (IllegalArgumentException e) {
+                throw new WebAuthnException("invalid top level origin");
+            }
+            if (!allowedTopOrigins.contains(normalizedTopOrigin)) {
+                throw new WebAuthnException(
+                        "cross origin requests are not allowed from " + normalizedTopOrigin);
+            }
         }
 
         String origin = clientData.path("origin").asText("");

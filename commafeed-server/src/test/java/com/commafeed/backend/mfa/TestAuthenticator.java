@@ -40,9 +40,25 @@ public class TestAuthenticator {
     }
 
     public static String clientData(String type, String challenge, String origin) {
+        return clientData(type, challenge, origin, false, null);
+    }
+
+    /**
+     * @param crossOrigin true when the page is embedded in an iframe of another origin
+     * @param topOrigin origin of the top level page, omitted if null
+     */
+    public static String clientData(
+            String type, String challenge, String origin, boolean crossOrigin, String topOrigin) {
         String json =
-                "{\"type\":\"%s\",\"challenge\":\"%s\",\"origin\":\"%s\",\"crossOrigin\":false}"
-                        .formatted(type, challenge, origin);
+                "{\"type\":\"%s\",\"challenge\":\"%s\",\"origin\":\"%s\",\"crossOrigin\":%s%s}"
+                        .formatted(
+                                type,
+                                challenge,
+                                origin,
+                                crossOrigin,
+                                topOrigin == null
+                                        ? ""
+                                        : ",\"topOrigin\":\"%s\"".formatted(topOrigin));
         return b64(json.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -79,13 +95,20 @@ public class TestAuthenticator {
      * @return the JSON sent by the login page after navigator.credentials.get()
      */
     public String assertionJson(String rpId, String challenge, String origin) {
+        return assertionJson(rpId, clientData("webauthn.get", challenge, origin));
+    }
+
+    /**
+     * @param clientData base64url encoded client data
+     * @return the JSON sent by the login page after navigator.credentials.get()
+     */
+    public String assertionJson(String rpId, String clientData) {
         signCount++;
         ByteArrayOutputStream authData = new ByteArrayOutputStream();
         authData.writeBytes(sha256(rpId.getBytes(StandardCharsets.UTF_8)));
         authData.write(0x01);
         authData.writeBytes(ByteBuffer.allocate(4).putInt(signCount).array());
 
-        String clientData = clientData("webauthn.get", challenge, origin);
         byte[] signature;
         try {
             Signature signer = Signature.getInstance("SHA256withECDSA");

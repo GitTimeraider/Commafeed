@@ -1,5 +1,6 @@
 package com.commafeed.backend.service;
 
+import com.commafeed.CommaFeedConfiguration;
 import com.commafeed.backend.dao.UserDAO;
 import com.commafeed.backend.dao.UserPasskeyDAO;
 import com.commafeed.backend.mfa.Totp;
@@ -15,7 +16,6 @@ import com.google.common.cache.CacheBuilder;
 
 import jakarta.inject.Singleton;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,8 +33,10 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalLong;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * Two-factor authentication: authenticator apps (TOTP) and passkeys (WebAuthn).
@@ -44,7 +46,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Slf4j
 @Singleton
-@RequiredArgsConstructor
 public class MfaService {
 
     public static final String ISSUER = "CommaFeed";
@@ -56,6 +57,9 @@ public class MfaService {
 
     private final UserDAO userDAO;
     private final UserPasskeyDAO userPasskeyDAO;
+
+    // normalized origins of the pages allowed to embed the application in an iframe
+    private final Set<String> passkeyAllowedFrameOrigins;
 
     // not static: a SecureRandom must not be created at native image build time
     private final SecureRandom random = new SecureRandom();
@@ -79,6 +83,22 @@ public class MfaService {
     // user id -> failed second factor attempts
     private final Cache<Long, AtomicInteger> failedAttempts =
             CacheBuilder.newBuilder().expireAfterWrite(Duration.ofMinutes(15)).build();
+
+    public MfaService(
+            UserDAO userDAO, UserPasskeyDAO userPasskeyDAO, CommaFeedConfiguration config) {
+        this.userDAO = userDAO;
+        this.userPasskeyDAO = userPasskeyDAO;
+        this.passkeyAllowedFrameOrigins =
+                config.passkeyAllowedFrameOrigins().orElse(List.of()).stream()
+                        .filter(StringUtils::isNotBlank)
+                        .map(WebAuthn::normalizeOrigin)
+                        .collect(Collectors.toUnmodifiableSet());
+        if (!passkeyAllowedFrameOrigins.isEmpty()) {
+            log.info(
+                    "passkeys allowed in iframes embedded by {}",
+                    passkeyAllowedFrameOrigins.stream().sorted().toList());
+        }
+    }
 
     public boolean isMfaEnabled(User user) {
         return user.getTotpSecret() != null || userPasskeyDAO.count(user) > 0;
@@ -154,7 +174,8 @@ public class MfaService {
                 WebAuthn.verifyRegistration(
                         WebAuthn.base64UrlDecode(clientDataJson),
                         WebAuthn.base64UrlDecode(attestationObject),
-                        challenge);
+                        challenge,
+                        passkeyAllowedFrameOrigins);
 
         boolean alreadyRegistered =
                 userPasskeyDAO.findAll(user).stream()
@@ -358,14 +379,14 @@ public class MfaService {
                             clientDataJson,
                             WebAuthn.base64UrlDecode(assertion.path("authenticatorData").asText()),
                             WebAuthn.base64UrlDecode(assertion.path("signature").asText()),
-                            challenge);
+                            challenge,
+                            passkeyAllowedFrameOrigins);
             p.setSignCount(signCount);
             p.setLastUsed(Instant.now());
             userPasskeyDAO.merge(p);
             return true;
         } catch (IOException | WebAuthnException e) {
-            log.debug(
-                    "passkey verification failed for user {}: {}", user.getName(), e.getMessage());
+            log.info("passkey verification failed for user {}: {}", user.getName(), e.getMessage());
             return false;
         }
     }
