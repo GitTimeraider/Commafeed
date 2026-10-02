@@ -30,6 +30,18 @@ msgstr "<0>Hola,</0><1>Soy Jérémie de Bélgica y he estado trabajando en Comma
 msgid "<0>Need an account?</0><1>Sign up!</1>"
 msgstr "<0>¿Necesitas una cuenta?</0><1>¡Regístrate!</1>"
 
+#: src/components/settings/SecuritySettings.tsx
+msgid "1. Scan this QR code with your authenticator app (e.g. Aegis, 2FAS, Google Authenticator, Microsoft Authenticator, 1Password, Bitwarden)."
+msgstr ""
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "2. Enter the 6-digit code displayed by the app"
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "A reset code has been written in the server logs. It is valid for 15 minutes."
+msgstr ""
+
 #: src/components/header/ProfileMenu.tsx
 #: src/pages/app/AboutPage.tsx
 msgid "About"
@@ -47,6 +59,10 @@ msgstr "Acciones"
 msgid "Add"
 msgstr "Añadir"
 
+#: src/components/settings/SecuritySettings.tsx
+msgid "Add a passkey"
+msgstr ""
+
 #: src/pages/app/AddPage.tsx
 msgid "Add category"
 msgstr "Añadir categoría"
@@ -54,6 +70,10 @@ msgstr "Añadir categoría"
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Add user"
 msgstr "Añadir usuario"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Added"
+msgstr ""
 
 #: src/components/admin/UserEdit.tsx
 #: src/components/header/ProfileMenu.tsx
@@ -138,11 +158,20 @@ msgstr "¿Estás seguro de que deseas darte de baja de <0>{feedName}</0>?"
 msgid "Asc"
 msgstr "Asc"
 
+#: src/components/settings/SecuritySettings.tsx
+msgid "Authenticator app"
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Authenticator app code"
+msgstr ""
+
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Auto-mark as read"
 msgstr "Marcar como leído automáticamente"
 
 #: src/components/content/add/Subscribe.tsx
+#: src/pages/auth/LoginPage.tsx
 msgid "Back"
 msgstr "Atrás"
 
@@ -183,6 +212,7 @@ msgstr ""
 #: src/components/settings/ProfileSettings.tsx
 #: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/PushNotificationSettings.tsx
+#: src/components/settings/SecuritySettings.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedDetailsPage.tsx
@@ -243,6 +273,7 @@ msgstr "Compacto"
 
 #: src/components/MarkAllAsReadConfirmationDialog.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/SecuritySettings.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedDetailsPage.tsx
@@ -282,6 +313,7 @@ msgid "Ctrl"
 msgstr "Ctrl"
 
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/SecuritySettings.tsx
 msgid "Current password"
 msgstr "Contraseña actual"
 
@@ -314,6 +346,7 @@ msgstr "Fecha de creación"
 msgid "days"
 msgstr "días"
 
+#: src/components/settings/SecuritySettings.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 msgid "Delete"
 msgstr "Borrar"
@@ -325,6 +358,10 @@ msgstr "Borrar cuenta"
 #: src/pages/app/CategoryDetailsPage.tsx
 msgid "Delete Category"
 msgstr "Borrar categoría"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Delete the passkey"
+msgstr ""
 
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Delete user"
@@ -338,9 +375,25 @@ msgstr "Desc"
 msgid "Detailed"
 msgstr "Detallado"
 
+#: src/components/settings/SecuritySettings.tsx
+msgid "Disable"
+msgstr ""
+
 #: src/components/settings/DisplaySettings.tsx
 msgid "Disable \"Pull to refresh\" browser behavior"
 msgstr "Desactivar el comportamiento \"Arrastrar para actualizar\" del navegador"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Disable the authenticator app"
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Disable two-factor authentication and log in"
+msgstr ""
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Disabled"
+msgstr ""
 
 #: src/components/header/ProfileMenu.tsx
 #: src/components/settings/DisplaySettings.tsx
@@ -373,15 +426,24 @@ msgstr "Correo electrónico"
 msgid "E-mail address"
 msgstr "Dirección de correo electrónico"
 
+#: src/components/settings/SecuritySettings.tsx
+msgid "e.g. My phone"
+msgstr ""
+
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Edit user"
 msgstr "Editar usuario"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Enable"
+msgstr ""
 
 #: src/components/settings/PublicPageSettings.tsx
 msgid "Enable public page"
 msgstr ""
 
 #: src/components/admin/UserEdit.tsx
+#: src/components/settings/SecuritySettings.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Enabled"
 msgstr "Habilitado"
@@ -389,6 +451,10 @@ msgstr "Habilitado"
 #: src/components/KeyboardShortcutsHelp.tsx
 msgid "Enter"
 msgstr "Entrar"
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Enter the 6-digit code displayed by your authenticator app."
+msgstr ""
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "Enter your current password to change profile settings"
@@ -549,6 +615,10 @@ msgstr "Configuración inicial"
 msgid "Invalid password reset link. Please request a new one."
 msgstr "Enlace de restablecimiento de contraseña no válido. Por favor, solicita uno nuevo."
 
+#: src/app/client.ts
+msgid "Invalid two-factor authentication code"
+msgstr ""
+
 #: src/components/content/FeedEntryContextMenu.tsx
 #: src/components/content/FeedEntryFooter.tsx
 msgid "Keep unread"
@@ -574,6 +644,10 @@ msgstr "Última actualización"
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Last refresh message"
 msgstr "Último mensaje de actualización"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Last used"
+msgstr ""
 
 #: src/components/header/ProfileMenu.tsx
 msgid "Light"
@@ -626,6 +700,14 @@ msgstr "Cerrar sesión"
 msgid "Long press"
 msgstr "Pulsación larga"
 
+#: src/components/settings/SecuritySettings.tsx
+msgid "Lost access to your authenticator app and passkeys? On the login page, choose \"Lost access to your authenticator?\" to get a reset code. The code is written in the server logs (e.g. docker logs), so the administrator of the server has to give it to you."
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Lost access to your authenticator?"
+msgstr ""
+
 #: src/components/header/ProfileMenu.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Manage users"
@@ -676,11 +758,16 @@ msgid "N/A"
 msgstr "N/D"
 
 #: src/components/admin/UserEdit.tsx
+#: src/components/settings/SecuritySettings.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Name"
 msgstr "Nombre"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Name of the new passkey"
+msgstr ""
 
 #: src/components/KeyboardShortcutsHelp.tsx
 msgid "Navigate to a subscription by entering its name"
@@ -691,6 +778,7 @@ msgid "Navigate to the next category/feed with unread entries when marking all e
 msgstr "Navegar a la siguiente categoría/feed con entradas no leídas al marcar todas como leídas"
 
 #: src/components/settings/DisplaySettings.tsx
+#: src/components/settings/SecuritySettings.tsx
 msgid "Never"
 msgstr "Nunca"
 
@@ -825,6 +913,14 @@ msgstr "Archivo OPML"
 msgid "OPML file is required"
 msgstr "Es necesario un archivo OPML"
 
+#: src/pages/auth/LoginPage.tsx
+msgid "or"
+msgstr ""
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Or enter this key manually:"
+msgstr ""
+
 #: src/components/settings/DisplaySettings.tsx
 msgid "Orange"
 msgstr "Naranja"
@@ -840,6 +936,18 @@ msgstr "Padre"
 #: src/pages/app/CategoryDetailsPage.tsx
 msgid "Parent Category"
 msgstr "Categoría principal"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Passkeys"
+msgstr ""
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Passkeys are only available when CommaFeed is accessed over HTTPS (or http://localhost)."
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Passkeys are only available when CommaFeed is accessed over HTTPS."
+msgstr ""
 
 #: src/components/admin/UserEdit.tsx
 #: src/pages/auth/InitialSetupPage.tsx
@@ -935,6 +1043,10 @@ msgstr "Actualizar"
 msgid "Registrations are closed on this CommaFeed instance"
 msgstr "Los registros están cerrados en esta instancia de CommaFeed"
 
+#: src/pages/auth/LoginPage.tsx
+msgid "Reset code"
+msgstr ""
+
 #: src/pages/auth/PasswordResetPage.tsx
 msgid "Reset Password"
 msgstr "Restablecer contraseña"
@@ -974,6 +1086,10 @@ msgstr "Desplazarse"
 msgid "Search"
 msgstr "Buscar"
 
+#: src/pages/app/SettingsPage.tsx
+msgid "Security"
+msgstr ""
+
 #: src/components/KeyboardShortcutsHelp.tsx
 msgid "Select next unread feed/category"
 msgstr "Seleccionar el siguiente feed/categoría no leído"
@@ -993,6 +1109,10 @@ msgstr "Establecer el foco en la siguiente entrada sin abrirla"
 #: src/components/KeyboardShortcutsHelp.tsx
 msgid "Set focus on previous entry without opening it"
 msgstr "Establecer el foco en la entrada anterior sin abrirla"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Set up an authenticator app"
+msgstr ""
 
 #: src/components/header/ProfileMenu.tsx
 msgid "Settings"
@@ -1082,6 +1202,10 @@ msgstr "Estrella"
 #: src/pages/app/FeedEntriesPage.tsx
 msgid "Starred"
 msgstr "Destacado"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Status:"
+msgstr ""
 
 #: src/components/content/add/Subscribe.tsx
 #: src/pages/app/AddPage.tsx
@@ -1177,6 +1301,10 @@ msgstr "Alternar barra lateral"
 msgid "Toggle starred status of current entry"
 msgstr "Alternar estado destacado de la entrada actual"
 
+#: src/app/client.ts
+msgid "Too many failed attempts, please try again later"
+msgstr ""
+
 #: src/components/settings/PushNotificationSettings.tsx
 msgid "Topic"
 msgstr "Tema"
@@ -1188,6 +1316,26 @@ msgstr "Prueba CommaFeed con la cuenta de demostración: demo/demo"
 #: src/pages/WelcomePage.tsx
 msgid "Try the demo!"
 msgstr "¡Prueba la demostración!"
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Two-factor authentication"
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Two-factor authentication disabled"
+msgstr ""
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Two-factor authentication protects your account with a second step after your password: a code from an authenticator app or a passkey. You only need one of them to log in."
+msgstr ""
+
+#: src/app/client.ts
+msgid "Two-factor authentication required"
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Two-factor authentication will be disabled for your account. You can set it up again in the settings after logging in."
+msgstr ""
 
 #: src/components/header/Header.tsx
 msgid "Unread"
@@ -1203,6 +1351,14 @@ msgstr "Desmarcar"
 msgid "Unsubscribe"
 msgstr "Cancelar suscripción"
 
+#: src/pages/auth/LoginPage.tsx
+msgid "Use a passkey"
+msgstr ""
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Use your phone, computer (fingerprint, face, PIN) or a security key. Passkeys only work for the address (domain) CommaFeed was opened with when they were added."
+msgstr ""
+
 #: src/components/settings/PushNotificationSettings.tsx
 msgid "User key"
 msgstr "Clave de usuario"
@@ -1214,6 +1370,10 @@ msgstr "Nombre de usuario"
 #: src/pages/auth/LoginPage.tsx
 msgid "User Name or E-mail"
 msgstr "Nombre de usuario o correo electrónico"
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Verify"
+msgstr ""
 
 #: src/components/settings/DisplaySettings.tsx
 msgid "Violet"
@@ -1231,6 +1391,14 @@ msgstr "Sitio web"
 msgid "Welcome! This appears to be the first time you're running CommaFeed. Please create an administrator account to get started."
 msgstr "¡Bienvenido! Parece que esta es la primera vez que ejecutas CommaFeed. Por favor, crea una cuenta de administrador para empezar."
 
+#: src/pages/auth/LoginPage.tsx
+msgid "With Docker, the administrator can find it with:"
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Write a reset code in the server logs"
+msgstr ""
+
 #: src/app/client.ts
 msgid "Wrong username or password"
 msgstr ""
@@ -1238,6 +1406,14 @@ msgstr ""
 #: src/components/settings/DisplaySettings.tsx
 msgid "Yellow"
 msgstr "Amarillo"
+
+#: src/pages/auth/LoginPage.tsx
+msgid "You can disable two-factor authentication with a reset code. For security reasons, the code is not displayed here: it is written in the logs of the CommaFeed server, which only the administrator of the server can read."
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "You can set it up again in Settings > Security."
+msgstr ""
 
 #: src/components/settings/PublicPageSettings.tsx
 msgid "You don't have any categories yet."

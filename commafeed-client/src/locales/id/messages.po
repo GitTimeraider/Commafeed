@@ -29,6 +29,18 @@ msgstr "<0>Hai,</0><1>Saya Jérémie dari Belgia dan saya telah mengerjakan Comm
 msgid "<0>Need an account?</0><1>Sign up!</1>"
 msgstr "<0>Butuh akun?</0><1>Daftar!</1>"
 
+#: src/components/settings/SecuritySettings.tsx
+msgid "1. Scan this QR code with your authenticator app (e.g. Aegis, 2FAS, Google Authenticator, Microsoft Authenticator, 1Password, Bitwarden)."
+msgstr ""
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "2. Enter the 6-digit code displayed by the app"
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "A reset code has been written in the server logs. It is valid for 15 minutes."
+msgstr ""
+
 #: src/components/header/ProfileMenu.tsx
 #: src/pages/app/AboutPage.tsx
 msgid "About"
@@ -46,6 +58,10 @@ msgstr "Tindakan"
 msgid "Add"
 msgstr "Tambahkan"
 
+#: src/components/settings/SecuritySettings.tsx
+msgid "Add a passkey"
+msgstr ""
+
 #: src/pages/app/AddPage.tsx
 msgid "Add category"
 msgstr "Tambahkan kategori"
@@ -53,6 +69,10 @@ msgstr "Tambahkan kategori"
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Add user"
 msgstr "Tambahkan pengguna"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Added"
+msgstr ""
 
 #: src/components/admin/UserEdit.tsx
 #: src/components/header/ProfileMenu.tsx
@@ -137,11 +157,20 @@ msgstr "Yakin ingin berhenti berlangganan <0>{feedName}</0>?"
 msgid "Asc"
 msgstr "Menaik"
 
+#: src/components/settings/SecuritySettings.tsx
+msgid "Authenticator app"
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Authenticator app code"
+msgstr ""
+
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Auto-mark as read"
 msgstr "Tandai otomatis sebagai telah dibaca"
 
 #: src/components/content/add/Subscribe.tsx
+#: src/pages/auth/LoginPage.tsx
 msgid "Back"
 msgstr "Kembali"
 
@@ -182,6 +211,7 @@ msgstr ""
 #: src/components/settings/ProfileSettings.tsx
 #: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/PushNotificationSettings.tsx
+#: src/components/settings/SecuritySettings.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedDetailsPage.tsx
@@ -242,6 +272,7 @@ msgstr "Ringkas"
 
 #: src/components/MarkAllAsReadConfirmationDialog.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/SecuritySettings.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedDetailsPage.tsx
@@ -281,6 +312,7 @@ msgid "Ctrl"
 msgstr "Ctrl"
 
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/SecuritySettings.tsx
 msgid "Current password"
 msgstr "Kata sandi saat ini"
 
@@ -313,6 +345,7 @@ msgstr "Tanggal dibuat"
 msgid "days"
 msgstr "hari"
 
+#: src/components/settings/SecuritySettings.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 msgid "Delete"
 msgstr "Hapus"
@@ -324,6 +357,10 @@ msgstr "Hapus akun"
 #: src/pages/app/CategoryDetailsPage.tsx
 msgid "Delete Category"
 msgstr "Hapus Kategori"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Delete the passkey"
+msgstr ""
 
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Delete user"
@@ -337,9 +374,25 @@ msgstr "Menurun"
 msgid "Detailed"
 msgstr "Detail"
 
+#: src/components/settings/SecuritySettings.tsx
+msgid "Disable"
+msgstr ""
+
 #: src/components/settings/DisplaySettings.tsx
 msgid "Disable \"Pull to refresh\" browser behavior"
 msgstr "Nonaktifkan perilaku browser \"Tarik untuk menyegarkan\""
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Disable the authenticator app"
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Disable two-factor authentication and log in"
+msgstr ""
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Disabled"
+msgstr ""
 
 #: src/components/header/ProfileMenu.tsx
 #: src/components/settings/DisplaySettings.tsx
@@ -372,15 +425,24 @@ msgstr "Email"
 msgid "E-mail address"
 msgstr "Alamat email"
 
+#: src/components/settings/SecuritySettings.tsx
+msgid "e.g. My phone"
+msgstr ""
+
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Edit user"
 msgstr "Edit pengguna"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Enable"
+msgstr ""
 
 #: src/components/settings/PublicPageSettings.tsx
 msgid "Enable public page"
 msgstr ""
 
 #: src/components/admin/UserEdit.tsx
+#: src/components/settings/SecuritySettings.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Enabled"
 msgstr "Diaktifkan"
@@ -388,6 +450,10 @@ msgstr "Diaktifkan"
 #: src/components/KeyboardShortcutsHelp.tsx
 msgid "Enter"
 msgstr "Masuk"
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Enter the 6-digit code displayed by your authenticator app."
+msgstr ""
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "Enter your current password to change profile settings"
@@ -548,6 +614,10 @@ msgstr "Pengaturan Awal"
 msgid "Invalid password reset link. Please request a new one."
 msgstr "Tautan pengaturan ulang kata sandi tidak valid. Silakan minta yang baru."
 
+#: src/app/client.ts
+msgid "Invalid two-factor authentication code"
+msgstr ""
+
 #: src/components/content/FeedEntryContextMenu.tsx
 #: src/components/content/FeedEntryFooter.tsx
 msgid "Keep unread"
@@ -573,6 +643,10 @@ msgstr "Penyegaran terakhir"
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Last refresh message"
 msgstr "Pesan penyegaran terakhir"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Last used"
+msgstr ""
 
 #: src/components/header/ProfileMenu.tsx
 msgid "Light"
@@ -625,6 +699,14 @@ msgstr "Keluar"
 msgid "Long press"
 msgstr "Tekan lama"
 
+#: src/components/settings/SecuritySettings.tsx
+msgid "Lost access to your authenticator app and passkeys? On the login page, choose \"Lost access to your authenticator?\" to get a reset code. The code is written in the server logs (e.g. docker logs), so the administrator of the server has to give it to you."
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Lost access to your authenticator?"
+msgstr ""
+
 #: src/components/header/ProfileMenu.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Manage users"
@@ -675,11 +757,16 @@ msgid "N/A"
 msgstr "T/A"
 
 #: src/components/admin/UserEdit.tsx
+#: src/components/settings/SecuritySettings.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Name"
 msgstr "Nama"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Name of the new passkey"
+msgstr ""
 
 #: src/components/KeyboardShortcutsHelp.tsx
 msgid "Navigate to a subscription by entering its name"
@@ -690,6 +777,7 @@ msgid "Navigate to the next category/feed with unread entries when marking all e
 msgstr "Navigasikan ke kategori/umpan berikutnya dengan entri yang belum dibaca saat menandai semua entri sebagai telah dibaca"
 
 #: src/components/settings/DisplaySettings.tsx
+#: src/components/settings/SecuritySettings.tsx
 msgid "Never"
 msgstr "Tidak pernah"
 
@@ -824,6 +912,14 @@ msgstr "file OPML"
 msgid "OPML file is required"
 msgstr "File OPML diperlukan"
 
+#: src/pages/auth/LoginPage.tsx
+msgid "or"
+msgstr ""
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Or enter this key manually:"
+msgstr ""
+
 #: src/components/settings/DisplaySettings.tsx
 msgid "Orange"
 msgstr "Oranye"
@@ -839,6 +935,18 @@ msgstr "Orang tua"
 #: src/pages/app/CategoryDetailsPage.tsx
 msgid "Parent Category"
 msgstr "Kategori Induk"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Passkeys"
+msgstr ""
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Passkeys are only available when CommaFeed is accessed over HTTPS (or http://localhost)."
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Passkeys are only available when CommaFeed is accessed over HTTPS."
+msgstr ""
 
 #: src/components/admin/UserEdit.tsx
 #: src/pages/auth/InitialSetupPage.tsx
@@ -934,6 +1042,10 @@ msgstr "Segarkan"
 msgid "Registrations are closed on this CommaFeed instance"
 msgstr "Pendaftaran ditutup pada instans CommaFeed ini"
 
+#: src/pages/auth/LoginPage.tsx
+msgid "Reset code"
+msgstr ""
+
 #: src/pages/auth/PasswordResetPage.tsx
 msgid "Reset Password"
 msgstr "Atur Ulang Kata Sandi"
@@ -973,6 +1085,10 @@ msgstr "Menggulir"
 msgid "Search"
 msgstr "Pencarian"
 
+#: src/pages/app/SettingsPage.tsx
+msgid "Security"
+msgstr ""
+
 #: src/components/KeyboardShortcutsHelp.tsx
 msgid "Select next unread feed/category"
 msgstr "Pilih umpan/kategori belum dibaca berikutnya"
@@ -992,6 +1108,10 @@ msgstr "Tetapkan fokus pada entri berikutnya tanpa membukanya"
 #: src/components/KeyboardShortcutsHelp.tsx
 msgid "Set focus on previous entry without opening it"
 msgstr "Tetapkan fokus pada entri sebelumnya tanpa membukanya"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Set up an authenticator app"
+msgstr ""
 
 #: src/components/header/ProfileMenu.tsx
 msgid "Settings"
@@ -1081,6 +1201,10 @@ msgstr "Bintang"
 #: src/pages/app/FeedEntriesPage.tsx
 msgid "Starred"
 msgstr "Berbintang"
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Status:"
+msgstr ""
 
 #: src/components/content/add/Subscribe.tsx
 #: src/pages/app/AddPage.tsx
@@ -1176,6 +1300,10 @@ msgstr "Beralih bilah sisi"
 msgid "Toggle starred status of current entry"
 msgstr "Beralih status berbintang entri saat ini"
 
+#: src/app/client.ts
+msgid "Too many failed attempts, please try again later"
+msgstr ""
+
 #: src/components/settings/PushNotificationSettings.tsx
 msgid "Topic"
 msgstr "Topik"
@@ -1187,6 +1315,26 @@ msgstr "Cobalah CommaFeed dengan akun demo: demo/demo"
 #: src/pages/WelcomePage.tsx
 msgid "Try the demo!"
 msgstr "Coba demonya!"
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Two-factor authentication"
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Two-factor authentication disabled"
+msgstr ""
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Two-factor authentication protects your account with a second step after your password: a code from an authenticator app or a passkey. You only need one of them to log in."
+msgstr ""
+
+#: src/app/client.ts
+msgid "Two-factor authentication required"
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Two-factor authentication will be disabled for your account. You can set it up again in the settings after logging in."
+msgstr ""
 
 #: src/components/header/Header.tsx
 msgid "Unread"
@@ -1202,6 +1350,14 @@ msgstr "Hapus bintang"
 msgid "Unsubscribe"
 msgstr "Berhenti berlangganan"
 
+#: src/pages/auth/LoginPage.tsx
+msgid "Use a passkey"
+msgstr ""
+
+#: src/components/settings/SecuritySettings.tsx
+msgid "Use your phone, computer (fingerprint, face, PIN) or a security key. Passkeys only work for the address (domain) CommaFeed was opened with when they were added."
+msgstr ""
+
 #: src/components/settings/PushNotificationSettings.tsx
 msgid "User key"
 msgstr "Kunci pengguna"
@@ -1213,6 +1369,10 @@ msgstr "Nama pengguna"
 #: src/pages/auth/LoginPage.tsx
 msgid "User Name or E-mail"
 msgstr "Nama Pengguna atau Email"
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Verify"
+msgstr ""
 
 #: src/components/settings/DisplaySettings.tsx
 msgid "Violet"
@@ -1230,6 +1390,14 @@ msgstr "Situs Web"
 msgid "Welcome! This appears to be the first time you're running CommaFeed. Please create an administrator account to get started."
 msgstr "Selamat datang! Ini sepertinya pertama kalinya Anda menjalankan CommaFeed. Silakan buat akun administrator untuk memulai."
 
+#: src/pages/auth/LoginPage.tsx
+msgid "With Docker, the administrator can find it with:"
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "Write a reset code in the server logs"
+msgstr ""
+
 #: src/app/client.ts
 msgid "Wrong username or password"
 msgstr ""
@@ -1237,6 +1405,14 @@ msgstr ""
 #: src/components/settings/DisplaySettings.tsx
 msgid "Yellow"
 msgstr "Kuning"
+
+#: src/pages/auth/LoginPage.tsx
+msgid "You can disable two-factor authentication with a reset code. For security reasons, the code is not displayed here: it is written in the logs of the CommaFeed server, which only the administrator of the server can read."
+msgstr ""
+
+#: src/pages/auth/LoginPage.tsx
+msgid "You can set it up again in Settings > Security."
+msgstr ""
 
 #: src/components/settings/PublicPageSettings.tsx
 msgid "You don't have any categories yet."

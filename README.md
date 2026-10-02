@@ -131,6 +131,39 @@ When started, the server will listen on http://localhost:8082.
 - Use a non-root `PUID`/`PGID` for the Docker image (the container refuses `0`), and optionally
   `--cap-drop=ALL` with `--user` as described in the [Docker README](commafeed-server/src/main/docker/README.md).
 
+### Two-factor authentication
+
+Each user can protect their account with a second step after the password, in **Settings → Security**:
+
+- **Authenticator app** (TOTP): scan the QR code with an app such as Aegis, 2FAS, Google Authenticator, Microsoft
+  Authenticator, 1Password or Bitwarden, then confirm with a code.
+- **Passkeys**: your phone, computer (fingerprint, face, PIN) or a security key. Passkeys require HTTPS (or
+  `http://localhost`) and only work on the address (domain) they were added from. If you change the domain CommaFeed
+  is served from, add them again.
+
+Only one of them is needed to log in. The settings are stored in the database, so they survive restarts and Docker
+image updates as long as the database is kept (the `/commafeed/data` volume for the default H2 database).
+
+Once two-factor authentication is enabled for a user:
+
+- logging in requires the login page. HTTP basic authentication with the user name and password is refused for that
+  user.
+- the API key (used by the Fever and Google Reader APIs, i.e. mobile apps, and by `?apiKey=` URLs) keeps working
+  without a second factor. Treat it like a password and generate a new one in **Settings → Profile** if it leaks.
+- after 10 wrong codes, logging in is blocked for 15 minutes.
+
+**Lost access to the authenticator app and passkeys?** On the login page, enter your user name and password, choose
+**Lost access to your authenticator?** and then **Write a reset code in the server logs**. CommaFeed writes a single
+use code, valid for 15 minutes, to its logs. It is never shown in the browser, so only someone with access to the
+server can read it. Get it with:
+
+```sh
+docker logs <container-name> 2>&1 | grep "Reset code"
+```
+
+(on unRAID: **Docker** tab → click the CommaFeed icon → **Logs**). Entering the code on the login page disables
+two-factor authentication for that user and logs them in, so they can set it up again.
+
 ### Updates
 
 The Docker image is rebuilt on every push to this repository. To update, pull `ghcr.io/gittimeraider/commafeed:latest`

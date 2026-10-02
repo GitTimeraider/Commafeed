@@ -36,6 +36,7 @@
         "interweave": "13.1.1",
         "monaco-editor": "0.56.0",
         "mousetrap": "1.6.5",
+        "qrcode.react": "4.2.0",
         "react": "19.3.0",
         "react-async-hook": "4.0.0",
         "react-contexify": "6.0.0",
