@@ -73,6 +73,16 @@ public interface CommaFeedConfiguration {
      */
     Optional<List<String>> allowedNetworks();
 
+    /**
+     * Comma-separated list of origins (e.g. https://dashboard.example.com) of the pages allowed to
+     * embed CommaFeed in an iframe when logging in with a passkey or registering one, e.g. a
+     * dashboard such as Organizr. By default, passkeys only work when CommaFeed is opened directly.
+     *
+     * <p>The page embedding CommaFeed also has to allow passkeys in its iframe with
+     * allow="publickey-credentials-get; publickey-credentials-create".
+     */
+    Optional<List<String>> passkeyAllowedFrameOrigins();
+
     /** Google Auth key for fetching Youtube channel favicons. */
     Optional<String> googleAuthKey();
 

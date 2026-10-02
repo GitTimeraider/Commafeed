@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Base64;
+import java.util.Set;
 
 class WebAuthnTest {
 
@@ -128,6 +129,95 @@ class WebAuthnTest {
         Assertions.assertThrows(WebAuthnException.class, () -> verify(json4, "c2Vjb25k", used));
     }
 
+    @Test
+    void crossOrigin() throws Exception {
+        Set<String> allowed = Set.of(WebAuthn.normalizeOrigin("https://dashboard.example.com/"));
+
+        // embedded in an iframe of a trusted page
+        String json =
+                authenticator.assertionJson(
+                        RP_ID,
+                        TestAuthenticator.clientData(
+                                "webauthn.get",
+                                "c2Vjb25k",
+                                ORIGIN,
+                                true,
+                                "https://Dashboard.example.com"));
+        Assertions.assertEquals(1, verify(json, "c2Vjb25k", credential, allowed));
+
+        // no trusted pages configured
+        String json2 =
+                authenticator.assertionJson(
+                        RP_ID,
+                        TestAuthenticator.clientData(
+                                "webauthn.get",
+                                "c2Vjb25k",
+                                ORIGIN,
+                                true,
+                                "https://dashboard.example.com"));
+        Assertions.assertThrows(
+                WebAuthnException.class, () -> verify(json2, "c2Vjb25k", credential, Set.of()));
+
+        // embedded in an iframe of an untrusted page
+        String json3 =
+                authenticator.assertionJson(
+                        RP_ID,
+                        TestAuthenticator.clientData(
+                                "webauthn.get", "c2Vjb25k", ORIGIN, true, "https://evil.com"));
+        Assertions.assertThrows(
+                WebAuthnException.class, () -> verify(json3, "c2Vjb25k", credential, allowed));
+
+        // the browser did not send the origin of the top level page
+        String json4 =
+                authenticator.assertionJson(
+                        RP_ID,
+                        TestAuthenticator.clientData(
+                                "webauthn.get", "c2Vjb25k", ORIGIN, true, null));
+        Assertions.assertThrows(
+                WebAuthnException.class, () -> verify(json4, "c2Vjb25k", credential, allowed));
+    }
+
+    @Test
+    void crossOriginRegistration() throws WebAuthnException {
+        String clientData =
+                TestAuthenticator.clientData(
+                        "webauthn.create",
+                        CHALLENGE,
+                        ORIGIN,
+                        true,
+                        "https://dashboard.example.com");
+        TestAuthenticator other = new TestAuthenticator();
+        byte[] attestation = decode(other.attestationObject(RP_ID));
+
+        Assertions.assertThrows(
+                WebAuthnException.class,
+                () -> WebAuthn.verifyRegistration(decode(clientData), attestation, CHALLENGE));
+        RegisteredCredential registered =
+                WebAuthn.verifyRegistration(
+                        decode(clientData),
+                        attestation,
+                        CHALLENGE,
+                        Set.of("https://dashboard.example.com"));
+        Assertions.assertEquals(RP_ID, registered.rpId());
+    }
+
+    @Test
+    void normalizeOrigin() {
+        Assertions.assertEquals(
+                "https://dashboard.example.com",
+                WebAuthn.normalizeOrigin(" HTTPS://Dashboard.Example.com:443/ "));
+        Assertions.assertEquals(
+                "http://192.168.1.10:8080", WebAuthn.normalizeOrigin("http://192.168.1.10:8080"));
+        Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> WebAuthn.normalizeOrigin("https://dashboard.example.com/organizr"));
+        Assertions.assertThrows(
+                IllegalArgumentException.class, () -> WebAuthn.normalizeOrigin("dashboard"));
+        Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> WebAuthn.normalizeOrigin("ftp://example.com"));
+    }
+
     private RegisteredCredential register(String origin, String rpId, String challenge)
             throws WebAuthnException {
         return WebAuthn.verifyRegistration(
@@ -138,13 +228,23 @@ class WebAuthnTest {
 
     private static long verify(String json, String challenge, RegisteredCredential credential)
             throws Exception {
+        return verify(json, challenge, credential, Set.of());
+    }
+
+    private static long verify(
+            String json,
+            String challenge,
+            RegisteredCredential credential,
+            Set<String> allowedTopOrigins)
+            throws Exception {
         JsonNode node = new ObjectMapper().readTree(json);
         return WebAuthn.verifyAssertion(
                 credential,
                 decode(node.get("clientDataJSON").asText()),
                 decode(node.get("authenticatorData").asText()),
                 decode(node.get("signature").asText()),
-                challenge);
+                challenge,
+                allowedTopOrigins);
     }
 
     private static byte[] decode(String value) {
