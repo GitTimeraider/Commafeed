@@ -8,6 +8,9 @@ import com.commafeed.backend.feed.ImageProxyUrl;
 import com.commafeed.backend.service.db.DatabaseStartupService;
 import com.commafeed.frontend.model.ServerInfo;
 import com.commafeed.security.Roles;
+import com.commafeed.security.network.NetworkAccessService;
+
+import io.vertx.core.http.HttpServerRequest;
 
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
@@ -18,6 +21,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -40,14 +44,23 @@ public class ServerREST {
     private final CommaFeedConfiguration config;
     private final CommaFeedVersion version;
     private final DatabaseStartupService databaseStartupService;
+    private final NetworkAccessService networkAccessService;
 
     @Path("/get")
     @GET
     @PermitAll
     @Transactional
     @Operation(summary = "Get server infos", description = "Get server infos")
-    public ServerInfo getServerInfos() {
+    public ServerInfo getServerInfos(@Context HttpServerRequest request) {
         ServerInfo infos = new ServerInfo();
+        String clientAddress =
+                request.remoteAddress() == null ? null : request.remoteAddress().hostAddress();
+        if (networkAccessService.isRestricted(clientAddress)) {
+            // the client can only open public pages, don't disclose anything else
+            infos.setAccessRestricted(true);
+            return infos;
+        }
+
         infos.setAnnouncement(config.announcement().orElse(null));
         infos.setVersion(version.getVersion());
         infos.setGitCommit(version.getGitCommit());

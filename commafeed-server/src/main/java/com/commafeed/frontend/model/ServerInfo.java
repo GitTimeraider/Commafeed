@@ -54,4 +54,10 @@ public class ServerInfo implements Serializable {
 
     @Schema(required = true)
     private boolean pushNotificationsEnabled;
+
+    @Schema(
+            description =
+                    "the client is outside of the allowed networks and can only open public pages",
+            required = true)
+    private boolean accessRestricted;
 }

@@ -818,6 +818,10 @@ msgstr "Geen inzendingen meer"
 msgid "No sharing options available."
 msgstr "Geen deelopties beschikbaar."
 
+#: src/pages/AccessRestrictedPage.tsx
+msgid "Not available from your network"
+msgstr ""
+
 #: src/components/sidebar/TreeSearch.tsx
 msgid "Nothing found"
 msgstr "Niets gevonden"
@@ -1279,6 +1283,10 @@ msgstr "Deze feed heeft een legacy-filter dat niet kan worden bewerkt en niet wo
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "Dit is uw API-sleutel. Deze kan worden gebruikt voor sommige alleen-lezen API-bewerkingen en geeft toegang tot de Fever API en de Google Reader API. Gebruik het formulier onderaan de pagina om een nieuwe API-sleutel te genereren"
+
+#: src/pages/AccessRestrictedPage.tsx
+msgid "This page can only be opened from an allowed network."
+msgstr ""
 
 #: src/pages/PublicPage.tsx
 msgid "This public page does not exist or is not enabled."

@@ -818,6 +818,10 @@ msgstr "لا مزيد من الإدخالات"
 msgid "No sharing options available."
 msgstr "لا توجد خيارات مشاركة متاحة."
 
+#: src/pages/AccessRestrictedPage.tsx
+msgid "Not available from your network"
+msgstr ""
+
 #: src/components/sidebar/TreeSearch.tsx
 msgid "Nothing found"
 msgstr "لم يتم العثور على شيء"
@@ -1279,6 +1283,10 @@ msgstr "تحتوي هذه الخلاصة على فلتر قديم لا يمكن 
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "هذا هو مفتاح API الخاص بك. يمكن استخدامه لبعض عمليات API للقراءة فقط ويمنح حق الوصول إلى Fever API و Google Reader API. استخدم النموذج الموجود أسفل الصفحة لإنشاء مفتاح API جديد"
+
+#: src/pages/AccessRestrictedPage.tsx
+msgid "This page can only be opened from an allowed network."
+msgstr ""
 
 #: src/pages/PublicPage.tsx
 msgid "This public page does not exist or is not enabled."

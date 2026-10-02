@@ -818,6 +818,10 @@ msgstr "No hi ha més entrades"
 msgid "No sharing options available."
 msgstr "No hi ha opcions de compartició disponibles."
 
+#: src/pages/AccessRestrictedPage.tsx
+msgid "Not available from your network"
+msgstr ""
+
 #: src/components/sidebar/TreeSearch.tsx
 msgid "Nothing found"
 msgstr "No s'ha trobat res"
@@ -1279,6 +1283,10 @@ msgstr "Aquest feed té un filtre heretat que no es pot editar i no s'aplica. To
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "Aquesta és la vostra clau API. Es pot utilitzar per a algunes operacions de l'API de només lectura i dona accés a l'API Fever i a l'API de Google Reader. Utilitzeu el formulari a la part inferior de la pàgina per generar una nova clau API"
+
+#: src/pages/AccessRestrictedPage.tsx
+msgid "This page can only be opened from an allowed network."
+msgstr ""
 
 #: src/pages/PublicPage.tsx
 msgid "This public page does not exist or is not enabled."

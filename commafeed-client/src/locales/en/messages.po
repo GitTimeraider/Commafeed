@@ -818,6 +818,10 @@ msgstr "No more entries"
 msgid "No sharing options available."
 msgstr "No sharing options available."
 
+#: src/pages/AccessRestrictedPage.tsx
+msgid "Not available from your network"
+msgstr "Not available from your network"
+
 #: src/components/sidebar/TreeSearch.tsx
 msgid "Nothing found"
 msgstr "Nothing found"
@@ -1279,6 +1283,10 @@ msgstr "This feed has a legacy filter that cannot be edited and is not applied. 
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
+
+#: src/pages/AccessRestrictedPage.tsx
+msgid "This page can only be opened from an allowed network."
+msgstr "This page can only be opened from an allowed network."
 
 #: src/pages/PublicPage.tsx
 msgid "This public page does not exist or is not enabled."

@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Add `commafeed.allowed-networks` (`COMMAFEED_ALLOWED_NETWORKS`): when set, only clients from these networks (and
+  localhost) can use the application and the login page. Clients from other networks can only open public pages.
 - Add two-factor authentication: an authenticator app (TOTP) and/or passkeys, configured in Settings > Security. A user
   who lost both can request a single use reset code from the login page, which is written to the server logs only.
 - Add an optional public, read-only page that can be opened without logging in. Enable it and select which categories

@@ -818,6 +818,10 @@ msgstr "これ以上エントリーはありません"
 msgid "No sharing options available."
 msgstr "共有オプションは利用できません。"
 
+#: src/pages/AccessRestrictedPage.tsx
+msgid "Not available from your network"
+msgstr ""
+
 #: src/components/sidebar/TreeSearch.tsx
 msgid "Nothing found"
 msgstr "何も見つかりませんでした"
@@ -1279,6 +1283,10 @@ msgstr "このフィードには、編集できず適用もされない古い形
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "これはあなたのAPIキーです。一部の読み取り専用API操作に使用でき、Fever APIおよびGoogle Reader APIへのアクセスを許可します。新しいAPIキーを生成するには、ページ下部のフォームを使用してください"
+
+#: src/pages/AccessRestrictedPage.tsx
+msgid "This page can only be opened from an allowed network."
+msgstr ""
 
 #: src/pages/PublicPage.tsx
 msgid "This public page does not exist or is not enabled."

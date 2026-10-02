@@ -818,6 +818,10 @@ msgstr "Tidak ada entri lagi"
 msgid "No sharing options available."
 msgstr "Tidak ada opsi berbagi yang tersedia."
 
+#: src/pages/AccessRestrictedPage.tsx
+msgid "Not available from your network"
+msgstr ""
+
 #: src/components/sidebar/TreeSearch.tsx
 msgid "Nothing found"
 msgstr "Tidak ada yang ditemukan"
@@ -1279,6 +1283,10 @@ msgstr "Umpan ini memiliki filter lama yang tidak dapat diedit dan tidak diterap
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "Ini adalah kunci API Anda. Ini dapat digunakan untuk beberapa operasi API yang hanya-baca dan memberikan akses ke Fever API dan Google Reader API. Gunakan formulir di bagian bawah halaman untuk membuat kunci API baru"
+
+#: src/pages/AccessRestrictedPage.tsx
+msgid "This page can only be opened from an allowed network."
+msgstr ""
 
 #: src/pages/PublicPage.tsx
 msgid "This public page does not exist or is not enabled."

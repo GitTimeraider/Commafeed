@@ -14,6 +14,7 @@ import jakarta.validation.constraints.Positive;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -58,6 +59,19 @@ public interface CommaFeedConfiguration {
 
     /** Message displayed in a notification at the bottom of the page. */
     Optional<String> announcement();
+
+    /**
+     * Comma-separated list of networks (CIDR notation, e.g. 192.168.1.0/24,10.0.0.0/8, or single
+     * addresses) allowed to use the application. Clients from other networks can only open the
+     * public pages, everything else (login page, application, API) is refused. Localhost is always
+     * allowed. Leave empty to allow all networks.
+     *
+     * <p>When CommaFeed is behind a reverse proxy, enable
+     * quarkus.http.proxy.proxy-address-forwarding and quarkus.http.proxy.allow-x-forwarded, and set
+     * quarkus.http.proxy.trusted-proxies to the address of the proxy, so that the address of the
+     * client is used instead of the address of the proxy.
+     */
+    Optional<List<String>> allowedNetworks();
 
     /** Google Auth key for fetching Youtube channel favicons. */
     Optional<String> googleAuthKey();

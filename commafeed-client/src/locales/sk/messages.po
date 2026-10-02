@@ -818,6 +818,10 @@ msgstr "Žiadne ďalšie záznamy"
 msgid "No sharing options available."
 msgstr "Nie sú k dispozícii žiadne možnosti zdieľania."
 
+#: src/pages/AccessRestrictedPage.tsx
+msgid "Not available from your network"
+msgstr ""
+
 #: src/components/sidebar/TreeSearch.tsx
 msgid "Nothing found"
 msgstr "Nič sa nenašlo"
@@ -1279,6 +1283,10 @@ msgstr "Tento kanál má starší filter, ktorý sa nedá upravovať a nepouží
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "Toto je váš kľúč API. Môže sa použiť pre niektoré operácie API iba na čítanie a udeľuje prístup k Fever API a Google Reader API. Na vygenerovanie nového kľúča API použite formulár v spodnej časti stránky"
+
+#: src/pages/AccessRestrictedPage.tsx
+msgid "This page can only be opened from an allowed network."
+msgstr ""
 
 #: src/pages/PublicPage.tsx
 msgid "This public page does not exist or is not enabled."
