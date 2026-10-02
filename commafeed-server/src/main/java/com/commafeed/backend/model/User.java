@@ -61,4 +61,12 @@ public class User extends AbstractModel {
 
     @Column(name = "public_page_token", length = 64, unique = true)
     private String publicPageToken;
+
+    /** base32 encoded secret of the authenticator app used for two-factor authentication */
+    @Column(name = "totp_secret", length = 64)
+    private String totpSecret;
+
+    /** last TOTP time step that was used to log in, a code can't be used twice */
+    @Column(name = "totp_last_used_step")
+    private Long totpLastUsedStep;
 }

@@ -21,7 +21,12 @@ import type {
     LoginRequest,
     MarkRequest,
     Metrics,
+    MfaLoginOptions,
+    MfaLoginRequest,
+    MfaStatus,
     MultipleMarkRequest,
+    PasskeyRegistrationOptions,
+    PasskeyRegistrationRequest,
     PasswordResetConfirmationRequest,
     PasswordResetRequest,
     ProfileModificationRequest,
@@ -35,11 +40,15 @@ import type {
     SubscribeRequest,
     Subscription,
     TagRequest,
+    TotpSetupResponse,
     UserModel,
 } from "./types"
 
 const applicationErrorMessages = {
     WRONG_USERNAME_OR_PASSWORD: msg`Wrong username or password`,
+    MFA_REQUIRED: msg`Two-factor authentication required`,
+    MFA_INVALID_CODE: msg`Invalid two-factor authentication code`,
+    MFA_TOO_MANY_ATTEMPTS: msg`Too many failed attempts, please try again later`,
 } satisfies Record<CommaFeedExceptionType, MessageDescriptor>
 
 const axiosInstance = axios.create({ baseURL: "./rest", withCredentials: true })
@@ -103,6 +112,9 @@ export const client = {
             const formData = new URLSearchParams()
             formData.append("j_username", req.name)
             formData.append("j_password", req.password)
+            if (req.mfaTotp) formData.append("j_mfa_totp", req.mfaTotp)
+            if (req.mfaPasskey) formData.append("j_mfa_passkey", req.mfaPasskey)
+            if (req.mfaResetCode) formData.append("j_mfa_reset_code", req.mfaResetCode)
             return await axiosInstance.post("j_security_check", formData, {
                 baseURL: ".",
                 headers: {
@@ -129,6 +141,17 @@ export const client = {
         getTree: async (token: string) => await publicAxiosInstance.get<PublicCategory>(`${encodeURIComponent(token)}/tree`),
         getEntries: async (token: string, req: GetPublicEntriesRequest) =>
             await publicAxiosInstance.get<Entries>(`${encodeURIComponent(token)}/entries`, { params: req }),
+    },
+    mfa: {
+        getStatus: async () => await axiosInstance.get<MfaStatus>("mfa/status"),
+        startTotpSetup: async () => await axiosInstance.post<TotpSetupResponse>("mfa/totp/setup"),
+        enableTotp: async (code: string) => await axiosInstance.post("mfa/totp/enable", { code }),
+        disableTotp: async (password: string) => await axiosInstance.post("mfa/totp/disable", { password }),
+        getPasskeyRegistrationOptions: async () => await axiosInstance.post<PasskeyRegistrationOptions>("mfa/passkey/registrationOptions"),
+        registerPasskey: async (req: PasskeyRegistrationRequest) => await axiosInstance.post("mfa/passkey/register", req),
+        deletePasskey: async (id: number, password: string) => await axiosInstance.post("mfa/passkey/delete", { id, password }),
+        getLoginOptions: async (req: MfaLoginRequest) => await axiosInstance.post<MfaLoginOptions>("mfa/login/options", req),
+        requestResetCode: async (req: MfaLoginRequest) => await axiosInstance.post("mfa/login/resetRequest", req),
     },
     server: {
         getServerInfos: async () => await axiosInstance.get<ServerInfo>("server/get"),
@@ -160,6 +183,16 @@ export const errorToStrings = (err: unknown) => {
     }
 
     return strings
+}
+
+/**
+ * @returns the type of the CommaFeed application error, if the error is one
+ */
+export const applicationErrorType = (err: unknown): CommaFeedExceptionType | undefined => {
+    if (axios.isAxiosError(err) && err.response && isCommaFeedApplicationError(err)) {
+        return err.response.data.type
+    }
+    return undefined
 }
 
 function isCommaFeedApplicationError(err: AxiosError): err is AxiosError<CommaFeedApplicationError> {

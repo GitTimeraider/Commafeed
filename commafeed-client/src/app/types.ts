@@ -168,6 +168,54 @@ export interface IDRequest {
 export interface LoginRequest {
     name: string
     password: string
+    // second factor, only one of them is used
+    mfaTotp?: string
+    mfaPasskey?: string
+    mfaResetCode?: string
+}
+
+export interface MfaLoginRequest {
+    name: string
+    password: string
+}
+
+export interface MfaLoginOptions {
+    totp: boolean
+    passkey: boolean
+    passkeyChallenge?: string
+    passkeyCredentialIds: string[]
+}
+
+export interface PasskeyInfo {
+    id: number
+    name: string
+    created: number
+    lastUsed?: number
+}
+
+export interface MfaStatus {
+    totpEnabled: boolean
+    passkeys: PasskeyInfo[]
+}
+
+export interface TotpSetupResponse {
+    secret: string
+    uri: string
+}
+
+export interface PasskeyRegistrationOptions {
+    challenge: string
+    rpName: string
+    userId: string
+    userName: string
+    algorithms: number[]
+    excludeCredentialIds: string[]
+}
+
+export interface PasskeyRegistrationRequest {
+    name: string
+    clientDataJSON: string
+    attestationObject: string
 }
 
 export interface MarkRequest {
@@ -368,7 +416,7 @@ export interface AuthenticationError {
     allowRegistrations: boolean
 }
 
-export type CommaFeedExceptionType = "WRONG_USERNAME_OR_PASSWORD"
+export type CommaFeedExceptionType = "WRONG_USERNAME_OR_PASSWORD" | "MFA_REQUIRED" | "MFA_INVALID_CODE" | "MFA_TOO_MANY_ATTEMPTS"
 
 export interface CommaFeedApplicationError {
     type: CommaFeedExceptionType

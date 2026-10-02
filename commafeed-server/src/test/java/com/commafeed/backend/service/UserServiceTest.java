@@ -4,6 +4,7 @@ import com.commafeed.CommaFeedConfiguration;
 import com.commafeed.backend.dao.FeedCategoryDAO;
 import com.commafeed.backend.dao.FeedSubscriptionDAO;
 import com.commafeed.backend.dao.UserDAO;
+import com.commafeed.backend.dao.UserPasskeyDAO;
 import com.commafeed.backend.dao.UserRoleDAO;
 import com.commafeed.backend.dao.UserSettingsDAO;
 import com.commafeed.backend.model.User;
@@ -31,6 +32,7 @@ class UserServiceTest {
     @Mock private UserDAO userDAO;
     @Mock private UserSettingsDAO userSettingsDAO;
     @Mock private UserRoleDAO userRoleDAO;
+    @Mock private UserPasskeyDAO userPasskeyDAO;
     @Mock private PasswordEncryptionService passwordEncryptionService;
     @Mock private PostLoginActivities postLoginActivities;
 
@@ -47,6 +49,7 @@ class UserServiceTest {
                         feedSubscriptionDAO,
                         userDAO,
                         userRoleDAO,
+                        userPasskeyDAO,
                         userSettingsDAO,
                         passwordEncryptionService,
                         commaFeedConfiguration,
