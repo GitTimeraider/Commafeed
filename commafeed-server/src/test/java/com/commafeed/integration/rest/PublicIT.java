@@ -42,21 +42,61 @@ class PublicIT extends BaseIT {
         Assertions.assertFalse(settings.isEnabled());
         Assertions.assertFalse(settings.isShowUncategorized());
         Assertions.assertEquals(List.of(), settings.getCategoryIds());
+        Assertions.assertNull(settings.getToken());
 
+        // the user name can't be used to access the public page
         anonymous()
-                .get("rest/public/{user}/tree", TestConstants.ADMIN_USERNAME)
-                .then()
-                .statusCode(HttpStatus.SC_NOT_FOUND);
-        anonymous()
-                .get("rest/public/{user}/entries", TestConstants.ADMIN_USERNAME)
+                .get("rest/public/{token}/tree", TestConstants.ADMIN_USERNAME)
                 .then()
                 .statusCode(HttpStatus.SC_NOT_FOUND);
     }
 
     @Test
-    void unknownUser() {
+    void disabledPublicPage() {
+        PublicPageSettings settings = new PublicPageSettings();
+        settings.setEnabled(true);
+        savePublicPageSettings(settings);
+        String token = token();
+        Assertions.assertEquals(64, token.length());
+        anonymous().get("rest/public/{token}/tree", token).then().statusCode(HttpStatus.SC_OK);
+
+        settings.setEnabled(false);
+        savePublicPageSettings(settings);
         anonymous()
-                .get("rest/public/{user}/tree", "unknown-user")
+                .get("rest/public/{token}/tree", token)
+                .then()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
+        anonymous()
+                .get("rest/public/{token}/entries", token)
+                .then()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
+    }
+
+    @Test
+    void regenerateToken() {
+        PublicPageSettings settings = new PublicPageSettings();
+        settings.setEnabled(true);
+        savePublicPageSettings(settings);
+        String oldToken = token();
+
+        RestAssured.given()
+                .post("rest/user/publicPage/regenerateToken")
+                .then()
+                .statusCode(HttpStatus.SC_OK);
+        String newToken = token();
+
+        Assertions.assertNotEquals(oldToken, newToken);
+        anonymous()
+                .get("rest/public/{token}/tree", oldToken)
+                .then()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
+        anonymous().get("rest/public/{token}/tree", newToken).then().statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    void unknownToken() {
+        anonymous()
+                .get("rest/public/{token}/tree", "unknown-token")
                 .then()
                 .statusCode(HttpStatus.SC_NOT_FOUND);
     }
@@ -90,6 +130,7 @@ class PublicIT extends BaseIT {
                 savedSettings.getCategoryIds().stream().sorted().toList());
 
         PublicCategory root = getPublicTree();
+        Assertions.assertNotEquals(TestConstants.ADMIN_USERNAME, root.getName());
         Assertions.assertEquals(
                 List.of("public-a", "public-c"),
                 root.getChildren().stream().map(PublicCategory::getName).sorted().toList());
@@ -103,7 +144,7 @@ class PublicIT extends BaseIT {
         Assertions.assertEquals(1, c.getFeeds().size());
         Assertions.assertEquals(subscriptionId, c.getFeeds().getFirst().getId());
         Assertions.assertEquals(
-                "rest/public/admin/favicon/" + subscriptionId,
+                "rest/public/" + token() + "/favicon/" + subscriptionId,
                 c.getFeeds().getFirst().getIconUrl());
 
         Assertions.assertEquals(2, getPublicEntries("category", "all").getEntries().size());
@@ -112,15 +153,15 @@ class PublicIT extends BaseIT {
         Assertions.assertEquals(
                 2, getPublicEntries("feed", String.valueOf(subscriptionId)).getEntries().size());
 
+        Assertions.assertNotEquals(
+                TestConstants.ADMIN_USERNAME, getPublicEntries("category", "all").getName());
+
         Entries entries = getPublicEntries("feed", String.valueOf(subscriptionId));
         Assertions.assertTrue(entries.getEntries().stream().allMatch(e -> e.getTags().isEmpty()));
 
         // private categories are not accessible
         anonymous()
-                .get(
-                        "rest/public/{user}/entries?type=category&id={id}",
-                        TestConstants.ADMIN_USERNAME,
-                        privateB)
+                .get("rest/public/{token}/entries?type=category&id={id}", token(), privateB)
                 .then()
                 .statusCode(HttpStatus.SC_NOT_FOUND);
     }
@@ -138,17 +179,11 @@ class PublicIT extends BaseIT {
         Assertions.assertTrue(getPublicTree().getFeeds().isEmpty());
         Assertions.assertTrue(getPublicEntries("category", "all").getEntries().isEmpty());
         anonymous()
-                .get(
-                        "rest/public/{user}/entries?type=feed&id={id}",
-                        TestConstants.ADMIN_USERNAME,
-                        subscriptionId)
+                .get("rest/public/{token}/entries?type=feed&id={id}", token(), subscriptionId)
                 .then()
                 .statusCode(HttpStatus.SC_NOT_FOUND);
         anonymous()
-                .get(
-                        "rest/public/{user}/favicon/{id}",
-                        TestConstants.ADMIN_USERNAME,
-                        subscriptionId)
+                .get("rest/public/{token}/favicon/{id}", token(), subscriptionId)
                 .then()
                 .statusCode(HttpStatus.SC_NOT_FOUND);
     }
@@ -166,6 +201,10 @@ class PublicIT extends BaseIT {
         savePublicPageSettings(settings);
         Assertions.assertEquals(subscriptionId, getPublicTree().getFeeds().getFirst().getId());
         Assertions.assertEquals(2, getPublicEntries("category", "all").getEntries().size());
+    }
+
+    private String token() {
+        return getPublicPageSettings().getToken();
     }
 
     private RequestSpecification anonymous() {
@@ -206,7 +245,7 @@ class PublicIT extends BaseIT {
 
     private PublicCategory getPublicTree() {
         return anonymous()
-                .get("rest/public/{user}/tree", TestConstants.ADMIN_USERNAME)
+                .get("rest/public/{token}/tree", token())
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .extract()
@@ -215,11 +254,7 @@ class PublicIT extends BaseIT {
 
     private Entries getPublicEntries(String type, String id) {
         return anonymous()
-                .get(
-                        "rest/public/{user}/entries?type={type}&id={id}",
-                        TestConstants.ADMIN_USERNAME,
-                        type,
-                        id)
+                .get("rest/public/{token}/entries?type={type}&id={id}", token(), type, id)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .extract()

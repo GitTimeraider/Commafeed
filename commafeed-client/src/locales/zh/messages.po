@@ -93,6 +93,10 @@ msgstr "分析信息流"
 msgid "Announcement"
 msgstr "公告"
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Anyone with this address can read the selected categories. It doesn't contain your user name. Generate a new address if you want the current one to stop working."
+msgstr ""
+
 #: src/components/settings/ProfileSettings.tsx
 msgid "API key"
 msgstr "API 密钥"
@@ -165,6 +169,10 @@ msgstr "浏览器标签页"
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Build a filter expression to indicate what you want to read. Entries that don't match will be marked as read automatically."
 msgstr "构建过滤表达式以指示您想阅读的内容。不匹配的条目将被自动标记为已读。"
+
+#: src/pages/PublicPage.tsx
+msgid "by"
+msgstr ""
 
 #: src/components/admin/UserEdit.tsx
 #: src/components/content/add/AddCategory.tsx
@@ -456,6 +464,10 @@ msgstr "忘记密码？"
 #: src/pages/app/TagDetailsPage.tsx
 msgid "Generate an API key in your profile first."
 msgstr "首先在您的配置文件中生成一个 API 密钥。"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Generate new address"
+msgstr ""
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "Generate new API key"
@@ -768,6 +780,7 @@ msgstr "在后台的新选项卡中打开当前条目"
 
 #: src/components/content/FeedEntryFooter.tsx
 #: src/components/content/header/OpenExternalLink.tsx
+#: src/pages/PublicPage.tsx
 msgid "Open link"
 msgstr "打开链接"
 
@@ -943,10 +956,6 @@ msgstr "右键单击"
 msgid "Save"
 msgstr "保存"
 
-#: src/components/settings/PublicPageSettings.tsx
-msgid "Save the settings before sharing this address."
-msgstr ""
-
 #: src/components/settings/DisplaySettings.tsx
 msgid "Scroll selected entry to the top of the page"
 msgstr "将所选条目滚动到页面顶部"
@@ -1121,6 +1130,10 @@ msgstr "测试"
 #: src/components/settings/PushNotificationSettings.tsx
 msgid "Test notification sent successfully."
 msgstr "测试通知发送成功。"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "The address of the public page will be shown here after saving."
+msgstr ""
 
 #: src/components/settings/PublicPageSettings.tsx
 msgid "The public page is a read-only page that anyone can open without logging in. It only shows the entries of the categories selected below. Nothing else (settings, feed management, read status, starred entries, tags, ...) is accessible from it."

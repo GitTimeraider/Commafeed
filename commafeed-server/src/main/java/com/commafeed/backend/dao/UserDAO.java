@@ -23,6 +23,10 @@ public class UserDAO extends GenericDAO<User> {
         return query().selectFrom(USER).where(USER.apiKey.equalsIgnoreCase(key)).fetchOne();
     }
 
+    public User findByPublicPageToken(String token) {
+        return query().selectFrom(USER).where(USER.publicPageToken.eq(token)).fetchOne();
+    }
+
     public User findByEmail(String email) {
         return query().selectFrom(USER).where(USER.email.equalsIgnoreCase(email)).fetchOne();
     }

@@ -88,8 +88,8 @@ function AppRoutes() {
             <Route path="register" element={<RegistrationPage />} />
             <Route path="passwordRecovery" element={<PasswordRecoveryPage />} />
             <Route path="passwordReset" element={<PasswordResetPage />} />
-            <Route path="public/:userName" element={<PublicPage />} />
-            <Route path="public/:userName/:type/:id" element={<PublicPage />} />
+            <Route path="public/:token" element={<PublicPage />} />
+            <Route path="public/:token/:type/:id" element={<PublicPage />} />
             <Route path="app" element={<Layout header={<Header />} sidebar={<Tree />} sidebarVisible={sidebarVisible} />}>
                 <Route path="category">
                     <Route path=":id" element={<FeedEntriesPage sourceType="category" />} />

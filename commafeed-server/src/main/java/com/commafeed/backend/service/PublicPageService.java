@@ -11,12 +11,15 @@ import jakarta.inject.Singleton;
 
 import lombok.RequiredArgsConstructor;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -36,16 +39,24 @@ public class PublicPageService {
     private final FeedSubscriptionDAO feedSubscriptionDAO;
 
     /**
-     * @return the user with the given name, only if that user exists, is enabled and has enabled
-     *     its public page
+     * @return the user owning the given public page token, only if that user is enabled and has
+     *     enabled its public page
      */
-    public Optional<User> findPublicPageUser(String userName) {
-        if (userName == null) {
+    public Optional<User> findPublicPageUser(String token) {
+        if (StringUtils.isBlank(token)) {
             return Optional.empty();
         }
-        return Optional.ofNullable(userDAO.findByName(userName))
+        return Optional.ofNullable(userDAO.findByPublicPageToken(token))
                 .filter(u -> !u.isDisabled())
                 .filter(User::isPublicPageEnabled);
+    }
+
+    /**
+     * @return a new random, hard to guess token used in the address of a public page
+     */
+    public static String generateToken() {
+        return UUID.randomUUID().toString().replace("-", "")
+                + UUID.randomUUID().toString().replace("-", "");
     }
 
     public PublicContent getPublicContent(User user) {

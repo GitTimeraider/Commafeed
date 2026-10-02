@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/react/macro"
 import {
+    ActionIcon,
     Anchor,
     AppShell,
     Box,
@@ -8,18 +9,22 @@ import {
     Center,
     Container,
     Divider,
+    Flex,
     Group,
     NavLink,
     Paper,
     ScrollArea,
+    Space,
     Stack,
     Text,
     Title,
+    Tooltip,
 } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
+import type React from "react"
 import { useEffect, useRef, useState } from "react"
 import { useAsync } from "react-async-hook"
-import { TbFolder, TbLayoutList } from "react-icons/tb"
+import { TbExternalLink, TbFolder, TbLayoutList } from "react-icons/tb"
 import { Link, useParams } from "react-router-dom"
 import { client } from "@/app/client"
 import { Constants } from "@/app/constants"
@@ -29,56 +34,42 @@ import { FeedFavicon } from "@/components/content/FeedFavicon"
 import { Loader } from "@/components/Loader"
 import { Logo } from "@/components/Logo"
 import { RelativeDate } from "@/components/RelativeDate"
+import { tss } from "@/tss"
 
 const PAGE_SIZE = 20
 
-function sourcePath(userName: string, type: PublicEntriesSourceType, id: string) {
-    return `/public/${encodeURIComponent(userName)}/${type}/${id}`
+function sourcePath(token: string, type: PublicEntriesSourceType, id: string) {
+    return `/public/${encodeURIComponent(token)}/${type}/${id}`
 }
 
-function PublicTreeCategory(
-    props: Readonly<{
-        userName: string
-        category: PublicCategory
-        selectedType: PublicEntriesSourceType
-        selectedId: string
-        onNavigate: () => void
-    }>
-) {
-    const { category, userName, selectedType, selectedId } = props
-    const hasContent = category.children.length > 0 || category.feeds.length > 0
-    return (
-        <NavLink
-            label={category.name}
-            leftSection={<TbFolder size={18} />}
-            component={Link}
-            to={sourcePath(userName, "category", category.id)}
-            active={selectedType === "category" && selectedId === category.id}
-            onClick={props.onNavigate}
-            // categories are always expanded, clicking on a category only shows its entries
-            opened
-            rightSection={null}
-            childrenOffset="md"
-        >
-            {hasContent ? <PublicTreeChildren {...props} /> : undefined}
-        </NavLink>
-    )
+interface TreeProps {
+    token: string
+    category: PublicCategory
+    selectedType: PublicEntriesSourceType
+    selectedId: string
+    onNavigate: () => void
 }
 
-function PublicTreeChildren(
-    props: Readonly<{
-        userName: string
-        category: PublicCategory
-        selectedType: PublicEntriesSourceType
-        selectedId: string
-        onNavigate: () => void
-    }>
-) {
-    const { category, userName, selectedType, selectedId } = props
+function PublicTreeChildren(props: Readonly<TreeProps>) {
+    const { category, token, selectedType, selectedId } = props
     return (
         <>
             {category.children.map(child => (
-                <PublicTreeCategory key={child.id} {...props} category={child} />
+                <Box key={child.id}>
+                    {/* children are rendered next to the NavLink instead of inside it, a NavLink with children only toggles its
+                    children when clicked and doesn't navigate */}
+                    <NavLink
+                        label={child.name}
+                        leftSection={<TbFolder size={18} />}
+                        component={Link}
+                        to={sourcePath(token, "category", child.id)}
+                        active={selectedType === "category" && selectedId === child.id}
+                        onClick={props.onNavigate}
+                    />
+                    <Box pl="md">
+                        <PublicTreeChildren {...props} category={child} />
+                    </Box>
+                </Box>
             ))}
             {category.feeds.map(feed => (
                 <NavLink
@@ -86,7 +77,7 @@ function PublicTreeChildren(
                     label={feed.name}
                     leftSection={<FeedFavicon url={feed.iconUrl} />}
                     component={Link}
-                    to={sourcePath(userName, "feed", String(feed.id))}
+                    to={sourcePath(token, "feed", String(feed.id))}
                     active={selectedType === "feed" && selectedId === String(feed.id)}
                     onClick={props.onNavigate}
                 />
@@ -95,46 +86,120 @@ function PublicTreeChildren(
     )
 }
 
+const useEntryStyles = tss.withParams<{ expanded: boolean; rtl: boolean }>().create(({ theme, colorScheme, expanded, rtl }) => ({
+    paper: {
+        marginTop: 10,
+        marginBottom: 10,
+        [`@media (max-width: ${Constants.layout.mobileBreakpoint}px)`]: {
+            marginTop: 6,
+            marginBottom: 6,
+        },
+        "@media (hover: hover)": {
+            "&:hover": {
+                backgroundColor: expanded ? undefined : colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[1],
+            },
+        },
+    },
+    headerLink: {
+        color: "inherit",
+        textDecoration: "none",
+    },
+    title: {
+        fontWeight: expanded ? "inherit" : "bold",
+    },
+    body: {
+        direction: rtl ? "rtl" : "ltr",
+        maxWidth: Constants.layout.entryMaxWidth,
+    },
+}))
+
+// same look as the "detailed" display mode of the application: title, feed and date, the content is shown when clicking on the entry
 function PublicEntry({ entry }: Readonly<{ entry: Entry }>) {
+    const [expanded, setExpanded] = useState(false)
+    const { classes } = useEntryStyles({ expanded, rtl: entry.rtl })
+
+    const onHeaderClick = (e: React.MouseEvent) => {
+        // let the browser open the link in a new tab on middle click or ctrl/cmd click
+        if (e.button === 1 || e.ctrlKey || e.metaKey) return
+        e.preventDefault()
+        setExpanded(v => !v)
+    }
+
     return (
-        <Paper withBorder p="md" radius="md">
-            <Group gap="xs" wrap="nowrap" pb="xs">
-                <Box style={{ flexShrink: 0 }}>
-                    <FeedFavicon url={entry.iconUrl} />
+        <Paper component="article" withBorder radius="sm" className={classes.paper}>
+            <a className={classes.headerLink} href={entry.url} target="_blank" rel="noreferrer" onClick={onHeaderClick}>
+                <Box px="xs" py="xs">
+                    <Flex align="flex-start" justify="space-between">
+                        <Box className={classes.title}>{entry.title}</Box>
+                        {entry.url && (
+                            <Tooltip label={<Trans>Open link</Trans>} openDelay={Constants.tooltip.delay}>
+                                <ActionIcon
+                                    // a link can't be nested in the header link
+                                    component="span"
+                                    variant="transparent"
+                                    c="dimmed"
+                                    onClick={e => {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                        window.open(entry.url, "_blank", "noreferrer")
+                                    }}
+                                >
+                                    <TbExternalLink size={18} />
+                                </ActionIcon>
+                            </Tooltip>
+                        )}
+                    </Flex>
+                    <Flex align="center">
+                        <FeedFavicon url={entry.iconUrl} />
+                        <Space w={6} />
+                        <Box c="dimmed">
+                            {entry.feedName}
+                            <span> · </span>
+                            <RelativeDate date={entry.date} />
+                        </Box>
+                    </Flex>
+                    {expanded && (entry.author || entry.categories) && (
+                        <Box>
+                            {entry.author && (
+                                <span>
+                                    <Trans>by</Trans> {entry.author}
+                                </span>
+                            )}
+                            {entry.author && entry.categories && <span>&nbsp;·&nbsp;</span>}
+                            {entry.categories && <span>{entry.categories}</span>}
+                        </Box>
+                    )}
                 </Box>
-                <Text size="xs" c="dimmed" lineClamp={1}>
-                    {entry.feedName}
-                    {" · "}
-                    <RelativeDate date={entry.date} />
-                    {entry.author && ` · ${entry.author}`}
-                </Text>
-            </Group>
-            <Title order={4} pb="sm" dir={entry.rtl ? "rtl" : undefined}>
-                {entry.url ? (
-                    <Anchor href={entry.url} target="_blank" rel="noreferrer" c="inherit">
-                        {entry.title || entry.url}
-                    </Anchor>
-                ) : (
-                    entry.title
-                )}
-            </Title>
-            <Box dir={entry.rtl ? "rtl" : undefined} style={{ maxWidth: Constants.layout.entryMaxWidth }}>
-                <FeedEntryBody entry={entry} />
-            </Box>
+            </a>
+            {expanded && (
+                <Box px="xs" pb="xs">
+                    <Box className={`${classes.body} cf-content`}>
+                        <FeedEntryBody entry={entry} />
+                    </Box>
+                    {entry.url && (
+                        <>
+                            <Divider variant="dashed" my="xs" />
+                            <Anchor href={entry.url} target="_blank" rel="noreferrer" size="sm">
+                                <Trans>Open link</Trans>
+                            </Anchor>
+                        </>
+                    )}
+                </Box>
+            )}
         </Paper>
     )
 }
 
 function PublicEntries(
     props: Readonly<{
-        userName: string
+        token: string
         type: PublicEntriesSourceType
         id: string
+        title: React.ReactNode
     }>
 ) {
-    const { userName, type, id } = props
+    const { token, type, id } = props
     const [entries, setEntries] = useState<Entry[]>([])
-    const [name, setName] = useState<string>()
     const [hasMore, setHasMore] = useState(false)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
@@ -146,9 +211,8 @@ function PublicEntries(
         setLoading(true)
         setError(false)
         try {
-            const result = await client.publicPage.getEntries(userName, { type, id, offset, limit: PAGE_SIZE })
+            const result = await client.publicPage.getEntries(token, { type, id, offset, limit: PAGE_SIZE })
             if (request !== requestCounter.current) return
-            setName(result.data.name)
             setEntries(current => (offset === 0 ? result.data.entries : [...current, ...result.data.entries]))
             setHasMore(result.data.hasMore)
         } catch {
@@ -164,48 +228,64 @@ function PublicEntries(
     // biome-ignore lint/correctness/useExhaustiveDependencies: reload only when the source changes
     useEffect(() => {
         setEntries([])
-        setName(undefined)
         setHasMore(false)
         window.scrollTo(0, 0)
         load(0)
-    }, [userName, type, id])
+    }, [token, type, id])
 
     return (
-        <Stack>
-            {name && <Title order={2}>{name}</Title>}
+        <Box>
+            <Title order={3} pb="xs">
+                {props.title}
+            </Title>
             {entries.map(entry => (
                 <PublicEntry key={`${entry.feedId}-${entry.id}`} entry={entry} />
             ))}
-            {error && (
-                <Text c="red">
-                    <Trans>Could not load entries.</Trans>
-                </Text>
-            )}
-            {!loading && !error && entries.length === 0 && (
-                <Text c="dimmed">
-                    <Trans>No entries</Trans>
-                </Text>
-            )}
-            {loading && <Loader />}
-            {!loading && hasMore && (
-                <Center>
-                    <Button variant="default" onClick={async () => await load(entries.length)}>
-                        <Trans>Load more</Trans>
-                    </Button>
-                </Center>
-            )}
-        </Stack>
+            <Stack pt="md">
+                {error && (
+                    <Text c="red">
+                        <Trans>Could not load entries.</Trans>
+                    </Text>
+                )}
+                {!loading && !error && entries.length === 0 && (
+                    <Text c="dimmed">
+                        <Trans>No entries</Trans>
+                    </Text>
+                )}
+                {loading && <Loader />}
+                {!loading && hasMore && (
+                    <Center>
+                        <Button variant="default" onClick={async () => await load(entries.length)}>
+                            <Trans>Load more</Trans>
+                        </Button>
+                    </Center>
+                )}
+            </Stack>
+        </Box>
     )
+}
+
+function findSourceName(category: PublicCategory, type: PublicEntriesSourceType, id: string): string | undefined {
+    if (type === "category" && category.id === id) return category.name
+    if (type === "feed") {
+        const feed = category.feeds.find(f => String(f.id) === id)
+        if (feed) return feed.name
+    }
+    for (const child of category.children) {
+        const name = findSourceName(child, type, id)
+        if (name) return name
+    }
+    return undefined
 }
 
 export function PublicPage() {
     const params = useParams()
-    const userName = params.userName ?? ""
+    const token = params.token ?? ""
     const type: PublicEntriesSourceType = params.type === "feed" ? "feed" : "category"
     const id = params.id ?? Constants.categories.all.id
     const [navbarOpened, { toggle: toggleNavbar, close: closeNavbar }] = useDisclosure(false)
 
-    const tree = useAsync(async () => (await client.publicPage.getTree(userName)).data, [userName])
+    const tree = useAsync(async () => (await client.publicPage.getTree(token)).data, [token])
 
     if (tree.loading) return <Loader />
 
@@ -223,6 +303,8 @@ export function PublicPage() {
     }
 
     const root = tree.result
+    const isAll = type === "category" && id === Constants.categories.all.id
+    const title = isAll ? <Trans>All</Trans> : findSourceName(root, type, id)
     return (
         <AppShell
             header={{ height: Constants.layout.headerHeight }}
@@ -233,9 +315,7 @@ export function PublicPage() {
                 <Group h="100%" px="md" wrap="nowrap">
                     <Burger opened={navbarOpened} onClick={toggleNavbar} hiddenFrom={Constants.layout.mobileBreakpointName} size="sm" />
                     <Logo size={24} />
-                    <Title order={3} lineClamp={1}>
-                        CommaFeed - {root.name}
-                    </Title>
+                    <Title order={3}>CommaFeed</Title>
                 </Group>
             </AppShell.Header>
 
@@ -245,18 +325,18 @@ export function PublicPage() {
                         label={<Trans>All</Trans>}
                         leftSection={<TbLayoutList size={18} />}
                         component={Link}
-                        to={sourcePath(userName, "category", Constants.categories.all.id)}
-                        active={type === "category" && id === Constants.categories.all.id}
+                        to={sourcePath(token, "category", Constants.categories.all.id)}
+                        active={isAll}
                         onClick={closeNavbar}
                     />
                     <Divider />
-                    <PublicTreeChildren userName={userName} category={root} selectedType={type} selectedId={id} onNavigate={closeNavbar} />
+                    <PublicTreeChildren token={token} category={root} selectedType={type} selectedId={id} onNavigate={closeNavbar} />
                 </ScrollArea>
             </AppShell.Navbar>
 
             <AppShell.Main>
-                <Container size={Constants.layout.entryMaxWidth} px={0}>
-                    <PublicEntries userName={userName} type={type} id={id} />
+                <Container size={Constants.layout.entryMaxWidth + 100} px={0}>
+                    <PublicEntries token={token} type={type} id={id} title={title} />
                 </Container>
             </AppShell.Main>
         </AppShell>

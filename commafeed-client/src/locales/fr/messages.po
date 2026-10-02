@@ -93,6 +93,10 @@ msgstr "Analyser le flux"
 msgid "Announcement"
 msgstr "Annonces"
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Anyone with this address can read the selected categories. It doesn't contain your user name. Generate a new address if you want the current one to stop working."
+msgstr ""
+
 #: src/components/settings/ProfileSettings.tsx
 msgid "API key"
 msgstr "Clé API"
@@ -165,6 +169,10 @@ msgstr "Onglet navigateur"
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Build a filter expression to indicate what you want to read. Entries that don't match will be marked as read automatically."
 msgstr "Créez une expression régulière pour filtrer ce que vous voulez lire. Les entrées qui ne correspondent pas seront automatiquement marquées comme lues."
+
+#: src/pages/PublicPage.tsx
+msgid "by"
+msgstr ""
 
 #: src/components/admin/UserEdit.tsx
 #: src/components/content/add/AddCategory.tsx
@@ -456,6 +464,10 @@ msgstr "Mot de passe oublié ?"
 #: src/pages/app/TagDetailsPage.tsx
 msgid "Generate an API key in your profile first."
 msgstr "Générez d'abord une clé API dans votre profil."
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Generate new address"
+msgstr ""
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "Generate new API key"
@@ -768,6 +780,7 @@ msgstr "Ouvrir l'entrée actuelle dans un nouvel onglet en arrière-plan"
 
 #: src/components/content/FeedEntryFooter.tsx
 #: src/components/content/header/OpenExternalLink.tsx
+#: src/pages/PublicPage.tsx
 msgid "Open link"
 msgstr "Ouvrir le lien"
 
@@ -943,10 +956,6 @@ msgstr "Clic droit"
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/components/settings/PublicPageSettings.tsx
-msgid "Save the settings before sharing this address."
-msgstr ""
-
 #: src/components/settings/DisplaySettings.tsx
 msgid "Scroll selected entry to the top of the page"
 msgstr "Faire défiler l'entrée sélectionnée vers le haut de la page"
@@ -1121,6 +1130,10 @@ msgstr "Test"
 #: src/components/settings/PushNotificationSettings.tsx
 msgid "Test notification sent successfully."
 msgstr "Notification de test envoyée avec succès."
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "The address of the public page will be shown here after saving."
+msgstr ""
 
 #: src/components/settings/PublicPageSettings.tsx
 msgid "The public page is a read-only page that anyone can open without logging in. It only shows the entries of the categories selected below. Nothing else (settings, feed management, read status, starred entries, tags, ...) is accessible from it."

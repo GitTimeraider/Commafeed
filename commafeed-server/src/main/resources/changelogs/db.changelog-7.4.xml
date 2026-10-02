@@ -19,4 +19,12 @@
 		</addColumn>
 	</changeSet>
 
+	<changeSet id="add-public-page-token" author="commafeed">
+		<addColumn tableName="USERS">
+			<column name="public_page_token" type="VARCHAR(64)">
+				<constraints nullable="true" unique="true" />
+			</column>
+		</addColumn>
+	</changeSet>
+
 </databaseChangeLog>

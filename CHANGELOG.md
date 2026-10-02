@@ -2,9 +2,11 @@
 
 ## [Unreleased]
 
-- Add an optional public, read-only page (`#/public/<username>`) that can be opened without logging in. Enable it and
-  select which categories and subcategories are shown in Settings > Public page. Visitors can only read the entries of
-  the selected categories, nothing else (settings, feed management, read status, starred entries, tags) is exposed.
+- Add an optional public, read-only page that can be opened without logging in. Enable it and select which categories
+  and subcategories are shown in Settings > Public page. Visitors can only read the entries of the selected categories,
+  nothing else (settings, feed management, read status, starred entries, tags) is exposed. The address of the page
+  contains a random token instead of the user name, a new address can be generated at any time to revoke the previous
+  one.
 
 ## [7.3.2]
 
