@@ -58,4 +58,7 @@ public class User extends AbstractModel {
 
     @Column(name = "public_page_uncategorized", nullable = false)
     private boolean publicPageUncategorized;
+
+    @Column(name = "public_page_token", length = 64, unique = true)
+    private String publicPageToken;
 }

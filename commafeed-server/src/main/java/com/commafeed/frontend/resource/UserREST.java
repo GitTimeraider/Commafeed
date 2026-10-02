@@ -24,6 +24,7 @@ import com.commafeed.backend.model.UserSettings.ReadingOrder;
 import com.commafeed.backend.model.UserSettings.ScrollMode;
 import com.commafeed.backend.service.MailService;
 import com.commafeed.backend.service.PasswordEncryptionService;
+import com.commafeed.backend.service.PublicPageService;
 import com.commafeed.backend.service.PushNotificationService;
 import com.commafeed.backend.service.UserService;
 import com.commafeed.backend.service.db.DatabaseStartupService;
@@ -278,10 +279,16 @@ public class UserREST {
             description = "Retrieve the settings of the public, read-only page of the user")
     public PublicPageSettings getPublicPageSettings() {
         User user = authenticationContext.getCurrentUser();
+        if (user.isPublicPageEnabled() && user.getPublicPageToken() == null) {
+            // the public page was enabled before tokens were introduced
+            user.setPublicPageToken(PublicPageService.generateToken());
+            userDAO.merge(user);
+        }
 
         PublicPageSettings settings = new PublicPageSettings();
         settings.setEnabled(user.isPublicPageEnabled());
         settings.setShowUncategorized(user.isPublicPageUncategorized());
+        settings.setToken(user.getPublicPageToken());
         settings.setCategoryIds(
                 feedCategoryDAO.findAll(user).stream()
                         .filter(FeedCategory::isPublicCategory)
@@ -303,6 +310,9 @@ public class UserREST {
         User user = authenticationContext.getCurrentUser();
         user.setPublicPageEnabled(settings.isEnabled());
         user.setPublicPageUncategorized(settings.isShowUncategorized());
+        if (user.getPublicPageToken() == null) {
+            user.setPublicPageToken(PublicPageService.generateToken());
+        }
         userDAO.merge(user);
 
         Set<Long> categoryIds =
@@ -313,6 +323,22 @@ public class UserREST {
             category.setPublicCategory(categoryIds.contains(category.getId()));
         }
 
+        return Response.ok().build();
+    }
+
+    @Path("/publicPage/regenerateToken")
+    @POST
+    // no request body
+    @Consumes(MediaType.WILDCARD)
+    @Transactional
+    @Operation(
+            summary = "Generate a new public page address",
+            description =
+                    "Generate a new secret token for the address of the public page. The previous address stops working.")
+    public Response regeneratePublicPageToken() {
+        User user = authenticationContext.getCurrentUser();
+        user.setPublicPageToken(PublicPageService.generateToken());
+        userDAO.merge(user);
         return Response.ok().build();
     }
 

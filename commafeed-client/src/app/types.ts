@@ -134,6 +134,7 @@ export interface GetEntriesPaginatedRequest extends GetEntriesRequest {
 export interface PublicPageSettings {
     enabled: boolean
     showUncategorized: boolean
+    token?: string
     categoryIds: number[]
 }
 

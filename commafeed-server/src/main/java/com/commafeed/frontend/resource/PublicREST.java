@@ -41,14 +41,12 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.resteasy.reactive.Cache;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 /** Read-only, unauthenticated access to the categories a user chose to make public. */
-@Path("/rest/public/{userName}")
+@Path("/rest/public/{token}")
 @PermitAll
 @Produces(MediaType.APPLICATION_JSON)
 @RequiredArgsConstructor
@@ -85,14 +83,14 @@ public class PublicREST {
             })
     @APIResponse(responseCode = "404", description = "public page not found")
     public PublicCategory getTree(
-            @Parameter(description = "user name", required = true) @PathParam("userName")
-                    String userName) {
-        User user = findUser(userName);
+            @Parameter(description = "public page token", required = true) @PathParam("token")
+                    String token) {
+        User user = findUser(token);
         PublicContent content = publicPageService.getPublicContent(user);
 
         PublicCategory root = buildCategory(user, null, content);
         root.setId(ALL);
-        root.setName(user.getName());
+        root.setName(ALL);
         return root;
     }
 
@@ -111,8 +109,8 @@ public class PublicREST {
             })
     @APIResponse(responseCode = "404", description = "public page, category or feed not found")
     public Entries getEntries(
-            @Parameter(description = "user name", required = true) @PathParam("userName")
-                    String userName,
+            @Parameter(description = "public page token", required = true) @PathParam("token")
+                    String token,
             @Parameter(description = "'category' or 'feed'")
                     @QueryParam("type")
                     @DefaultValue("category")
@@ -127,7 +125,7 @@ public class PublicREST {
                     @DefaultValue("20")
                     @QueryParam("limit")
                     int limit) {
-        User user = findUser(userName);
+        User user = findUser(token);
         PublicContent content = publicPageService.getPublicContent(user);
 
         offset = Math.max(0, offset);
@@ -141,7 +139,7 @@ public class PublicREST {
             name = sub.getTitle();
             subs = List.of(sub);
         } else if (ALL.equals(id) || StringUtils.isBlank(id)) {
-            name = user.getName();
+            name = ALL;
             subs = content.publicSubscriptions();
         } else {
             FeedCategory category =
@@ -191,10 +189,10 @@ public class PublicREST {
     @Transactional
     @Operation(summary = "Fetch a public feed's icon")
     public Response getFavicon(
-            @Parameter(description = "user name", required = true) @PathParam("userName")
-                    String userName,
+            @Parameter(description = "public page token", required = true) @PathParam("token")
+                    String token,
             @Parameter(description = "subscription id", required = true) @PathParam("id") Long id) {
-        User user = findUser(userName);
+        User user = findUser(token);
         FeedSubscription subscription =
                 publicPageService
                         .getPublicContent(user)
@@ -213,8 +211,8 @@ public class PublicREST {
         return Response.ok(icon.icon(), icon.mediaType()).build();
     }
 
-    private User findUser(String userName) {
-        return publicPageService.findPublicPageUser(userName).orElseThrow(NotFoundException::new);
+    private User findUser(String token) {
+        return publicPageService.findPublicPageUser(token).orElseThrow(NotFoundException::new);
     }
 
     private static Long parseId(String id) {
@@ -276,8 +274,7 @@ public class PublicREST {
     }
 
     private static String getFaviconUrl(User user, FeedSubscription subscription) {
-        String encodedUserName =
-                URLEncoder.encode(user.getName(), StandardCharsets.UTF_8).replace("+", "%20");
-        return "rest/public/" + encodedUserName + "/favicon/" + subscription.getId();
+        // the token only contains hex characters, no encoding is needed
+        return "rest/public/" + user.getPublicPageToken() + "/favicon/" + subscription.getId();
     }
 }

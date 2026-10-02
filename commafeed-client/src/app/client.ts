@@ -123,11 +123,12 @@ export const client = {
         deleteProfile: async () => await axiosInstance.post("user/profile/deleteAccount"),
         getPublicPageSettings: async () => await axiosInstance.get<PublicPageSettings>("user/publicPage"),
         savePublicPageSettings: async (req: PublicPageSettings) => await axiosInstance.post("user/publicPage", req),
+        regeneratePublicPageToken: async () => await axiosInstance.post("user/publicPage/regenerateToken"),
     },
     publicPage: {
-        getTree: async (userName: string) => await publicAxiosInstance.get<PublicCategory>(`${encodeURIComponent(userName)}/tree`),
-        getEntries: async (userName: string, req: GetPublicEntriesRequest) =>
-            await publicAxiosInstance.get<Entries>(`${encodeURIComponent(userName)}/entries`, { params: req }),
+        getTree: async (token: string) => await publicAxiosInstance.get<PublicCategory>(`${encodeURIComponent(token)}/tree`),
+        getEntries: async (token: string, req: GetPublicEntriesRequest) =>
+            await publicAxiosInstance.get<Entries>(`${encodeURIComponent(token)}/entries`, { params: req }),
     },
     server: {
         getServerInfos: async () => await axiosInstance.get<ServerInfo>("server/get"),
