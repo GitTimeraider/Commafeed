@@ -1,0 +1,16 @@
+name: Rebuild Docker image
+permissions:
+  contents: read
+
+# Manually rebuilds and publishes the Docker image for the selected branch without needing a new commit, e.g. to pick
+# up updated Debian packages (ca-certificates) in the image. Run it from the Actions tab: "Rebuild Docker image" →
+# "Run workflow" → pick the branch (master also updates the `latest` tag).
+on:
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+      packages: write
