@@ -52,11 +52,13 @@ public class MfaService {
     public static final Duration RESET_CODE_VALIDITY = Duration.ofMinutes(15);
     private static final int MAX_RESET_CODE_ATTEMPTS = 5;
     private static final String RESET_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    private static final SecureRandom RANDOM = new SecureRandom();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final UserDAO userDAO;
     private final UserPasskeyDAO userPasskeyDAO;
+
+    // not static: a SecureRandom must not be created at native image build time
+    private final SecureRandom random = new SecureRandom();
 
     // user id -> TOTP secret being set up
     private final Cache<Long, String> pendingTotpSecrets =
@@ -271,7 +273,7 @@ public class MfaService {
             if (i == 5) {
                 code.append('-');
             }
-            code.append(RESET_CODE_ALPHABET.charAt(RANDOM.nextInt(RESET_CODE_ALPHABET.length())));
+            code.append(RESET_CODE_ALPHABET.charAt(random.nextInt(RESET_CODE_ALPHABET.length())));
         }
         resetCodes.put(
                 user.getId(), new ResetCode(hashResetCode(code.toString()), new AtomicInteger()));
@@ -397,9 +399,9 @@ public class MfaService {
         }
     }
 
-    private static String randomChallenge() {
+    private String randomChallenge() {
         byte[] bytes = new byte[32];
-        RANDOM.nextBytes(bytes);
+        random.nextBytes(bytes);
         return WebAuthn.base64UrlEncode(bytes);
     }
 

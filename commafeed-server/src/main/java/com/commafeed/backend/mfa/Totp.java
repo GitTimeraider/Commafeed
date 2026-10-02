@@ -28,7 +28,6 @@ public final class Totp {
 
     private static final int SECRET_LENGTH_BYTES = 20;
     private static final String BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-    private static final SecureRandom RANDOM = new SecureRandom();
 
     private Totp() {}
 
@@ -37,7 +36,8 @@ public final class Totp {
      */
     public static String generateSecret() {
         byte[] bytes = new byte[SECRET_LENGTH_BYTES];
-        RANDOM.nextBytes(bytes);
+        // not a static field: a SecureRandom must not be created at native image build time
+        new SecureRandom().nextBytes(bytes);
         return base32Encode(bytes);
     }
 
