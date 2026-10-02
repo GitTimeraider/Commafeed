@@ -69,6 +69,7 @@ msgstr "管理员用户名"
 #: src/components/sidebar/Tree.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedEntriesPage.tsx
+#: src/pages/PublicPage.tsx
 msgid "All"
 msgstr "全部"
 
@@ -171,6 +172,7 @@ msgstr "构建过滤表达式以指示您想阅读的内容。不匹配的条目
 #: src/components/MarkAllAsReadConfirmationDialog.tsx
 #: src/components/settings/CustomCodeSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/PushNotificationSettings.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
@@ -178,6 +180,10 @@ msgstr "构建过滤表达式以指示您想阅读的内容。不匹配的条目
 #: src/pages/app/TagDetailsPage.tsx
 msgid "Cancel"
 msgstr "取消"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Categories shown on the public page"
+msgstr ""
 
 #: src/components/content/add/AddCategory.tsx
 #: src/components/content/add/Subscribe.tsx
@@ -241,6 +247,18 @@ msgstr "确认密码"
 #: src/pages/auth/PasswordResetPage.tsx
 msgid "Confirm Password"
 msgstr "确认密码"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Copied"
+msgstr ""
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Copy"
+msgstr ""
+
+#: src/pages/PublicPage.tsx
+msgid "Could not load entries."
+msgstr ""
 
 #: src/components/header/ProfileMenu.tsx
 msgid "Cozy"
@@ -350,6 +368,10 @@ msgstr "电子邮件地址"
 msgid "Edit user"
 msgstr "编辑用户"
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Enable public page"
+msgstr ""
+
 #: src/components/admin/UserEdit.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Enabled"
@@ -396,6 +418,10 @@ msgstr "信息流名称"
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Feed URL"
 msgstr "信息流网址"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Feeds without a category"
+msgstr ""
 
 #: src/components/header/ProfileMenu.tsx
 msgid "Fetch all my feeds now"
@@ -554,6 +580,10 @@ msgstr "链接"
 msgid "Link to the documentation"
 msgstr "文档链接"
 
+#: src/pages/PublicPage.tsx
+msgid "Load more"
+msgstr ""
+
 #: src/hooks/useAppLoading.ts
 msgid "Loading profile..."
 msgstr "正在加载配置文件..."
@@ -676,6 +706,10 @@ msgstr "下次刷新"
 msgid "Next unread item bookmarklet"
 msgstr "下一个未读项目书签"
 
+#: src/pages/PublicPage.tsx
+msgid "No entries"
+msgstr ""
+
 #: src/pages/app/FeedEntriesPage.tsx
 msgid "No more entries"
 msgstr "没有更多条目"
@@ -708,9 +742,17 @@ msgstr "在移动端，显示屏幕底部的操作按钮"
 msgid "Only applies to compact, cozy and detailed modes"
 msgstr "仅适用于紧凑、宽松和详细模式"
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Only the feeds that are directly in a selected category are shown. Subcategories have to be selected individually."
+msgstr ""
+
 #: src/pages/ErrorPage.tsx
 msgid "Oops!"
 msgstr "哎呀！"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Open"
+msgstr ""
 
 #: src/components/header/Header.tsx
 msgid "Open CommaFeed"
@@ -825,6 +867,18 @@ msgstr "主颜色"
 msgid "Profile"
 msgstr "配置文件"
 
+#: src/pages/app/SettingsPage.tsx
+msgid "Public page"
+msgstr ""
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Public page address"
+msgstr ""
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Public page settings saved."
+msgstr ""
+
 #: src/components/settings/PushNotificationSettings.tsx
 msgid "Push notification service"
 msgstr "推送通知服务"
@@ -882,11 +936,16 @@ msgstr "右键单击"
 #: src/components/admin/UserEdit.tsx
 #: src/components/settings/CustomCodeSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/PushNotificationSettings.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Save"
 msgstr "保存"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Save the settings before sharing this address."
+msgstr ""
 
 #: src/components/settings/DisplaySettings.tsx
 msgid "Scroll selected entry to the top of the page"
@@ -1063,6 +1122,10 @@ msgstr "测试"
 msgid "Test notification sent successfully."
 msgstr "测试通知发送成功。"
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "The public page is a read-only page that anyone can open without logging in. It only shows the entries of the categories selected below. Nothing else (settings, feed management, read status, starred entries, tags, ...) is accessible from it."
+msgstr ""
+
 #: src/components/content/add/Subscribe.tsx
 msgid "The URL for the feed you want to subscribe to. You can also use the website's url directly and CommaFeed will try to find the feed in the page."
 msgstr "您要订阅的信息流的网址。您也可以直接使用网站的网址，CommaFeed 会尝试在页面中找到信息流。"
@@ -1079,6 +1142,10 @@ msgstr "此信息流具有无法编辑且未应用的旧版过滤器。请使用
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "这是您的 API 密钥。它可用于某些只读 API 操作，并授予对 Fever API 和 Google Reader API 的访问权限。使用页面底部的表单生成新的 API 密钥"
+
+#: src/pages/PublicPage.tsx
+msgid "This public page does not exist or is not enabled."
+msgstr ""
 
 #: src/components/settings/DisplaySettings.tsx
 msgid "This setting can cause scrolling issues on some browsers (e.g. Safari)"
@@ -1157,6 +1224,10 @@ msgstr "用户名或密码错误"
 #: src/components/settings/DisplaySettings.tsx
 msgid "Yellow"
 msgstr "黄"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "You don't have any categories yet."
+msgstr ""
 
 #: src/pages/app/FeedEntriesPage.tsx
 msgid "You don't have any subscriptions yet. Why not try adding one by clicking on the + sign at the top of the page?"

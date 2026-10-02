@@ -52,4 +52,10 @@ public class User extends AbstractModel {
     @Column private Instant recoverPasswordTokenDate;
 
     @Column private Instant lastForceRefresh;
+
+    @Column(name = "public_page_enabled", nullable = false)
+    private boolean publicPageEnabled;
+
+    @Column(name = "public_page_uncategorized", nullable = false)
+    private boolean publicPageUncategorized;
 }

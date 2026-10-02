@@ -15,6 +15,7 @@ import type {
     FeedInfoRequest,
     FeedModificationRequest,
     GetEntriesPaginatedRequest,
+    GetPublicEntriesRequest,
     IDRequest,
     InitialSetupRequest,
     LoginRequest,
@@ -24,6 +25,8 @@ import type {
     PasswordResetConfirmationRequest,
     PasswordResetRequest,
     ProfileModificationRequest,
+    PublicCategory,
+    PublicPageSettings,
     PushNotificationSettings,
     RegistrationRequest,
     ServerInfo,
@@ -40,6 +43,9 @@ const applicationErrorMessages = {
 } satisfies Record<CommaFeedExceptionType, MessageDescriptor>
 
 const axiosInstance = axios.create({ baseURL: "./rest", withCredentials: true })
+
+// the public page is accessible without being logged in, don't redirect to the login page on authentication errors
+const publicAxiosInstance = axios.create({ baseURL: "./rest/public", withCredentials: false })
 axiosInstance.interceptors.response.use(
     response => response,
     error => {
@@ -115,6 +121,13 @@ export const client = {
         getProfile: async () => await axiosInstance.get<UserModel>("user/profile"),
         saveProfile: async (req: ProfileModificationRequest) => await axiosInstance.post("user/profile", req),
         deleteProfile: async () => await axiosInstance.post("user/profile/deleteAccount"),
+        getPublicPageSettings: async () => await axiosInstance.get<PublicPageSettings>("user/publicPage"),
+        savePublicPageSettings: async (req: PublicPageSettings) => await axiosInstance.post("user/publicPage", req),
+    },
+    publicPage: {
+        getTree: async (userName: string) => await publicAxiosInstance.get<PublicCategory>(`${encodeURIComponent(userName)}/tree`),
+        getEntries: async (userName: string, req: GetPublicEntriesRequest) =>
+            await publicAxiosInstance.get<Entries>(`${encodeURIComponent(userName)}/entries`, { params: req }),
     },
     server: {
         getServerInfos: async () => await axiosInstance.get<ServerInfo>("server/get"),

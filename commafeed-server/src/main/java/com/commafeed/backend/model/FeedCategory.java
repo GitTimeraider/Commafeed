@@ -30,4 +30,7 @@ public class FeedCategory extends AbstractModel {
     private boolean collapsed;
 
     private int position;
+
+    @Column(name = "public_category", nullable = false)
+    private boolean publicCategory;
 }

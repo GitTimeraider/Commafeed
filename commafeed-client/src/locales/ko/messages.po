@@ -69,6 +69,7 @@ msgstr "관리자 사용자 이름"
 #: src/components/sidebar/Tree.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedEntriesPage.tsx
+#: src/pages/PublicPage.tsx
 msgid "All"
 msgstr "전체"
 
@@ -171,6 +172,7 @@ msgstr "읽고 싶은 항목을 지정하기 위한 필터 표현식을 작성�
 #: src/components/MarkAllAsReadConfirmationDialog.tsx
 #: src/components/settings/CustomCodeSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/PushNotificationSettings.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
@@ -178,6 +180,10 @@ msgstr "읽고 싶은 항목을 지정하기 위한 필터 표현식을 작성�
 #: src/pages/app/TagDetailsPage.tsx
 msgid "Cancel"
 msgstr "취소"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Categories shown on the public page"
+msgstr ""
 
 #: src/components/content/add/AddCategory.tsx
 #: src/components/content/add/Subscribe.tsx
@@ -241,6 +247,18 @@ msgstr "비밀번호 확인"
 #: src/pages/auth/PasswordResetPage.tsx
 msgid "Confirm Password"
 msgstr "비밀번호 확인"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Copied"
+msgstr ""
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Copy"
+msgstr ""
+
+#: src/pages/PublicPage.tsx
+msgid "Could not load entries."
+msgstr ""
 
 #: src/components/header/ProfileMenu.tsx
 msgid "Cozy"
@@ -350,6 +368,10 @@ msgstr "이메일 주소"
 msgid "Edit user"
 msgstr "사용자 편집"
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Enable public page"
+msgstr ""
+
 #: src/components/admin/UserEdit.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Enabled"
@@ -396,6 +418,10 @@ msgstr "피드 이름"
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Feed URL"
 msgstr "피드 URL"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Feeds without a category"
+msgstr ""
 
 #: src/components/header/ProfileMenu.tsx
 msgid "Fetch all my feeds now"
@@ -554,6 +580,10 @@ msgstr "링크"
 msgid "Link to the documentation"
 msgstr "문서 링크"
 
+#: src/pages/PublicPage.tsx
+msgid "Load more"
+msgstr ""
+
 #: src/hooks/useAppLoading.ts
 msgid "Loading profile..."
 msgstr "프로필 로드 중..."
@@ -676,6 +706,10 @@ msgstr "다음 새로고침"
 msgid "Next unread item bookmarklet"
 msgstr "읽지 않은 다음 항목 북마크"
 
+#: src/pages/PublicPage.tsx
+msgid "No entries"
+msgstr ""
+
 #: src/pages/app/FeedEntriesPage.tsx
 msgid "No more entries"
 msgstr "더 이상 항목이 없습니다"
@@ -708,9 +742,17 @@ msgstr "모바일에서는 화면 하단에 작업 버튼 표시"
 msgid "Only applies to compact, cozy and detailed modes"
 msgstr "컴팩트, 코지, 상세 모드에만 적용됩니다."
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Only the feeds that are directly in a selected category are shown. Subcategories have to be selected individually."
+msgstr ""
+
 #: src/pages/ErrorPage.tsx
 msgid "Oops!"
 msgstr "앗!"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Open"
+msgstr ""
 
 #: src/components/header/Header.tsx
 msgid "Open CommaFeed"
@@ -825,6 +867,18 @@ msgstr "기본 색상"
 msgid "Profile"
 msgstr "프로필"
 
+#: src/pages/app/SettingsPage.tsx
+msgid "Public page"
+msgstr ""
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Public page address"
+msgstr ""
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Public page settings saved."
+msgstr ""
+
 #: src/components/settings/PushNotificationSettings.tsx
 msgid "Push notification service"
 msgstr "푸시 알림 서비스"
@@ -882,11 +936,16 @@ msgstr "오른쪽 클릭"
 #: src/components/admin/UserEdit.tsx
 #: src/components/settings/CustomCodeSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/PushNotificationSettings.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Save"
 msgstr "저장"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Save the settings before sharing this address."
+msgstr ""
 
 #: src/components/settings/DisplaySettings.tsx
 msgid "Scroll selected entry to the top of the page"
@@ -1063,6 +1122,10 @@ msgstr "테스트"
 msgid "Test notification sent successfully."
 msgstr "테스트 알림이 성공적으로 전송되었습니다."
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "The public page is a read-only page that anyone can open without logging in. It only shows the entries of the categories selected below. Nothing else (settings, feed management, read status, starred entries, tags, ...) is accessible from it."
+msgstr ""
+
 #: src/components/content/add/Subscribe.tsx
 msgid "The URL for the feed you want to subscribe to. You can also use the website's url directly and CommaFeed will try to find the feed in the page."
 msgstr "구독하려는 피드의 URL입니다. "
@@ -1079,6 +1142,10 @@ msgstr "이 피드에는 편집할 수 없고 적용되지 않는 기존 필터�
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "이것은 회원님의 API 키입니다. 일부 읽기 전용 API 작업에 사용할 수 있으며 Fever API 및 Google Reader API에 대한 액세스 권한을 부여합니다. 새 API 키를 생성하려면 페이지 하단의 양식을 사용하십시오"
+
+#: src/pages/PublicPage.tsx
+msgid "This public page does not exist or is not enabled."
+msgstr ""
 
 #: src/components/settings/DisplaySettings.tsx
 msgid "This setting can cause scrolling issues on some browsers (e.g. Safari)"
@@ -1157,6 +1224,10 @@ msgstr ""
 #: src/components/settings/DisplaySettings.tsx
 msgid "Yellow"
 msgstr "옐로우"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "You don't have any categories yet."
+msgstr ""
 
 #: src/pages/app/FeedEntriesPage.tsx
 msgid "You don't have any subscriptions yet. Why not try adding one by clicking on the + sign at the top of the page?"

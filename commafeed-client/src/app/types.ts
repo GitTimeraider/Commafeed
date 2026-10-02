@@ -131,6 +131,35 @@ export interface GetEntriesPaginatedRequest extends GetEntriesRequest {
     limit: number
 }
 
+export interface PublicPageSettings {
+    enabled: boolean
+    showUncategorized: boolean
+    categoryIds: number[]
+}
+
+export interface PublicSubscription {
+    id: number
+    name: string
+    feedLink: string
+    iconUrl: string
+}
+
+export interface PublicCategory {
+    id: string
+    name: string
+    children: PublicCategory[]
+    feeds: PublicSubscription[]
+}
+
+export type PublicEntriesSourceType = "category" | "feed"
+
+export interface GetPublicEntriesRequest {
+    type: PublicEntriesSourceType
+    id: string
+    offset: number
+    limit: number
+}
+
 export interface IDRequest {
     id: number
 }

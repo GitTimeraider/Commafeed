@@ -69,6 +69,7 @@ msgstr "Meno správcu"
 #: src/components/sidebar/Tree.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedEntriesPage.tsx
+#: src/pages/PublicPage.tsx
 msgid "All"
 msgstr "Všetky"
 
@@ -171,6 +172,7 @@ msgstr "Vytvorte výraz filtra na určenie toho, čo chcete čítať. Záznamy, 
 #: src/components/MarkAllAsReadConfirmationDialog.tsx
 #: src/components/settings/CustomCodeSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/PushNotificationSettings.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
@@ -178,6 +180,10 @@ msgstr "Vytvorte výraz filtra na určenie toho, čo chcete čítať. Záznamy, 
 #: src/pages/app/TagDetailsPage.tsx
 msgid "Cancel"
 msgstr "Zrušiť"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Categories shown on the public page"
+msgstr ""
 
 #: src/components/content/add/AddCategory.tsx
 #: src/components/content/add/Subscribe.tsx
@@ -241,6 +247,18 @@ msgstr "Potvrďte heslo"
 #: src/pages/auth/PasswordResetPage.tsx
 msgid "Confirm Password"
 msgstr "Potvrdiť heslo"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Copied"
+msgstr ""
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Copy"
+msgstr ""
+
+#: src/pages/PublicPage.tsx
+msgid "Could not load entries."
+msgstr ""
 
 #: src/components/header/ProfileMenu.tsx
 msgid "Cozy"
@@ -350,6 +368,10 @@ msgstr "E-mailová adresa"
 msgid "Edit user"
 msgstr "Upravte používateľa"
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Enable public page"
+msgstr ""
+
 #: src/components/admin/UserEdit.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Enabled"
@@ -396,6 +418,10 @@ msgstr "Názov informačného kanála"
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Feed URL"
 msgstr "URL informačného kanála"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Feeds without a category"
+msgstr ""
 
 #: src/components/header/ProfileMenu.tsx
 msgid "Fetch all my feeds now"
@@ -554,6 +580,10 @@ msgstr "Odkaz"
 msgid "Link to the documentation"
 msgstr "Odkaz na dokumentáciu"
 
+#: src/pages/PublicPage.tsx
+msgid "Load more"
+msgstr ""
+
 #: src/hooks/useAppLoading.ts
 msgid "Loading profile..."
 msgstr "Načítavam profil..."
@@ -676,6 +706,10 @@ msgstr "Ďalšia aktualizácia"
 msgid "Next unread item bookmarklet"
 msgstr "Ďalšia neprečítaná položka bookmarklet"
 
+#: src/pages/PublicPage.tsx
+msgid "No entries"
+msgstr ""
+
 #: src/pages/app/FeedEntriesPage.tsx
 msgid "No more entries"
 msgstr "Žiadne ďalšie záznamy"
@@ -708,9 +742,17 @@ msgstr "V mobile zobrazovať tlačidlá akcií v spodnej časti obrazovky"
 msgid "Only applies to compact, cozy and detailed modes"
 msgstr "Platí len pre kompaktný, útulný a detailný režim"
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Only the feeds that are directly in a selected category are shown. Subcategories have to be selected individually."
+msgstr ""
+
 #: src/pages/ErrorPage.tsx
 msgid "Oops!"
 msgstr "Ojoj!"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Open"
+msgstr ""
 
 #: src/components/header/Header.tsx
 msgid "Open CommaFeed"
@@ -825,6 +867,18 @@ msgstr "Primárna farba"
 msgid "Profile"
 msgstr "Profil"
 
+#: src/pages/app/SettingsPage.tsx
+msgid "Public page"
+msgstr ""
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Public page address"
+msgstr ""
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Public page settings saved."
+msgstr ""
+
 #: src/components/settings/PushNotificationSettings.tsx
 msgid "Push notification service"
 msgstr "Služba push notifikácií"
@@ -882,11 +936,16 @@ msgstr "Kliknutie pravým tlačidlom"
 #: src/components/admin/UserEdit.tsx
 #: src/components/settings/CustomCodeSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/PushNotificationSettings.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Save"
 msgstr "Uložiť"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Save the settings before sharing this address."
+msgstr ""
 
 #: src/components/settings/DisplaySettings.tsx
 msgid "Scroll selected entry to the top of the page"
@@ -1063,6 +1122,10 @@ msgstr "Test"
 msgid "Test notification sent successfully."
 msgstr "Testovacie oznámenie bolo úspešne odoslané."
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "The public page is a read-only page that anyone can open without logging in. It only shows the entries of the categories selected below. Nothing else (settings, feed management, read status, starred entries, tags, ...) is accessible from it."
+msgstr ""
+
 #: src/components/content/add/Subscribe.tsx
 msgid "The URL for the feed you want to subscribe to. You can also use the website's url directly and CommaFeed will try to find the feed in the page."
 msgstr "URL zdroja, na odber ktorého sa chcete prihlásiť. "
@@ -1079,6 +1142,10 @@ msgstr "Tento kanál má starší filter, ktorý sa nedá upravovať a nepouží
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "Toto je váš kľúč API. Môže sa použiť pre niektoré operácie API iba na čítanie a udeľuje prístup k Fever API a Google Reader API. Na vygenerovanie nového kľúča API použite formulár v spodnej časti stránky"
+
+#: src/pages/PublicPage.tsx
+msgid "This public page does not exist or is not enabled."
+msgstr ""
 
 #: src/components/settings/DisplaySettings.tsx
 msgid "This setting can cause scrolling issues on some browsers (e.g. Safari)"
@@ -1157,6 +1224,10 @@ msgstr ""
 #: src/components/settings/DisplaySettings.tsx
 msgid "Yellow"
 msgstr "Žltá"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "You don't have any categories yet."
+msgstr ""
 
 #: src/pages/app/FeedEntriesPage.tsx
 msgid "You don't have any subscriptions yet. Why not try adding one by clicking on the + sign at the top of the page?"

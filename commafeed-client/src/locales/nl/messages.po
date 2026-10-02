@@ -69,6 +69,7 @@ msgstr "Gebruikersnaam beheerder"
 #: src/components/sidebar/Tree.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedEntriesPage.tsx
+#: src/pages/PublicPage.tsx
 msgid "All"
 msgstr "Alles"
 
@@ -171,6 +172,7 @@ msgstr "Maak een filterexpressie om aan te geven wat u wilt lezen. Items die nie
 #: src/components/MarkAllAsReadConfirmationDialog.tsx
 #: src/components/settings/CustomCodeSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/PushNotificationSettings.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
@@ -178,6 +180,10 @@ msgstr "Maak een filterexpressie om aan te geven wat u wilt lezen. Items die nie
 #: src/pages/app/TagDetailsPage.tsx
 msgid "Cancel"
 msgstr "Annuleren"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Categories shown on the public page"
+msgstr ""
 
 #: src/components/content/add/AddCategory.tsx
 #: src/components/content/add/Subscribe.tsx
@@ -241,6 +247,18 @@ msgstr "Bevestig wachtwoord"
 #: src/pages/auth/PasswordResetPage.tsx
 msgid "Confirm Password"
 msgstr "Bevestig wachtwoord"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Copied"
+msgstr ""
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Copy"
+msgstr ""
+
+#: src/pages/PublicPage.tsx
+msgid "Could not load entries."
+msgstr ""
 
 #: src/components/header/ProfileMenu.tsx
 msgid "Cozy"
@@ -350,6 +368,10 @@ msgstr "E-mailadres"
 msgid "Edit user"
 msgstr "Gebruiker bewerken"
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Enable public page"
+msgstr ""
+
 #: src/components/admin/UserEdit.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Enabled"
@@ -396,6 +418,10 @@ msgstr "Feednaam"
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Feed URL"
 msgstr "Feed-URL"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Feeds without a category"
+msgstr ""
 
 #: src/components/header/ProfileMenu.tsx
 msgid "Fetch all my feeds now"
@@ -554,6 +580,10 @@ msgstr "Link"
 msgid "Link to the documentation"
 msgstr "Link naar de documentatie"
 
+#: src/pages/PublicPage.tsx
+msgid "Load more"
+msgstr ""
+
 #: src/hooks/useAppLoading.ts
 msgid "Loading profile..."
 msgstr "Bezig met laden van profiel..."
@@ -676,6 +706,10 @@ msgstr "Volgende verversen"
 msgid "Next unread item bookmarklet"
 msgstr "Bookmarklet volgende ongelezen item"
 
+#: src/pages/PublicPage.tsx
+msgid "No entries"
+msgstr ""
+
 #: src/pages/app/FeedEntriesPage.tsx
 msgid "No more entries"
 msgstr "Geen inzendingen meer"
@@ -708,9 +742,17 @@ msgstr "Op mobiel actieknoppen onderaan het scherm tonen"
 msgid "Only applies to compact, cozy and detailed modes"
 msgstr "Geldt alleen voor compacte, gezellige en gedetailleerde modi"
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Only the feeds that are directly in a selected category are shown. Subcategories have to be selected individually."
+msgstr ""
+
 #: src/pages/ErrorPage.tsx
 msgid "Oops!"
 msgstr "Oeps!"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Open"
+msgstr ""
 
 #: src/components/header/Header.tsx
 msgid "Open CommaFeed"
@@ -825,6 +867,18 @@ msgstr "Primaire kleur"
 msgid "Profile"
 msgstr "Profiel"
 
+#: src/pages/app/SettingsPage.tsx
+msgid "Public page"
+msgstr ""
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Public page address"
+msgstr ""
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Public page settings saved."
+msgstr ""
+
 #: src/components/settings/PushNotificationSettings.tsx
 msgid "Push notification service"
 msgstr "Push-notificatieservice"
@@ -882,11 +936,16 @@ msgstr "Rechtermuisklik"
 #: src/components/admin/UserEdit.tsx
 #: src/components/settings/CustomCodeSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/PushNotificationSettings.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Save"
 msgstr "Opslaan"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Save the settings before sharing this address."
+msgstr ""
 
 #: src/components/settings/DisplaySettings.tsx
 msgid "Scroll selected entry to the top of the page"
@@ -1063,6 +1122,10 @@ msgstr "Test"
 msgid "Test notification sent successfully."
 msgstr "Testnotificatie succesvol verzonden."
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "The public page is a read-only page that anyone can open without logging in. It only shows the entries of the categories selected below. Nothing else (settings, feed management, read status, starred entries, tags, ...) is accessible from it."
+msgstr ""
+
 #: src/components/content/add/Subscribe.tsx
 msgid "The URL for the feed you want to subscribe to. You can also use the website's url directly and CommaFeed will try to find the feed in the page."
 msgstr "De URL voor de feed waarop u zich wilt abonneren. "
@@ -1079,6 +1142,10 @@ msgstr "Deze feed heeft een legacy-filter dat niet kan worden bewerkt en niet wo
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "Dit is uw API-sleutel. Deze kan worden gebruikt voor sommige alleen-lezen API-bewerkingen en geeft toegang tot de Fever API en de Google Reader API. Gebruik het formulier onderaan de pagina om een nieuwe API-sleutel te genereren"
+
+#: src/pages/PublicPage.tsx
+msgid "This public page does not exist or is not enabled."
+msgstr ""
 
 #: src/components/settings/DisplaySettings.tsx
 msgid "This setting can cause scrolling issues on some browsers (e.g. Safari)"
@@ -1157,6 +1224,10 @@ msgstr ""
 #: src/components/settings/DisplaySettings.tsx
 msgid "Yellow"
 msgstr "Geel"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "You don't have any categories yet."
+msgstr ""
 
 #: src/pages/app/FeedEntriesPage.tsx
 msgid "You don't have any subscriptions yet. Why not try adding one by clicking on the + sign at the top of the page?"
