@@ -309,7 +309,7 @@ export function PublicPage() {
         <AppShell
             header={{ height: Constants.layout.headerHeight }}
             navbar={{ width: 320, breakpoint: Constants.layout.mobileBreakpointName, collapsed: { mobile: !navbarOpened } }}
-            padding="md"
+            padding={{ base: 6, [Constants.layout.mobileBreakpointName]: "md" }}
         >
             <AppShell.Header>
                 <Group h="100%" px="md" wrap="nowrap">
@@ -335,9 +335,8 @@ export function PublicPage() {
             </AppShell.Navbar>
 
             <AppShell.Main>
-                <Container size={Constants.layout.entryMaxWidth + 100} px={0}>
-                    <PublicEntries token={token} type={type} id={id} title={title} />
-                </Container>
+                {/* same as the application: entries use the full width, only the content of an entry has a maximum width */}
+                <PublicEntries token={token} type={type} id={id} title={title} />
             </AppShell.Main>
         </AppShell>
     )
