@@ -1,5 +1,6 @@
 # Changelog
 
+
 ## [7.3.2]
 
 - Prevent users from starring/tagging entries that are not theirs and subsequently reading them (GHSA-prfv-88mm-5gpg)
