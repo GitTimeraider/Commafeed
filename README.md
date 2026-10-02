@@ -237,6 +237,11 @@ port 8083
 - **On pull requests**: runs the server and client unit tests and builds the image, without publishing anything.
 - **Manually**: **Actions** tab → **ci** → **Run workflow**.
 
+To publish a fresh image without changing anything in the repository (for example to pick up updated Debian packages
+in the image), open the **Actions** tab on GitHub, choose **Rebuild Docker image** in the left sidebar, click
+**Run workflow**, pick the branch (`master` also updates `latest`) and confirm. It runs the same build as a push and
+re-publishes `<branch>` and `<branch>-<short-sha>`.
+
 Every branch push leaves images behind in the registry. To clean them up, open **Packages** → `commafeed` on this
 repository's GitHub page, then **Package settings** / the version list, and delete versions you no longer need. Don't
 delete the version currently tagged `latest`, or one you've pinned on your server.

@@ -8,6 +8,8 @@ on:
       - '**.md'
   pull_request:
   workflow_dispatch:
+  # Lets rebuild-image.yml reuse this exact build; github.event_name is then the caller's (workflow_dispatch).
+  workflow_call:
 
 env:
   JAVA_VERSION: 25
