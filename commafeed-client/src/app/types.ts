@@ -319,6 +319,7 @@ export interface ServerInfo {
     initialSetupRequired: boolean
     minimumPasswordLength: number
     pushNotificationsEnabled: boolean
+    accessRestricted: boolean
 }
 
 export interface SharingSettings {

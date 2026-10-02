@@ -818,6 +818,10 @@ msgstr "Записей больше нет"
 msgid "No sharing options available."
 msgstr "Нет доступных вариантов для обмена."
 
+#: src/pages/AccessRestrictedPage.tsx
+msgid "Not available from your network"
+msgstr ""
+
 #: src/components/sidebar/TreeSearch.tsx
 msgid "Nothing found"
 msgstr "Ничего не найдено"
@@ -1279,6 +1283,10 @@ msgstr "Этот фид имеет устаревший фильтр, котор
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "Это ваш ключ API. Он может использоваться для некоторых операций API только для чтения и предоставляет доступ к API Fever и API Google Reader. Используйте форму внизу страницы, чтобы сгенерировать новый ключ API"
+
+#: src/pages/AccessRestrictedPage.tsx
+msgid "This page can only be opened from an allowed network."
+msgstr ""
 
 #: src/pages/PublicPage.tsx
 msgid "This public page does not exist or is not enabled."

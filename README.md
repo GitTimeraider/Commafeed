@@ -1,280 +1,341 @@
-# CommaFeed fork with --user XX:XX --cap-drop=ALL --security-opt=no-new-privileges:true support
+# CommaFeed
 
-Google Reader inspired self-hosted RSS reader, based on Quarkus and React/TypeScript.
+A self-hosted RSS reader with a clean, distraction-free interface. Follow your feeds from any device, share a
+read-only selection of them on a public page, and keep your account locked down with two-factor authentication.
 
-This is a fork of [Athou/commafeed](https://github.com/Athou/commafeed). All credit for the application itself goes to
-the upstream project.
+![CommaFeed](documentation/screenshot.png)
 
-![preview](https://user-images.githubusercontent.com/1256795/184886828-1973f148-58a9-4c6d-9587-ee5e5d3cc2cb.png)
+## Highlights
 
-## What's different in this fork
+**Reading**
 
-- The Docker image supports `PUID`/`PGID` environment variables, so the application can run as any user/group (e.g.
-  `99:100` on unRAID) and match the ownership of your `data` directory.
-- A single Docker image is published to `ghcr.io/gittimeraider/commafeed` (H2 embedded database, native build,
-  `linux/amd64`) on every push, instead of the upstream Docker Hub images.
-- The CI pipeline is trimmed down to building and publishing that one image. Pull requests run the unit tests; pushes
-  skip tests to publish faster. It does not create GitHub releases or publish precompiled packages.
-- Dependencies (Maven, npm, Docker base images and GitHub Actions) are checked weekly by Dependabot instead of Renovate.
-- Upstream files this fork doesn't use (the JVM Dockerfile, the release script and Renovate/stale-bot/sponsor configs)
-  are removed. [CHANGELOG.md](CHANGELOG.md) is kept as-is: it's the upstream project's changelog.
+- Four layouts (title only, compact, detailed, expanded), light and dark themes and a configurable accent color
+- Works equally well on a phone and on a big screen
+- Keyboard shortcuts for nearly everything
+- Categories and subcategories, tags, starred articles and full-text search
+- Rules that automatically mark articles as read
+- Push notifications (ntfy, Gotify, Pushover) when new articles are published
+- Right-to-left feeds, and an interface translated into 25+ languages
+- OPML import and export
+- Your own [CSS](documentation/CUSTOMCSS.md) and JavaScript to customize the interface
 
-## Features
+**Sharing**
 
-- 4 different layouts
-- Light/Dark theme
-- Fully responsive, works great on both mobile and desktop
-- Keyboard shortcuts for almost everything
-- Support for right-to-left feeds
-- Translated in 25+ languages
-- Supports thousands of users and millions of feeds
-- OPML import/export
-- REST API
-- Fever and Google Reader API for native mobile apps
-- Can automatically mark articles as read based on user-defined rules
-- Push notifications when new articles are published
-- Highly customizable with [custom CSS](documentation/CUSTOMCSS.md) and JavaScript
-- [Browser extension](https://github.com/Athou/commafeed-browser-extension)
-- Compiles to native code for blazing fast startup and low memory usage
-- Supports 4 databases (the published Docker image uses H2; build from source for the others)
-    - H2 (embedded database)
-    - PostgreSQL
-    - MySQL
-    - MariaDB
+- An optional **public page**: a read-only view of the categories you choose, which anyone can open without an account
+  (see [Public page](#public-page))
 
-## Usage
+**Security**
+
+- **Two-factor authentication** with an authenticator app and/or passkeys, with a recovery path that only the server
+  administrator can use (see [Two-factor authentication](#two-factor-authentication))
+- **Network restriction**: allow the application and login page only from your own networks, while the public pages stay
+  reachable from anywhere (see [Restricting access to your networks](#restricting-access-to-your-networks))
+- A Docker image that runs as any user, never as root, and works with `--cap-drop=ALL`
+- Protection against server-side request forgery when fetching feeds
+
+**Apps and integrations**
+
+- Fever and Google Reader compatible APIs, supported by many iOS and Android RSS apps
+- A REST API, documented at `/openapi` on your instance
+
+**Under the hood**
+
+- Compiled to a native executable: starts in under a second and runs comfortably in 256 MB
+- Handles thousands of users and millions of feeds
+- Embedded database by default, or PostgreSQL, MySQL or MariaDB
+
+## Quick start
 
 ### Docker
 
-```
+```sh
 docker run --name commafeed --detach --publish 8082:8082 --restart unless-stopped \
     --volume /path/to/commafeed/data:/commafeed/data \
     --env PUID=99 --env PGID=100 \
     --memory 256M ghcr.io/gittimeraider/commafeed:latest
 ```
 
-The app will be accessible on http://localhost:8082/. See
-[commafeed-server/src/main/docker/README.md](commafeed-server/src/main/docker/README.md) for docker-compose examples,
-image tags and `PUID`/`PGID` details.
+Open http://localhost:8082/. The first visit asks you to create the administrator account.
 
-> **Hardening with `--cap-drop=ALL`?** `PUID`/`PGID` can't work then, because switching user needs capabilities that
-> flag removes. Use `--user 99:100` instead of `PUID`/`PGID`, and make sure your data directory is already owned by
-> that user/group on the host. See
-> [Using `--cap-drop=ALL`](commafeed-server/src/main/docker/README.md#using---cap-dropall----security-optno-new-privilegestrue)
-> for details and unRAID steps.
+`PUID`/`PGID` are the user and group the application runs as. Set them to the owner of your data directory (`99:100`
+on unRAID, or the output of `id` on a regular Linux host).
 
-### Build from sources
+### docker-compose
 
-    ./mvnw clean package [-P<database> [-Pnative]] [-DskipTests]
+```yaml
+services:
+  commafeed:
+    image: ghcr.io/gittimeraider/commafeed:latest
+    restart: unless-stopped
+    environment:
+      - PUID=99
+      - PGID=100
+    volumes:
+      - ./data:/commafeed/data
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    ports:
+      - 8082:8082
+```
 
-- `<database>` can be one of `h2`, `postgresql`, `mysql` or `mariadb`. The default is `h2`.
-- `-Pnative` compiles the application to native code. This requires either GraalVM to be installed (`GRAALVM_HOME` environment
-  variable pointing to a GraalVM installation) or a container environment to be available (docker/podman/...).
-- `-DskipTests` to speed up the build process by skipping tests.
+The [Docker image guide](commafeed-server/src/main/docker/README.md) covers image tags, running with `--user` and
+`--cap-drop=ALL`, and unRAID setup.
 
-When the build is complete:
-
-- a zip containing all jars required to run the application is located at
-  `commafeed-server/target/commafeed-<version>-<database>-jvm.zip`. Extract it and run the application with
-  `java -jar quarkus-run.jar`
-- if you used the native profile, the executable is located at
-  `commafeed-server/target/commafeed-<version>-<database>-<platform>-<arch>-runner[.exe]`
-
-If available for your operating system, the native build is recommended because it has a faster startup time and lower
-memory usage.
+Everything CommaFeed stores (accounts, feeds, articles, two-factor settings, passkeys) lives in the database. With the
+default embedded database, that's the `/commafeed/data` volume: keep it and nothing is lost when you update or recreate
+the container.
 
 ## Configuration
 
-CommaFeed doesn't require any configuration to run with its embedded database (H2). The database file will be stored in
-the `data` directory of the current directory.
+CommaFeed runs without any configuration. Every setting is optional and can be given in any of these ways:
 
-To use a different database, you will need to configure the following properties:
+- environment variables, in UPPER_SNAKE_CASE: `commafeed.allowed-networks` becomes `COMMAFEED_ALLOWED_NETWORKS`
+  (this is the usual way with Docker)
+- a `config/application.properties` file in the working directory
+- a `.env` file in the working directory
+- command line arguments, like `-Dcommafeed.allowed-networks=192.168.1.0/24`
 
-- `quarkus.datasource.jdbc.url`
-    - e.g. for H2: `jdbc:h2:./data/db;DEFRAG_ALWAYS=TRUE`
-    - e.g. for PostgreSQL: `jdbc:postgresql://localhost:5432/commafeed`
-    - e.g. for MySQL:
-      `jdbc:mysql://localhost/commafeed?autoReconnect=true&failOverReadOnly=false&maxReconnects=20&rewriteBatchedStatements=true&timezone=UTC`
-    - e.g. for MariaDB:
-      `jdbc:mariadb://localhost/commafeed?autoReconnect=true&failOverReadOnly=false&maxReconnects=20&rewriteBatchedStatements=true&timezone=UTC`
+The properties file has one advantage: CommaFeed warns about unknown keys and typos in it.
+
+All CommaFeed settings, with their defaults and descriptions, are listed in
+[documentation/application.properties](documentation/application.properties). The underlying framework settings
+(prefixed with `quarkus.`) are described in the [Quarkus configuration reference](https://quarkus.io/guides/all-config).
+
+### Settings you'll probably want
+
+| Environment variable                           | Purpose                                                                                                                                     |
+|------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| `QUARKUS_HTTP_AUTH_SESSION_ENCRYPTION_KEY`     | Secret used to encrypt the login cookie, at least 16 characters. Without it, a random key is generated at each start and everyone has to log in again after a restart. |
+| `COMMAFEED_ALLOWED_NETWORKS`                   | Networks allowed to use the application and the login page. See [Restricting access](#restricting-access-to-your-networks).               |
+| `COMMAFEED_USERS_ALLOW_REGISTRATIONS`          | Whether visitors can create their own account (`false` by default).                                                                       |
+| `COMMAFEED_HTTP_CLIENT_BLOCK_LOCAL_ADDRESSES`  | Set to `false` to follow feeds hosted on your local network. See the [FAQ](#getting-access-to-local-address-blocked-when-adding-a-feed). |
+
+### Using another database
+
+The Docker image uses the embedded H2 database. For PostgreSQL, MySQL or MariaDB,
+[build from source](#building-from-source) with the matching profile and set:
+
+- `quarkus.datasource.jdbc.url`, for example:
+    - PostgreSQL: `jdbc:postgresql://localhost:5432/commafeed`
+    - MySQL: `jdbc:mysql://localhost/commafeed?autoReconnect=true&failOverReadOnly=false&maxReconnects=20&rewriteBatchedStatements=true&timezone=UTC`
+    - MariaDB: `jdbc:mariadb://localhost/commafeed?autoReconnect=true&failOverReadOnly=false&maxReconnects=20&rewriteBatchedStatements=true&timezone=UTC`
 - `quarkus.datasource.username`
 - `quarkus.datasource.password`
 
-There are multiple ways to configure CommaFeed:
+## Security
 
-- a `config/application.properties` [properties](https://en.wikipedia.org/wiki/.properties) file relative to the working
-  directory (keys in kebab-case)
-- Command line arguments each prefixed with `-D` (keys in kebab-case)
-- Environment variables (keys in UPPER_CASE)
-- a `.env` file in the working directory (keys in UPPER_CASE)
+### Basics
 
-When in doubt, the properties file is recommended because CommaFeed will be able to warn about invalid properties and typos.
-
-All [CommaFeed settings](https://athou.github.io/commafeed/documentation) (upstream documentation, which also applies to
-this fork) are optional and have sensible default values.
-
-When logging in, credentials are stored in an encrypted cookie. The encryption key is randomly generated at startup,
-meaning that you will have to log back in after each restart of the application. To prevent this, you can set the
-`quarkus.http.auth.session.encryption-key` property to a fixed value (min. 16 characters).
-All other Quarkus settings can be found [here](https://quarkus.io/guides/all-config).
-
-When started, the server will listen on http://localhost:8082.
-
-### Securing your instance
-
-- CommaFeed serves plain HTTP on port 8082. If it's reachable from outside your local network, put it behind a reverse
-  proxy that terminates HTTPS (e.g. Nginx Proxy Manager, Caddy, Traefik or SWAG) instead of exposing the port directly.
-- Set `quarkus.http.auth.session.encryption-key` (`QUARKUS_HTTP_AUTH_SESSION_ENCRYPTION_KEY` as an environment
-  variable) to a long random value, so logins survive restarts. Keep it secret: anyone with it can forge login cookies.
-- Leave `commafeed.http-client.block-local-addresses` at its default (`true`) unless you need feeds from your local
-  network, and then only if you trust every user of your instance (see the [FAQ](#faq)).
-- Use a non-root `PUID`/`PGID` for the Docker image (the container refuses `0`), and optionally
-  `--cap-drop=ALL` with `--user` as described in the [Docker README](commafeed-server/src/main/docker/README.md).
+- CommaFeed speaks plain HTTP on port 8082. If you use it outside your home network, put it behind a reverse proxy that
+  provides HTTPS (Nginx Proxy Manager, Caddy, Traefik, SWAG, ...) rather than publishing the port to the internet.
+- Set `QUARKUS_HTTP_AUTH_SESSION_ENCRYPTION_KEY` to a long random secret. Anyone who knows it can forge login cookies.
+- Turn on [two-factor authentication](#two-factor-authentication) for your account.
+- Consider [restricting access to your networks](#restricting-access-to-your-networks).
+- Run the container as a non-root user (`PUID`/`PGID` or `--user`). The image refuses `0` (root) for `PUID`/`PGID`.
 
 ### Two-factor authentication
 
-Each user can protect their account with a second step after the password, in **Settings → Security**:
+Each user can add a second step to their login in **Settings → Security**:
 
-- **Authenticator app** (TOTP): scan the QR code with an app such as Aegis, 2FAS, Google Authenticator, Microsoft
-  Authenticator, 1Password or Bitwarden, then confirm with a code.
-- **Passkeys**: your phone, computer (fingerprint, face, PIN) or a security key. Passkeys require HTTPS (or
-  `http://localhost`) and only work on the address (domain) they were added from. If you change the domain CommaFeed
-  is served from, add them again.
+- **Authenticator app**: scan the QR code with Aegis, 2FAS, Google Authenticator, Microsoft Authenticator, 1Password,
+  Bitwarden or any other TOTP app, then confirm with the 6-digit code it shows.
+- **Passkeys**: your phone, your computer's fingerprint reader, face recognition or PIN, or a hardware security key.
+  Passkeys need HTTPS (or `http://localhost`), and each one only works on the web address it was added from. If you move
+  CommaFeed to another domain, add your passkeys again.
 
-Only one of them is needed to log in. The settings are stored in the database, so they survive restarts and Docker
-image updates as long as the database is kept (the `/commafeed/data` volume for the default H2 database).
+Either one is enough to log in. Once two-factor authentication is on for an account:
 
-Once two-factor authentication is enabled for a user:
+- the login page asks for a code or a passkey after the password
+- logging in with only a user name and password through HTTP basic authentication is refused
+- after 10 wrong codes, the second step is locked for 15 minutes
+- the account's **API key** (used by mobile apps and by `?apiKey=` links) keeps working without a second step. Treat it
+  like a password, and generate a new one in **Settings → Profile** if it leaks.
 
-- logging in requires the login page. HTTP basic authentication with the user name and password is refused for that
-  user.
-- the API key (used by the Fever and Google Reader APIs, i.e. mobile apps, and by `?apiKey=` URLs) keeps working
-  without a second factor. Treat it like a password and generate a new one in **Settings → Profile** if it leaks.
-- after 10 wrong codes, logging in is blocked for 15 minutes.
-
-**Lost access to the authenticator app and passkeys?** On the login page, enter your user name and password, choose
-**Lost access to your authenticator?** and then **Write a reset code in the server logs**. CommaFeed writes a single
-use code, valid for 15 minutes, to its logs. It is never shown in the browser, so only someone with access to the
-server can read it. Get it with:
+**Lost your phone or passkey?** On the login page, enter your user name and password, click **Lost access to your
+authenticator?**, then **Write a reset code in the server logs**. CommaFeed writes a single-use code to its log, valid
+for 15 minutes. It is never shown in the browser, so only someone with access to the server can read it:
 
 ```sh
 docker logs <container-name> 2>&1 | grep "Reset code"
 ```
 
-(on unRAID: **Docker** tab → click the CommaFeed icon → **Logs**). Entering the code on the login page disables
-two-factor authentication for that user and logs them in, so they can set it up again.
+On unRAID: **Docker** tab → click the CommaFeed icon → **Logs**. Entering the code on the login page turns two-factor
+authentication off for that account and logs you in, so you can set it up again.
 
-### Updates
+### Restricting access to your networks
 
-The Docker image is rebuilt on every push to this repository. To update, pull `ghcr.io/gittimeraider/commafeed:latest`
-again and recreate the container (on unRAID: **Docker** tab → **Check for Updates** → **Apply Update**).
+Set `COMMAFEED_ALLOWED_NETWORKS` to the networks that may use CommaFeed, as a comma-separated list of
+[CIDR ranges](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) or single addresses (IPv4 and IPv6):
 
-`latest` changes with every push to `master`. If you'd rather update deliberately, use a pinned tag like
-`master-a1b2c3d` (one exact commit) and change it when you choose to; the available tags are listed on the
-repository's GitHub page under **Packages** → `commafeed`.
+```sh
+--env COMMAFEED_ALLOWED_NETWORKS=192.168.1.0/24,10.8.0.0/24
+```
 
-### Memory management
+Visitors from those networks (and from the server itself) use CommaFeed normally. Everyone else can only open
+[public pages](#public-page). They get a "Not available from your network" page instead of the login page, and the
+server refuses every other request: logging in, the API, the mobile app APIs and live updates. Leave the variable unset
+to allow all networks, which is the default.
 
-The Java Virtual Machine (JVM) is rather greedy by default and will not release unused memory to the
-operating system. This is because acquiring memory from the operating system is a relatively expensive operation.
-This can be problematic on systems with limited memory.
+**Behind a reverse proxy**, CommaFeed sees every request as coming from the proxy. Tell it to use the client address
+the proxy forwards, and which proxy to trust for that:
 
-#### Hard limit (`native` and `jvm` builds)
+```sh
+--env QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING=true \
+--env QUARKUS_HTTP_PROXY_ALLOW_X_FORWARDED=true \
+--env QUARKUS_HTTP_PROXY_TRUSTED_PROXIES=172.18.0.5
+```
 
-The JVM can be configured to use a maximum amount of memory with the `-Xmx` parameter.
-For example, to limit the JVM to 256MB of memory, use `-Xmx256m`.
+Replace `172.18.0.5` with the address of your reverse proxy as CommaFeed sees it (a single address, a CIDR range or a
+host name). **Don't leave `QUARKUS_HTTP_PROXY_TRUSTED_PROXIES` out**: without it, anyone can claim to be on your
+network by sending a fake `X-Forwarded-For` header. CommaFeed logs a warning at startup if this happens. Make sure the
+proxy sets `X-Forwarded-For` (most do by default) and that CommaFeed's port can't be reached directly, without going
+through the proxy.
 
-#### Dynamic sizing (`jvm` build)
+**Checking which address CommaFeed sees.** Docker's networking sometimes replaces the client address with the address
+of the Docker network's gateway (e.g. `172.17.0.1`). Never allow a Docker network range such as `172.16.0.0/12` in
+`COMMAFEED_ALLOWED_NETWORKS`: in that situation, it would allow every visitor. To see the addresses CommaFeed sees,
+enable logging of refused requests with `QUARKUS_LOG_CATEGORY__COM_COMMAFEED_SECURITY_NETWORK__LEVEL=DEBUG`, open
+CommaFeed and look for `refused ... from <address>` in the logs.
 
-In addition to the previous setting, the JVM can be configured to release unused memory to the operating system with the
-following parameters:
+### Feeds on your local network
+
+To protect your network, CommaFeed refuses to fetch feeds from local addresses (see the
+[FAQ](#getting-access-to-local-address-blocked-when-adding-a-feed)).
+
+## Public page
+
+The public page shows the categories you choose to anyone, without an account. Visitors can only read: they can't see
+your other categories, settings or reading activity, and they can't change anything.
+
+1. Go to **Settings → Public page** and turn on **Enable public page**.
+2. Tick the categories and subcategories to share. Each one is selected on its own; ticking a category doesn't include
+   its subcategories. Feeds without a category can be shared too.
+3. Click **Save**, then copy the address shown.
+
+The address contains a random code instead of your user name. Click **Generate new address** at any time to replace it:
+the old address stops working immediately.
+
+Public pages stay reachable from every network, even when
+[access is restricted to your networks](#restricting-access-to-your-networks).
+
+## Mobile apps
+
+CommaFeed works with mobile apps that support the Fever or Google Reader API (the latter is often listed as
+"FreshRSS" or "Google Reader API" in apps).
+
+1. Open **Settings → Profile** and generate an **API key** if you don't have one yet.
+2. Copy the **Fever API URL** or the **Google Reader API URL** link from the same page into your app.
+3. Log in from the app with your user name and the **API key** as the password.
+
+## Updating
+
+A new image is published for every change to the repository. To update, pull
+`ghcr.io/gittimeraider/commafeed:latest` and recreate the container. On unRAID: **Docker** tab →
+**Check for Updates** → **Apply Update**. Database changes are applied automatically at startup.
+
+`latest` always follows the main branch. To update only when you decide to, use a tag pinned to one version, like
+`master-a1b2c3d`. Available tags are listed under **Packages** → `commafeed` on the repository's GitHub page.
+
+## Building from source
+
+```sh
+./mvnw clean package [-P<database> [-Pnative]] [-DskipTests]
+```
+
+- `<database>` is `h2` (default), `postgresql`, `mysql` or `mariadb`.
+- `-Pnative` builds a native executable. It needs [GraalVM](https://www.graalvm.org/) (`GRAALVM_HOME` pointing to it),
+  or Docker/Podman to build inside a container.
+- `-DskipTests` skips the tests for a faster build.
+
+The result is in `commafeed-server/target/`:
+
+- `commafeed-<version>-<database>-jvm.zip`: extract it and run `java -jar quarkus-run.jar` (Java 25)
+- `commafeed-<version>-<database>-<platform>-<arch>-runner`: the native executable, if you used `-Pnative`
+
+The native executable is recommended: it starts faster and uses less memory.
+
+### Memory usage
+
+The native build runs well within 256 MB. You can cap its memory with `-Xmx`, e.g. `./commafeed-runner -Xmx256m`.
+
+With the Java build, `-Xmx256m` caps the memory too. To make Java give unused memory back to the system, add:
 
     -Xms20m -XX:+UseG1GC -XX:+UseStringDeduplication -XX:-ShrinkHeapInSteps -XX:G1PeriodicGCInterval=10000 -XX:-G1PeriodicGCInvokesConcurrent -XX:MinHeapFreeRatio=5 -XX:MaxHeapFreeRatio=10
-
-See [here](https://docs.oracle.com/en/java/javase/17/gctuning/garbage-first-g1-garbage-collector1.html)
-and [here](https://docs.oracle.com/en/java/javase/17/gctuning/factors-affecting-garbage-collection-performance.html) for
-more
-information.
-
-#### OpenJ9 (`jvm` build)
-
-The [OpenJ9](https://eclipse.dev/openj9/) JVM is a more memory-efficient alternative to the HotSpot JVM, at the cost of
-slightly slower throughput.
-
-IBM provides precompiled binaries for OpenJ9
-named [Semeru](https://developer.ibm.com/languages/java/semeru-runtimes/downloads/).
-The upstream project uses it for its JVM Docker image; this fork only publishes the native image.
 
 ## FAQ
 
 ### Getting "Access to local address blocked" when adding a feed
 
-CommaFeed blocks access to local resources by default to prevent [SSRF](https://en.wikipedia.org/wiki/Server-side_request_forgery) attacks.
-If you want to subscribe to feeds that are only available on your local network, you can disable this security measure by setting the `commafeed.http-client.block-local-addresses` variable to `false`.
-Do this only if you trust all users of your CommaFeed instance not to access private resources.
+CommaFeed refuses to fetch feeds from local and private addresses, so that users can't use it to reach other services
+on your network ([server-side request forgery](https://en.wikipedia.org/wiki/Server-side_request_forgery)). If you
+need feeds from your local network, set `COMMAFEED_HTTP_CLIENT_BLOCK_LOCAL_ADDRESSES=false`, but only if you trust
+every user of your instance.
 
-### Listen on a single network interface
+### I have to log in again after every restart
 
-By default, CommaFeed listens on all interfaces. You can restrict it by setting `quarkus.http.host`.
+Set `QUARKUS_HTTP_AUTH_SESSION_ENCRYPTION_KEY` to a fixed secret of at least 16 characters.
 
-Note that if you set it to a local name like `127.0.0.1` host validation is enabled automatically. This prevents
-access if you're using a reverse proxy like Nginx. To fix, add your actual hostname to `allowed-hosts`:
+### Passkeys don't work
 
-```
+Passkeys need a secure connection: open CommaFeed over HTTPS (through your reverse proxy), or on `http://localhost`. A
+passkey only works on the exact web address it was added from.
+
+### Listening on a single network interface
+
+CommaFeed listens on all interfaces. To limit it, set `quarkus.http.host`. When you set it to a local address like
+`127.0.0.1`, host validation turns on automatically, which blocks requests coming through a reverse proxy. Allow your
+public host name to fix it:
+
+```properties
 quarkus.http.host=127.0.0.1
 quarkus.http.proxy.proxy-address-forwarding=true
 quarkus.http.proxy.allow-forwarded=true
-quarkus.http.host-validation.allowed-hosts=commafeed.example.com
+quarkus.http.host-validation.allowed-hosts=rss.example.com
 ```
 
-## Translation
+## Translations
 
-Files for internationalization are located in [commafeed-client/src/locales](commafeed-client/src/locales).
+Translations are in [commafeed-client/src/locales](commafeed-client/src/locales). To add a language:
 
-To add a new language:
+1. Add its two-letter [ISO 639-1 code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) to the `locales` list in
+   `commafeed-client/.linguirc` and `commafeed-client/src/i18n.ts`.
+2. Run `npm run i18n:extract` in `commafeed-client`.
+3. Translate the new `commafeed-client/src/locales/<code>/messages.po` file.
 
-- add the new locale to the `locales` array in:
-    - `commafeed-client/.linguirc`
-    - `commafeed-client/src/i18n.ts`
-- run `npm run i18n:extract`
-- add translations to the newly created `commafeed-client/src/locales/[locale]/messages.po` file
+## Development
 
-The name of the locale should be the
-two-letters [ISO-639-1 language code](http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes).
+The project has two parts: a Java backend ([Quarkus](https://quarkus.io/)) in `commafeed-server` and a
+React/TypeScript frontend in `commafeed-client`.
 
-## Local development
+**Backend**: open `commafeed-server` in a Java IDE with the Lombok plugin, then run `./mvnw quarkus:dev`.
 
-### Backend
+**Frontend**: in `commafeed-client`, run `npm install`, then `npm run dev`.
 
-- Open `commafeed-server` in your preferred Java IDE.
-    - CommaFeed uses Lombok, you need the Lombok plugin for your IDE.
-- run `./mvnw quarkus:dev`
+The development server runs on http://localhost:8082 and forwards API requests to the backend on port 8083.
 
-### Frontend
+Before sending changes, run the checks that CI runs:
 
-- Open `commafeed-client` in your preferred JavaScript IDE.
-- run `npm install`
-- run `npm run dev`
-
-The frontend server is now running at http://localhost:8082 and is proxying REST requests to the backend running on
-port 8083
-
+- `./mvnw -pl commafeed-server spotless:apply verify` for the backend (formatting, checkstyle, tests)
+- `npm run lint` and `npm run test` in `commafeed-client` for the frontend
 
 ### CI and images
 
-[.github/workflows/ci.yml](.github/workflows/ci.yml) runs:
+The [ci workflow](.github/workflows/ci.yml) runs:
 
-- **On every push**, to any branch: builds the native image without running tests and publishes it to
-  `ghcr.io/gittimeraider/commafeed` as `<branch>` and `<branch>-<short-sha>` (plus `latest` for `master`). Commits
-  that only change `.md` files, and pushes to Dependabot's own branches, are skipped.
-- **On pull requests**: runs the server and client unit tests and builds the image, without publishing anything.
-- **Manually**: **Actions** tab → **ci** → **Run workflow**.
+- **on every push**, to any branch: builds the native executable and publishes the Docker image as `<branch>` and
+  `<branch>-<short-sha>`, plus `latest` for `master`. Pushes that only change `.md` files are skipped.
+- **on pull requests**: runs the unit tests and builds the image, without publishing it.
 
-To publish a fresh image without changing anything in the repository (for example to pick up updated Debian packages
-in the image), open the **Actions** tab on GitHub, choose **Rebuild Docker image** in the left sidebar, click
-**Run workflow**, pick the branch (`master` also updates `latest`) and confirm. It runs the same build as a push and
-re-publishes `<branch>` and `<branch>-<short-sha>`.
+To publish a fresh image without changing anything, for example to pick up updated base image packages, open the
+**Actions** tab, choose **Rebuild Docker image**, click **Run workflow** and pick a branch.
 
-Every branch push leaves images behind in the registry. To clean them up, open **Packages** → `commafeed` on this
-repository's GitHub page, then **Package settings** / the version list, and delete versions you no longer need. Don't
-delete the version currently tagged `latest`, or one you've pinned on your server.
+Each push leaves images in the registry. To clean them up, open **Packages** → `commafeed` on the repository's GitHub
+page and delete the versions you no longer need. Don't delete the one tagged `latest` or one your server is pinned to.
+
+Dependencies are checked weekly by Dependabot.
+
+## License
+
+[Apache License 2.0](LICENSE)

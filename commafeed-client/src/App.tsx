@@ -5,7 +5,7 @@ import { ModalsProvider } from "@mantine/modals"
 import { Notifications } from "@mantine/notifications"
 import type React from "react"
 import { useEffect } from "react"
-import { HashRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom"
+import { HashRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom"
 import { Constants } from "@/app/constants"
 import { redirectTo } from "@/app/redirect/slice"
 import { redirectToInitialSetup } from "@/app/redirect/thunks"
@@ -15,6 +15,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Header } from "@/components/header/Header"
 import { Tree } from "@/components/sidebar/Tree"
 import { useI18n } from "@/i18n"
+import { AccessRestrictedPage } from "@/pages/AccessRestrictedPage"
 import { AdminUsersPage } from "@/pages/admin/AdminUsersPage"
 import { MetricsPage } from "@/pages/admin/MetricsPage"
 import { AboutPage } from "@/pages/app/AboutPage"
@@ -78,6 +79,13 @@ function Providers(
 
 function AppRoutes() {
     const sidebarVisible = useAppSelector(state => state.tree.sidebarVisible)
+    const accessRestricted = useAppSelector(state => state.server.serverInfos?.accessRestricted)
+    const location = useLocation()
+
+    // clients outside of the allowed networks can only open public pages, the server refuses everything else
+    if (accessRestricted && !location.pathname.startsWith("/public/")) {
+        return <AccessRestrictedPage />
+    }
 
     return (
         <Routes>

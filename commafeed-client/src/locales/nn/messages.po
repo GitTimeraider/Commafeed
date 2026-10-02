@@ -818,6 +818,10 @@ msgstr "Ingen flere oppføringer"
 msgid "No sharing options available."
 msgstr "Ingen delingsval tilgjengelege."
 
+#: src/pages/AccessRestrictedPage.tsx
+msgid "Not available from your network"
+msgstr ""
+
 #: src/components/sidebar/TreeSearch.tsx
 msgid "Nothing found"
 msgstr "Ingenting funne"
@@ -1279,6 +1283,10 @@ msgstr "Denne suapen har eit gamalt filter som ikkje kan redigerast og som ikkje
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "Dette er din API-nøkkel. Ho kan brukast til nokre skrivebeskytta API-operasjonar og gir tilgang til Fever API og Google Reader API. Bruk skjemaet nedst på sida for å generere ein ny API-nøkkel"
+
+#: src/pages/AccessRestrictedPage.tsx
+msgid "This page can only be opened from an allowed network."
+msgstr ""
 
 #: src/pages/PublicPage.tsx
 msgid "This public page does not exist or is not enabled."

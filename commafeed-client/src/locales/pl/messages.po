@@ -818,6 +818,10 @@ msgstr "Nie ma więcej wpisów"
 msgid "No sharing options available."
 msgstr "Brak dostępnych opcji udostępniania."
 
+#: src/pages/AccessRestrictedPage.tsx
+msgid "Not available from your network"
+msgstr ""
+
 #: src/components/sidebar/TreeSearch.tsx
 msgid "Nothing found"
 msgstr "Nic nie znaleziono"
@@ -1279,6 +1283,10 @@ msgstr "Ten kanał ma stary filtr, którego nie można edytować i który nie je
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "To jest Twój klucz API. Może być używany do niektórych operacji API tylko do odczytu i zapewnia dostęp do API Fever i API Google Reader. Użyj formularza na dole strony, aby wygenerować nowy klucz API"
+
+#: src/pages/AccessRestrictedPage.tsx
+msgid "This page can only be opened from an allowed network."
+msgstr ""
 
 #: src/pages/PublicPage.tsx
 msgid "This public page does not exist or is not enabled."

@@ -1,7 +1,7 @@
-# CommaFeed
+# CommaFeed Docker image
 
-Docker image for [GitTimeraider/commafeed](https://github.com/GitTimeraider/commafeed), a fork of
-[Athou/commafeed](https://github.com/Athou/commafeed) with `PUID`/`PGID` support.
+Docker image for [CommaFeed](https://github.com/GitTimeraider/commafeed), a self-hosted RSS reader. It runs as any
+user/group you choose (`PUID`/`PGID` or `--user`) and works with `--cap-drop=ALL`.
 
 ## Quickstart
 
@@ -34,8 +34,9 @@ services:
 
 ## Configuration
 
-All [CommaFeed settings](https://athou.github.io/commafeed/documentation) (upstream documentation, which also applies to
-this image) are optional and have sensible default values.
+All settings are optional and have sensible default values. They're listed in
+[documentation/application.properties](../../../../documentation/application.properties), and the most useful ones are
+described in the [main README](../../../../README.md#configuration).
 
 Settings are overrideable with environment variables. For instance, `commafeed.feed-refresh.interval-empirical` can be
 set with the `COMMAFEED_FEED_REFRESH_INTERVAL_EMPIRICAL` variable.

@@ -818,6 +818,10 @@ msgstr "Dim mwy o gofnodion"
 msgid "No sharing options available."
 msgstr "Dim opsiynau rhannu ar gael."
 
+#: src/pages/AccessRestrictedPage.tsx
+msgid "Not available from your network"
+msgstr ""
+
 #: src/components/sidebar/TreeSearch.tsx
 msgid "Nothing found"
 msgstr "Heb ddarganfod dim"
@@ -1279,6 +1283,10 @@ msgstr "Mae gan y porthiant hwn hen hidlydd na ellir ei olygu ac nid yw'n cael e
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "Dyma eich allwedd API. Gellir ei defnyddio ar gyfer rhai gweithrediadau API darllen-yn-unig ac mae'n rhoi mynediad i'r Fever API a'r Google Reader API. Defnyddiwch y ffurflen ar waelod y dudalen i gynhyrchu allwedd API newydd"
+
+#: src/pages/AccessRestrictedPage.tsx
+msgid "This page can only be opened from an allowed network."
+msgstr ""
 
 #: src/pages/PublicPage.tsx
 msgid "This public page does not exist or is not enabled."

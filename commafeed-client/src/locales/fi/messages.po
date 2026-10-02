@@ -818,6 +818,10 @@ msgstr "Ei enää merkintöjä"
 msgid "No sharing options available."
 msgstr "Jakamisvaihtoehtoja ei ole saatavilla."
 
+#: src/pages/AccessRestrictedPage.tsx
+msgid "Not available from your network"
+msgstr ""
+
 #: src/components/sidebar/TreeSearch.tsx
 msgid "Nothing found"
 msgstr "Mitään ei löytynyt"
@@ -1279,6 +1283,10 @@ msgstr "Tässä syötteessä on vanha suodatin, jota ei voi muokata ja jota ei s
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "Tämä on API-avaimesi. Sitä voidaan käyttää joihinkin vain luku -API-toimintoihin, ja se myöntää pääsyn Fever-API:hin ja Google Reader -API:hin. Käytä sivun alareunassa olevaa lomaketta luodaksesi uuden API-avaimen"
+
+#: src/pages/AccessRestrictedPage.tsx
+msgid "This page can only be opened from an allowed network."
+msgstr ""
 
 #: src/pages/PublicPage.tsx
 msgid "This public page does not exist or is not enabled."
