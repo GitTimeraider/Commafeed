@@ -69,6 +69,7 @@ msgstr "Admin user name"
 #: src/components/sidebar/Tree.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedEntriesPage.tsx
+#: src/pages/PublicPage.tsx
 msgid "All"
 msgstr "All"
 
@@ -171,6 +172,7 @@ msgstr "Build a filter expression to indicate what you want to read. Entries tha
 #: src/components/MarkAllAsReadConfirmationDialog.tsx
 #: src/components/settings/CustomCodeSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/PushNotificationSettings.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
@@ -178,6 +180,10 @@ msgstr "Build a filter expression to indicate what you want to read. Entries tha
 #: src/pages/app/TagDetailsPage.tsx
 msgid "Cancel"
 msgstr "Cancel"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Categories shown on the public page"
+msgstr "Categories shown on the public page"
 
 #: src/components/content/add/AddCategory.tsx
 #: src/components/content/add/Subscribe.tsx
@@ -241,6 +247,18 @@ msgstr "Confirm password"
 #: src/pages/auth/PasswordResetPage.tsx
 msgid "Confirm Password"
 msgstr "Confirm Password"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Copied"
+msgstr "Copied"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Copy"
+msgstr "Copy"
+
+#: src/pages/PublicPage.tsx
+msgid "Could not load entries."
+msgstr "Could not load entries."
 
 #: src/components/header/ProfileMenu.tsx
 msgid "Cozy"
@@ -350,6 +368,10 @@ msgstr "E-mail address"
 msgid "Edit user"
 msgstr "Edit user"
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Enable public page"
+msgstr "Enable public page"
+
 #: src/components/admin/UserEdit.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Enabled"
@@ -396,6 +418,10 @@ msgstr "Feed name"
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Feed URL"
 msgstr "Feed URL"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Feeds without a category"
+msgstr "Feeds without a category"
 
 #: src/components/header/ProfileMenu.tsx
 msgid "Fetch all my feeds now"
@@ -554,6 +580,10 @@ msgstr "Link"
 msgid "Link to the documentation"
 msgstr "Link to the documentation"
 
+#: src/pages/PublicPage.tsx
+msgid "Load more"
+msgstr "Load more"
+
 #: src/hooks/useAppLoading.ts
 msgid "Loading profile..."
 msgstr "Loading profile..."
@@ -676,6 +706,10 @@ msgstr "Next refresh"
 msgid "Next unread item bookmarklet"
 msgstr "Next unread item bookmarklet"
 
+#: src/pages/PublicPage.tsx
+msgid "No entries"
+msgstr "No entries"
+
 #: src/pages/app/FeedEntriesPage.tsx
 msgid "No more entries"
 msgstr "No more entries"
@@ -708,9 +742,17 @@ msgstr "On mobile, show action buttons at the bottom of the screen"
 msgid "Only applies to compact, cozy and detailed modes"
 msgstr "Only applies to compact, cozy and detailed modes"
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Only the feeds that are directly in a selected category are shown. Subcategories have to be selected individually."
+msgstr "Only the feeds that are directly in a selected category are shown. Subcategories have to be selected individually."
+
 #: src/pages/ErrorPage.tsx
 msgid "Oops!"
 msgstr "Oops!"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Open"
+msgstr "Open"
 
 #: src/components/header/Header.tsx
 msgid "Open CommaFeed"
@@ -825,6 +867,18 @@ msgstr "Primary color"
 msgid "Profile"
 msgstr "Profile"
 
+#: src/pages/app/SettingsPage.tsx
+msgid "Public page"
+msgstr "Public page"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Public page address"
+msgstr "Public page address"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Public page settings saved."
+msgstr "Public page settings saved."
+
 #: src/components/settings/PushNotificationSettings.tsx
 msgid "Push notification service"
 msgstr "Push notification service"
@@ -882,11 +936,16 @@ msgstr "Right click"
 #: src/components/admin/UserEdit.tsx
 #: src/components/settings/CustomCodeSettings.tsx
 #: src/components/settings/ProfileSettings.tsx
+#: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/PushNotificationSettings.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 #: src/pages/app/FeedDetailsPage.tsx
 msgid "Save"
 msgstr "Save"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Save the settings before sharing this address."
+msgstr "Save the settings before sharing this address."
 
 #: src/components/settings/DisplaySettings.tsx
 msgid "Scroll selected entry to the top of the page"
@@ -1063,6 +1122,10 @@ msgstr "Test"
 msgid "Test notification sent successfully."
 msgstr "Test notification sent successfully."
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "The public page is a read-only page that anyone can open without logging in. It only shows the entries of the categories selected below. Nothing else (settings, feed management, read status, starred entries, tags, ...) is accessible from it."
+msgstr "The public page is a read-only page that anyone can open without logging in. It only shows the entries of the categories selected below. Nothing else (settings, feed management, read status, starred entries, tags, ...) is accessible from it."
+
 #: src/components/content/add/Subscribe.tsx
 msgid "The URL for the feed you want to subscribe to. You can also use the website's url directly and CommaFeed will try to find the feed in the page."
 msgstr "The URL for the feed you want to subscribe to. You can also use the website's url directly and CommaFeed will try to find the feed in the page."
@@ -1079,6 +1142,10 @@ msgstr "This feed has a legacy filter that cannot be edited and is not applied. 
 #: src/components/settings/ProfileSettings.tsx
 msgid "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
 msgstr "This is your API key. It can be used for some read-only API operations and grants access to the Fever API and the Google Reader API. Use the form at the bottom of the page to generate a new API key"
+
+#: src/pages/PublicPage.tsx
+msgid "This public page does not exist or is not enabled."
+msgstr "This public page does not exist or is not enabled."
 
 #: src/components/settings/DisplaySettings.tsx
 msgid "This setting can cause scrolling issues on some browsers (e.g. Safari)"
@@ -1157,6 +1224,10 @@ msgstr "Wrong username or password"
 #: src/components/settings/DisplaySettings.tsx
 msgid "Yellow"
 msgstr "Yellow"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "You don't have any categories yet."
+msgstr "You don't have any categories yet."
 
 #: src/pages/app/FeedEntriesPage.tsx
 msgid "You don't have any subscriptions yet. Why not try adding one by clicking on the + sign at the top of the page?"

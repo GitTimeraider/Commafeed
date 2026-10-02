@@ -4,10 +4,12 @@ import com.commafeed.CommaFeedConfiguration;
 import com.commafeed.CommaFeedConstants;
 import com.commafeed.backend.Digests;
 import com.commafeed.backend.Urls;
+import com.commafeed.backend.dao.FeedCategoryDAO;
 import com.commafeed.backend.dao.UserDAO;
 import com.commafeed.backend.dao.UserRoleDAO;
 import com.commafeed.backend.dao.UserSettingsDAO;
 import com.commafeed.backend.model.Feed;
+import com.commafeed.backend.model.FeedCategory;
 import com.commafeed.backend.model.FeedEntry;
 import com.commafeed.backend.model.FeedEntryContent;
 import com.commafeed.backend.model.FeedSubscription;
@@ -25,6 +27,7 @@ import com.commafeed.backend.service.PasswordEncryptionService;
 import com.commafeed.backend.service.PushNotificationService;
 import com.commafeed.backend.service.UserService;
 import com.commafeed.backend.service.db.DatabaseStartupService;
+import com.commafeed.frontend.model.PublicPageSettings;
 import com.commafeed.frontend.model.Settings;
 import com.commafeed.frontend.model.Settings.PushNotificationSettings;
 import com.commafeed.frontend.model.UserModel;
@@ -83,6 +86,7 @@ public class UserREST {
 
     private final AuthenticationContext authenticationContext;
     private final UserDAO userDAO;
+    private final FeedCategoryDAO feedCategoryDAO;
     private final UserRoleDAO userRoleDAO;
     private final UserSettingsDAO userSettingsDAO;
     private final UserService userService;
@@ -261,6 +265,52 @@ public class UserREST {
                     .entity(e.getCause().getMessage())
                     .type(MediaType.TEXT_PLAIN)
                     .build();
+        }
+
+        return Response.ok().build();
+    }
+
+    @Path("/publicPage")
+    @GET
+    @Transactional
+    @Operation(
+            summary = "Retrieve public page settings",
+            description = "Retrieve the settings of the public, read-only page of the user")
+    public PublicPageSettings getPublicPageSettings() {
+        User user = authenticationContext.getCurrentUser();
+
+        PublicPageSettings settings = new PublicPageSettings();
+        settings.setEnabled(user.isPublicPageEnabled());
+        settings.setShowUncategorized(user.isPublicPageUncategorized());
+        settings.setCategoryIds(
+                feedCategoryDAO.findAll(user).stream()
+                        .filter(FeedCategory::isPublicCategory)
+                        .map(FeedCategory::getId)
+                        .toList());
+        return settings;
+    }
+
+    @Path("/publicPage")
+    @POST
+    @Transactional
+    @Operation(
+            summary = "Save public page settings",
+            description = "Save the settings of the public, read-only page of the user")
+    public Response savePublicPageSettings(
+            @Parameter(required = true) PublicPageSettings settings) {
+        Preconditions.checkNotNull(settings);
+
+        User user = authenticationContext.getCurrentUser();
+        user.setPublicPageEnabled(settings.isEnabled());
+        user.setPublicPageUncategorized(settings.isShowUncategorized());
+        userDAO.merge(user);
+
+        Set<Long> categoryIds =
+                settings.getCategoryIds() == null
+                        ? Set.of()
+                        : Set.copyOf(settings.getCategoryIds());
+        for (FeedCategory category : feedCategoryDAO.findAll(user)) {
+            category.setPublicCategory(categoryIds.contains(category.getId()));
         }
 
         return Response.ok().build();

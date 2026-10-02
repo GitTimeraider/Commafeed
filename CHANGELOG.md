@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+- Add an optional public, read-only page (`#/public/<username>`) that can be opened without logging in. Enable it and
+  select which categories and subcategories are shown in Settings > Public page. Visitors can only read the entries of
+  the selected categories, nothing else (settings, feed management, read status, starred entries, tags) is exposed.
 
 ## [7.3.2]
 
