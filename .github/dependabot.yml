@@ -1,5 +1,8 @@
 version: 2
 
+# Versions Dependabot cannot see (Node.js/npm for the client build, google-java-format, the Maven wrapper, gosu) are
+# updated by .github/workflows/update-tool-versions.yml.
+
 # Minor and patch updates are grouped into one PR per ecosystem per week; major updates get their own PRs.
 updates:
   - package-ecosystem: "maven"
