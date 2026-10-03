@@ -3,7 +3,8 @@ ARG TARGETARCH
 
 EXPOSE 8082
 
-# Install gosu (used by the entrypoint to drop from root to the PUID/PGID user)
+# Install gosu (used by the entrypoint to drop from root to the PUID/PGID user).
+# GOSU_VERSION and the checksums are kept up to date by .github/workflows/update-tool-versions.yml.
 ENV GOSU_VERSION=1.19
 RUN set -eux; \
     apt-get update; \
