@@ -16,6 +16,8 @@
         <quarkus.version>3.40.1</quarkus.version>
         <querydsl.version>7.7</querydsl.version>
         <rome.version>2.1.0</rome.version>
+        <jackson2.version>2.22.3</jackson2.version>
+        <jackson3.version>3.2.3</jackson3.version>
         <!-- kept up to date by .github/workflows/update-tool-versions.yml -->
         <google-java-format.version>1.36.1</google-java-format.version>
 
@@ -24,6 +26,25 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Jackson BOMs are imported before the quarkus bom so they take precedence over its Jackson versions:
+                 - jackson 2: latest security patches; also brings jackson-annotations 2.22, which jackson 3 needs
+                   (JsonApplyView) while the quarkus bom only provides 2.21
+                 - jackson 3 (tools.jackson): pulled in transitively by test dependencies (mockserver) and used by
+                   rest-assured -->
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson2.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>tools.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson3.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>io.quarkus.platform</groupId>
                 <artifactId>quarkus-bom</artifactId>
@@ -36,13 +57,6 @@
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
                 <version>4.36.2</version>
-            </dependency>
-            <!-- the quarkus bom pins jackson-annotations 2.21, but jackson 3 (tools.jackson, pulled in by test dependencies and
-                 used by rest-assured) needs 2.22+ (JsonApplyView); annotations are backward compatible with older 2.x databind -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>2.22</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
