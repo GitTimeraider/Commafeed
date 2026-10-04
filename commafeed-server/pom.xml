@@ -26,9 +26,10 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- Jackson BOMs are imported before the quarkus bom so they take precedence over its Jackson versions:
-                 - jackson 2: latest security patches; also brings jackson-annotations 2.22, which jackson 3 needs
-                   (JsonApplyView) while the quarkus bom only provides 2.21
+            <!-- Jackson BOMs are imported before the quarkus bom so they take precedence over its (sometimes older) Jackson
+                 versions. Dependabot keeps jackson2.version and jackson3.version on the latest release:
+                 - jackson 2: security patches as soon as they're released; also brings jackson-annotations 2.22+,
+                   which jackson 3 needs (JsonApplyView) while the quarkus bom only provides 2.21
                  - jackson 3 (tools.jackson): pulled in transitively by test dependencies (mockserver) and used by
                    rest-assured -->
             <dependency>
