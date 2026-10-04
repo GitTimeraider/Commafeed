@@ -3,10 +3,13 @@ version: 2
 # Versions Dependabot cannot see (Node.js/npm for the client build, google-java-format, the Maven wrapper, gosu) are
 # updated by .github/workflows/update-tool-versions.yml.
 
+# All update PRs target the develop branch. This file itself must stay on the default branch (master), which is the
+# only place Dependabot reads it from.
 # Minor and patch updates are grouped into one PR per ecosystem per week; major updates get their own PRs.
 updates:
   - package-ecosystem: "maven"
     directory: "/"
+    target-branch: "develop"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -23,6 +26,7 @@ updates:
 
   - package-ecosystem: "npm"
     directory: "/commafeed-client"
+    target-branch: "develop"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -36,6 +40,7 @@ updates:
 
   - package-ecosystem: "docker"
     directory: "/commafeed-server/src/main/docker"
+    target-branch: "develop"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -45,6 +50,7 @@ updates:
 
   - package-ecosystem: "github-actions"
     directory: "/"
+    target-branch: "develop"
     schedule:
       interval: "weekly"
       day: "monday"
