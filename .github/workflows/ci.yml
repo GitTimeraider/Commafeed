@@ -48,10 +48,10 @@ jobs:
       # -H:PageSize=65536 is repeated from application.properties because this flag replaces it.
       # Pull requests (including Dependabot's) and the automated/* branches of update-tool-versions.yml run the
       # server and client unit tests (~20s) but skip the slow Playwright integration tests; pushes skip all tests so
-      # images publish faster.
+      # images publish faster. Failsafe 3.6+ no longer honors -DskipTests, so pushes also pass -DskipITs.
       - name: Build with Maven
         env:
-          TEST_FLAGS: ${{ (github.event_name == 'pull_request' || startsWith(github.ref_name, 'automated/')) && '-DskipITs' || '-DskipTests' }}
+          TEST_FLAGS: ${{ (github.event_name == 'pull_request' || startsWith(github.ref_name, 'automated/')) && '-DskipITs' || '-DskipTests -DskipITs' }}
         run: >
           mvn --batch-mode --no-transfer-progress install -Pnative -Ph2 $TEST_FLAGS
           -Dquarkus.native.additional-build-args=-H:PageSize=65536,-Ob
