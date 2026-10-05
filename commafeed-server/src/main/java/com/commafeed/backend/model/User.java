@@ -53,6 +53,8 @@ public class User extends AbstractModel {
 
     @Column private Instant lastForceRefresh;
 
+    // legacy single public page, moved to PublicPage on startup by
+    // PublicPageService#migrateLegacyPublicPages
     @Column(name = "public_page_enabled", nullable = false)
     private boolean publicPageEnabled;
 

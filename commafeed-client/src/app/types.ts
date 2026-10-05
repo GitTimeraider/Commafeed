@@ -132,6 +132,8 @@ export interface GetEntriesPaginatedRequest extends GetEntriesRequest {
 }
 
 export interface PublicPageSettings {
+    id?: number
+    name?: string
     enabled: boolean
     showUncategorized: boolean
     token?: string
@@ -148,6 +150,7 @@ export interface PublicSubscription {
 export interface PublicCategory {
     id: string
     name: string
+    pageName?: string
     children: PublicCategory[]
     feeds: PublicSubscription[]
 }

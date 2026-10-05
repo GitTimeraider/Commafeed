@@ -5,6 +5,7 @@ import com.commafeed.CommaFeedConstants;
 import com.commafeed.backend.Digests;
 import com.commafeed.backend.Urls;
 import com.commafeed.backend.dao.FeedCategoryDAO;
+import com.commafeed.backend.dao.PublicPageDAO;
 import com.commafeed.backend.dao.UserDAO;
 import com.commafeed.backend.dao.UserRoleDAO;
 import com.commafeed.backend.dao.UserSettingsDAO;
@@ -13,6 +14,7 @@ import com.commafeed.backend.model.FeedCategory;
 import com.commafeed.backend.model.FeedEntry;
 import com.commafeed.backend.model.FeedEntryContent;
 import com.commafeed.backend.model.FeedSubscription;
+import com.commafeed.backend.model.PublicPage;
 import com.commafeed.backend.model.User;
 import com.commafeed.backend.model.UserRole;
 import com.commafeed.backend.model.UserRole.Role;
@@ -32,6 +34,7 @@ import com.commafeed.frontend.model.PublicPageSettings;
 import com.commafeed.frontend.model.Settings;
 import com.commafeed.frontend.model.Settings.PushNotificationSettings;
 import com.commafeed.frontend.model.UserModel;
+import com.commafeed.frontend.model.request.IDRequest;
 import com.commafeed.frontend.model.request.InitialSetupRequest;
 import com.commafeed.frontend.model.request.PasswordResetConfirmationRequest;
 import com.commafeed.frontend.model.request.PasswordResetRequest;
@@ -88,6 +91,7 @@ public class UserREST {
     private final AuthenticationContext authenticationContext;
     private final UserDAO userDAO;
     private final FeedCategoryDAO feedCategoryDAO;
+    private final PublicPageDAO publicPageDAO;
     private final UserRoleDAO userRoleDAO;
     private final UserSettingsDAO userSettingsDAO;
     private final UserService userService;
@@ -271,58 +275,113 @@ public class UserREST {
         return Response.ok().build();
     }
 
+    @Path("/publicPages")
+    @GET
+    @Transactional
+    @Operation(
+            summary = "Retrieve public pages",
+            description = "Retrieve the settings of all public, read-only pages of the user")
+    public List<PublicPageSettings> getPublicPages() {
+        User user = authenticationContext.getCurrentUser();
+        return publicPageDAO.findAll(user).stream().map(UserREST::toPublicPageSettings).toList();
+    }
+
+    @Path("/publicPages/save")
+    @POST
+    @Transactional
+    @Operation(
+            summary = "Create or update a public page",
+            description =
+                    "Create a public page when no id is given, update the public page with that id otherwise. Returns the id of the page.")
+    public Response savePublicPage(@Parameter(required = true) PublicPageSettings settings) {
+        Preconditions.checkNotNull(settings);
+
+        User user = authenticationContext.getCurrentUser();
+        PublicPage page;
+        if (settings.getId() == null) {
+            page = newPublicPage(user);
+        } else {
+            page = publicPageDAO.findById(user, settings.getId());
+            if (page == null) {
+                return Response.status(Status.NOT_FOUND).build();
+            }
+        }
+        applyPublicPageSettings(user, page, settings);
+        return Response.ok(page.getId()).build();
+    }
+
+    @Path("/publicPages/delete")
+    @POST
+    @Transactional
+    @Operation(
+            summary = "Delete a public page",
+            description = "The address of the page stops working")
+    public Response deletePublicPage(@Parameter(required = true) IDRequest req) {
+        Preconditions.checkNotNull(req);
+        Preconditions.checkNotNull(req.getId());
+
+        User user = authenticationContext.getCurrentUser();
+        PublicPage page = publicPageDAO.findById(user, req.getId());
+        if (page == null) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        publicPageDAO.delete(page);
+        return Response.ok().build();
+    }
+
+    @Path("/publicPages/regenerateToken")
+    @POST
+    @Transactional
+    @Operation(
+            summary = "Generate a new address for a public page",
+            description =
+                    "Generate a new secret token for the address of the public page. The previous address stops working.")
+    public Response regeneratePublicPageToken(@Parameter(required = true) IDRequest req) {
+        Preconditions.checkNotNull(req);
+        Preconditions.checkNotNull(req.getId());
+
+        User user = authenticationContext.getCurrentUser();
+        PublicPage page = publicPageDAO.findById(user, req.getId());
+        if (page == null) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        page.setToken(PublicPageService.generateToken());
+        return Response.ok().build();
+    }
+
+    // the endpoints below predate multiple public pages, they act on the first public page of the
+    // user and are kept for compatibility with existing API clients
+
     @Path("/publicPage")
     @GET
     @Transactional
     @Operation(
-            summary = "Retrieve public page settings",
-            description = "Retrieve the settings of the public, read-only page of the user")
+            summary = "Retrieve the settings of the first public page",
+            description =
+                    "Retrieve the settings of the first public, read-only page of the user. Use /user/publicPages to manage all public pages.")
     public PublicPageSettings getPublicPageSettings() {
         User user = authenticationContext.getCurrentUser();
-        if (user.isPublicPageEnabled() && user.getPublicPageToken() == null) {
-            // the public page was enabled before tokens were introduced
-            user.setPublicPageToken(PublicPageService.generateToken());
-            userDAO.merge(user);
-        }
-
-        PublicPageSettings settings = new PublicPageSettings();
-        settings.setEnabled(user.isPublicPageEnabled());
-        settings.setShowUncategorized(user.isPublicPageUncategorized());
-        settings.setToken(user.getPublicPageToken());
-        settings.setCategoryIds(
-                feedCategoryDAO.findAll(user).stream()
-                        .filter(FeedCategory::isPublicCategory)
-                        .map(FeedCategory::getId)
-                        .toList());
-        return settings;
+        return findFirstPublicPage(user)
+                .map(UserREST::toPublicPageSettings)
+                .orElseGet(PublicPageSettings::new);
     }
 
     @Path("/publicPage")
     @POST
     @Transactional
     @Operation(
-            summary = "Save public page settings",
-            description = "Save the settings of the public, read-only page of the user")
+            summary = "Save the settings of the first public page",
+            description =
+                    "Save the settings of the first public, read-only page of the user, creating it if needed. Use /user/publicPages to manage all public pages.")
     public Response savePublicPageSettings(
             @Parameter(required = true) PublicPageSettings settings) {
         Preconditions.checkNotNull(settings);
 
         User user = authenticationContext.getCurrentUser();
-        user.setPublicPageEnabled(settings.isEnabled());
-        user.setPublicPageUncategorized(settings.isShowUncategorized());
-        if (user.getPublicPageToken() == null) {
-            user.setPublicPageToken(PublicPageService.generateToken());
-        }
-        userDAO.merge(user);
-
-        Set<Long> categoryIds =
-                settings.getCategoryIds() == null
-                        ? Set.of()
-                        : Set.copyOf(settings.getCategoryIds());
-        for (FeedCategory category : feedCategoryDAO.findAll(user)) {
-            category.setPublicCategory(categoryIds.contains(category.getId()));
-        }
-
+        PublicPage page = findFirstPublicPage(user).orElseGet(() -> newPublicPage(user));
+        // the name isn't part of the settings of this endpoint, keep the current one
+        settings.setName(page.getName());
+        applyPublicPageSettings(user, page, settings);
         return Response.ok().build();
     }
 
@@ -332,14 +391,54 @@ public class UserREST {
     @Consumes(MediaType.WILDCARD)
     @Transactional
     @Operation(
-            summary = "Generate a new public page address",
+            summary = "Generate a new address for the first public page",
             description =
-                    "Generate a new secret token for the address of the public page. The previous address stops working.")
-    public Response regeneratePublicPageToken() {
+                    "Generate a new secret token for the address of the first public page. The previous address stops working.")
+    public Response regenerateFirstPublicPageToken() {
         User user = authenticationContext.getCurrentUser();
-        user.setPublicPageToken(PublicPageService.generateToken());
-        userDAO.merge(user);
+        PublicPage page = findFirstPublicPage(user).orElseGet(() -> newPublicPage(user));
+        page.setToken(PublicPageService.generateToken());
         return Response.ok().build();
+    }
+
+    private Optional<PublicPage> findFirstPublicPage(User user) {
+        return publicPageDAO.findAll(user).stream().findFirst();
+    }
+
+    private PublicPage newPublicPage(User user) {
+        PublicPage page = new PublicPage();
+        page.setUser(user);
+        page.setToken(PublicPageService.generateToken());
+        publicPageDAO.persist(page);
+        return page;
+    }
+
+    private void applyPublicPageSettings(User user, PublicPage page, PublicPageSettings settings) {
+        page.setName(StringUtils.truncate(StringUtils.trimToNull(settings.getName()), 128));
+        page.setEnabled(settings.isEnabled());
+        page.setShowUncategorized(settings.isShowUncategorized());
+
+        // only keep categories of the user
+        Set<Long> requestedIds =
+                settings.getCategoryIds() == null
+                        ? Set.of()
+                        : Set.copyOf(settings.getCategoryIds());
+        page.getCategoryIds().clear();
+        feedCategoryDAO.findAll(user).stream()
+                .map(FeedCategory::getId)
+                .filter(requestedIds::contains)
+                .forEach(page.getCategoryIds()::add);
+    }
+
+    private static PublicPageSettings toPublicPageSettings(PublicPage page) {
+        PublicPageSettings settings = new PublicPageSettings();
+        settings.setId(page.getId());
+        settings.setName(page.getName());
+        settings.setEnabled(page.isEnabled());
+        settings.setShowUncategorized(page.isShowUncategorized());
+        settings.setToken(page.getToken());
+        settings.setCategoryIds(page.getCategoryIds().stream().sorted().toList());
+        return settings;
     }
 
     @Path("/profile")

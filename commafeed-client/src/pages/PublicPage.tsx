@@ -287,6 +287,16 @@ export function PublicPage() {
 
     const tree = useAsync(async () => (await client.publicPage.getTree(token)).data, [token])
 
+    const pageName = tree.result?.pageName
+    useEffect(() => {
+        if (!pageName) return
+        const previousTitle = document.title
+        document.title = `CommaFeed · ${pageName}`
+        return () => {
+            document.title = previousTitle
+        }
+    }, [pageName])
+
     if (tree.loading) return <Loader />
 
     if (tree.error || !tree.result) {
@@ -315,7 +325,16 @@ export function PublicPage() {
                 <Group h="100%" px="md" wrap="nowrap">
                     <Burger opened={navbarOpened} onClick={toggleNavbar} hiddenFrom={Constants.layout.mobileBreakpointName} size="sm" />
                     <Logo size={24} />
-                    <Title order={3}>CommaFeed</Title>
+                    {/* the name of the page is part of the title so it doesn't take any additional space */}
+                    <Title order={3} miw={0} style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        CommaFeed
+                        {root.pageName && (
+                            <Text span inherit c="dimmed" fw="normal">
+                                {" · "}
+                                {root.pageName}
+                            </Text>
+                        )}
+                    </Title>
                 </Group>
             </AppShell.Header>
 

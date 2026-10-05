@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+	<!-- A user can have several public pages. The public page settings previously stored in USERS and FEEDCATEGORIES are
+	moved to these tables on startup by PublicPageService#migrateLegacyPublicPages, keeping their token. -->
+	<changeSet id="create-public-pages-tables" author="commafeed">
+		<createTable tableName="PUBLICPAGES">
+			<column name="id" type="BIGINT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="user_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(128)" />
+			<column name="enabled" type="BOOLEAN" valueBoolean="false">
+				<constraints nullable="false" />
+			</column>
+			<column name="show_uncategorized" type="BOOLEAN" valueBoolean="false">
+				<constraints nullable="false" />
+			</column>
+			<column name="token" type="VARCHAR(64)">
+				<constraints nullable="false" unique="true" />
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="fk_publicpage_user_id" baseTableName="PUBLICPAGES" baseColumnNames="user_id"
+								 referencedTableName="USERS" referencedColumnNames="id" />
+		<createIndex tableName="PUBLICPAGES" indexName="publicpages_user_id_index">
+			<column name="user_id" />
+		</createIndex>
+
+		<createTable tableName="PUBLICPAGECATEGORIES">
+			<column name="public_page_id" type="BIGINT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="category_id" type="BIGINT">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="fk_publicpagecategory_page_id" baseTableName="PUBLICPAGECATEGORIES"
+								 baseColumnNames="public_page_id" referencedTableName="PUBLICPAGES" referencedColumnNames="id"
+								 onDelete="CASCADE" />
+		<addForeignKeyConstraint constraintName="fk_publicpagecategory_category_id" baseTableName="PUBLICPAGECATEGORIES"
+								 baseColumnNames="category_id" referencedTableName="FEEDCATEGORIES" referencedColumnNames="id"
+								 onDelete="CASCADE" />
+		<createIndex tableName="PUBLICPAGECATEGORIES" indexName="publicpagecategories_category_id_index">
+			<column name="category_id" />
+		</createIndex>
+	</changeSet>
+
+</databaseChangeLog>

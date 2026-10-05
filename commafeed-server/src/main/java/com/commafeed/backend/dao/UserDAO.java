@@ -6,6 +6,8 @@ import com.commafeed.backend.model.User;
 import jakarta.inject.Singleton;
 import jakarta.persistence.EntityManager;
 
+import java.util.List;
+
 @Singleton
 public class UserDAO extends GenericDAO<User> {
 
@@ -23,8 +25,13 @@ public class UserDAO extends GenericDAO<User> {
         return query().selectFrom(USER).where(USER.apiKey.equalsIgnoreCase(key)).fetchOne();
     }
 
-    public User findByPublicPageToken(String token) {
-        return query().selectFrom(USER).where(USER.publicPageToken.eq(token)).fetchOne();
+    /**
+     * @return the users that still have settings of the legacy single public page
+     */
+    public List<User> findWithLegacyPublicPage() {
+        return query().selectFrom(USER)
+                .where(USER.publicPageToken.isNotNull().or(USER.publicPageEnabled.isTrue()))
+                .fetch();
     }
 
     public User findByEmail(String email) {

@@ -11,14 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial")
-@Schema(description = "Public page settings")
+@Schema(description = "Settings of a public page")
 @Data
 @RegisterForReflection
 public class PublicPageSettings implements Serializable {
 
-    @Schema(
-            description = "whether the public, read-only page of this user is enabled",
-            required = true)
+    @Schema(description = "id of the public page, empty to create a new page")
+    private Long id;
+
+    @Schema(description = "optional name of the public page, shown next to the application name")
+    private String name;
+
+    @Schema(description = "whether the public, read-only page is enabled", required = true)
     private boolean enabled;
 
     @Schema(

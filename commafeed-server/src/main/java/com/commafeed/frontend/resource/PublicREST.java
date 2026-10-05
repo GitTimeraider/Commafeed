@@ -6,6 +6,7 @@ import com.commafeed.backend.model.Feed;
 import com.commafeed.backend.model.FeedCategory;
 import com.commafeed.backend.model.FeedEntryStatus;
 import com.commafeed.backend.model.FeedSubscription;
+import com.commafeed.backend.model.PublicPage;
 import com.commafeed.backend.model.User;
 import com.commafeed.backend.model.UserSettings.ReadingOrder;
 import com.commafeed.backend.service.FeedFaviconService;
@@ -45,7 +46,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-/** Read-only, unauthenticated access to the categories a user chose to make public. */
+/** Read-only, unauthenticated access to the categories a user chose to show on a public page. */
 @Path("/rest/public/{token}")
 @PermitAll
 @Produces(MediaType.APPLICATION_JSON)
@@ -73,7 +74,7 @@ public class PublicREST {
     @Transactional
     @Operation(
             summary = "Get public categories",
-            description = "Get the categories and feeds a user made public")
+            description = "Get the name of a public page and the categories and feeds shown on it")
     @APIResponse(
             responseCode = "200",
             content = {
@@ -85,12 +86,13 @@ public class PublicREST {
     public PublicCategory getTree(
             @Parameter(description = "public page token", required = true) @PathParam("token")
                     String token) {
-        User user = findUser(token);
-        PublicContent content = publicPageService.getPublicContent(user);
+        PublicPage page = findPage(token);
+        PublicContent content = publicPageService.getPublicContent(page);
 
-        PublicCategory root = buildCategory(user, null, content);
+        PublicCategory root = buildCategory(page, null, content);
         root.setId(ALL);
         root.setName(ALL);
+        root.setPageName(StringUtils.trimToNull(page.getName()));
         return root;
     }
 
@@ -125,8 +127,9 @@ public class PublicREST {
                     @DefaultValue("20")
                     @QueryParam("limit")
                     int limit) {
-        User user = findUser(token);
-        PublicContent content = publicPageService.getPublicContent(user);
+        PublicPage page = findPage(token);
+        User user = page.getUser();
+        PublicContent content = publicPageService.getPublicContent(page);
 
         offset = Math.max(0, offset);
         limit = Math.clamp(limit, 0, MAX_LIMIT);
@@ -171,7 +174,7 @@ public class PublicREST {
                             null,
                             null);
             for (FeedEntryStatus status : statuses) {
-                entries.getEntries().add(buildPublicEntry(user, status));
+                entries.getEntries().add(buildPublicEntry(page, status));
             }
         }
 
@@ -192,10 +195,9 @@ public class PublicREST {
             @Parameter(description = "public page token", required = true) @PathParam("token")
                     String token,
             @Parameter(description = "subscription id", required = true) @PathParam("id") Long id) {
-        User user = findUser(token);
         FeedSubscription subscription =
                 publicPageService
-                        .getPublicContent(user)
+                        .getPublicContent(findPage(token))
                         .findPublicSubscription(id)
                         .orElseThrow(NotFoundException::new);
 
@@ -211,8 +213,8 @@ public class PublicREST {
         return Response.ok(icon.icon(), icon.mediaType()).build();
     }
 
-    private User findUser(String token) {
-        return publicPageService.findPublicPageUser(token).orElseThrow(NotFoundException::new);
+    private PublicPage findPage(String token) {
+        return publicPageService.findPublicPage(token).orElseThrow(NotFoundException::new);
     }
 
     private static Long parseId(String id) {
@@ -223,7 +225,8 @@ public class PublicREST {
         }
     }
 
-    private PublicCategory buildCategory(User user, FeedCategory category, PublicContent content) {
+    private PublicCategory buildCategory(
+            PublicPage page, FeedCategory category, PublicContent content) {
         Long id = category == null ? null : category.getId();
 
         PublicCategory result = new PublicCategory();
@@ -235,7 +238,7 @@ public class PublicREST {
         content.publicCategories().stream()
                 .filter(c -> Objects.equals(content.getClosestPublicAncestorId(c), id))
                 .sorted(CATEGORY_COMPARATOR)
-                .map(c -> buildCategory(user, c, content))
+                .map(c -> buildCategory(page, c, content))
                 .forEach(result.getChildren()::add);
 
         content.publicSubscriptions().stream()
@@ -245,22 +248,22 @@ public class PublicREST {
                                         s.getCategory() == null ? null : s.getCategory().getId(),
                                         id))
                 .sorted(SUBSCRIPTION_COMPARATOR)
-                .map(s -> buildSubscription(user, s))
+                .map(s -> buildSubscription(page, s))
                 .forEach(result.getFeeds()::add);
 
         return result;
     }
 
-    private PublicSubscription buildSubscription(User user, FeedSubscription subscription) {
+    private PublicSubscription buildSubscription(PublicPage page, FeedSubscription subscription) {
         PublicSubscription sub = new PublicSubscription();
         sub.setId(subscription.getId());
         sub.setName(subscription.getTitle());
         sub.setFeedLink(subscription.getFeed().getLink());
-        sub.setIconUrl(getFaviconUrl(user, subscription));
+        sub.setIconUrl(getFaviconUrl(page, subscription));
         return sub;
     }
 
-    private Entry buildPublicEntry(User user, FeedEntryStatus status) {
+    private Entry buildPublicEntry(PublicPage page, FeedEntryStatus status) {
         // images are not proxied because the image proxy requires authentication
         Entry entry = Entry.build(status, false);
 
@@ -269,12 +272,12 @@ public class PublicREST {
         entry.setStarred(false);
         entry.setMarkable(false);
         entry.setTags(List.of());
-        entry.setIconUrl(getFaviconUrl(user, status.getSubscription()));
+        entry.setIconUrl(getFaviconUrl(page, status.getSubscription()));
         return entry;
     }
 
-    private static String getFaviconUrl(User user, FeedSubscription subscription) {
+    private static String getFaviconUrl(PublicPage page, FeedSubscription subscription) {
         // the token only contains hex characters, no encoding is needed
-        return "rest/public/" + user.getPublicPageToken() + "/favicon/" + subscription.getId();
+        return "rest/public/" + page.getToken() + "/favicon/" + subscription.getId();
     }
 }
