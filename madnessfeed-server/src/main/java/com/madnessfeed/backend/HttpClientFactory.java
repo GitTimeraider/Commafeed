@@ -69,7 +69,7 @@ public class HttpClientFactory {
                         .orElseGet(
                                 () ->
                                         String.format(
-                                                "MadnessFeed/%s (https://github.com/GitTimeraider/Commafeed)",
+                                                "MadnessFeed/%s (https://github.com/GitTimeraider/MadnessFeed)",
                                                 version.getVersion()));
         return newClient(config, connectionManager, userAgent);
     }

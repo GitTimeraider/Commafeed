@@ -1,7 +1,6 @@
 # MadnessFeed
 
-MadnessFeed is a fork of [CommaFeed](https://github.com/Athou/commafeed). Coming from a CommaFeed installation? See
-[Upgrading from CommaFeed](#upgrading-from-commafeed).
+Based on [CommaFeed](https://github.com/Athou/commafeed).
 
 Additional features comapred to original (Might not be fully up-to-date)
 - Option for multiple read-only public pages, each with its own address, name and selection of categories, which can be used to share different RSS feed dashboards
@@ -297,23 +296,6 @@ A new image is published for every change to the repository. To update, pull
 
 `latest` always follows the main branch. To update only when you decide to, use a tag pinned to one version, like
 `master-a1b2c3d`. Available tags are listed under **Packages** → `madnessfeed` on the repository's GitHub page.
-
-### Upgrading from CommaFeed
-
-This project used to be called CommaFeed. Existing installations keep working after the rename, but you should move to
-the new names when convenient:
-
-| Before                                | Now                                     | If you don't change it                                                   |
-|---------------------------------------|-----------------------------------------|--------------------------------------------------------------------------|
-| `ghcr.io/gittimeraider/commafeed`     | `ghcr.io/gittimeraider/madnessfeed`     | The old image name still receives the same builds for now.              |
-| Volume mounted at `/commafeed/data`   | Volume mounted at `/madnessfeed/data`   | The container detects the old path, keeps using it and logs a reminder. |
-| `COMMAFEED_*` environment variables   | `MADNESSFEED_*` environment variables   | Still read. When both are set, the `MADNESSFEED_*` one wins.            |
-| `commafeed.*` properties              | `madnessfeed.*` properties              | Still read (Quarkus may warn about them as unrecognized keys).          |
-| `com.commafeed` log categories        | `com.madnessfeed` log categories        | No longer applied: rename them.                                         |
-
-Your database, accounts, feeds, two-factor settings and passkeys are not affected. Passkeys and authenticator app
-entries created before the rename keep working; authenticator apps simply keep showing "CommaFeed" for codes added
-before the rename. Browser settings stored locally (layout, theme, ...) are carried over automatically.
 
 ## Building from source
 

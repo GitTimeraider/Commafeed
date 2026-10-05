@@ -17,10 +17,6 @@ msgstr ""
 msgid "<0>Have an account?</0><1>Log in!</1>"
 msgstr "<0>アカウントをお持ちですか?</0><1>ログインしてください!</1>"
 
-#: src/pages/app/DonatePage.tsx
-msgid "<0>Hey,</0><1>I'm Jérémie from Belgium and I've been working on CommaFeed in my free time for over 10 years now. Thanks for taking an interest in helping me continue supporting CommaFeed.</1>"
-msgstr "<0>こんにちは、</0><1>私はベルギーのジェレミーです。私はこれまで 10 年以上、CommaFeed のオープンソースプロジェクトを無料で開発してきました。あなたの関心に感謝します。</1>"
-
 #: src/pages/app/AboutPage.tsx
 msgid "<0>MadnessFeed is an open-source project. Sources are hosted on </0><1>GitHub</1>."
 msgstr "<0>MadnessFeed はオープンソースのプロジェクトです。 ソースは以下でホストされています </0><1>GitHub</1>。"
@@ -194,10 +190,6 @@ msgstr "ログインに戻る"
 #: src/components/settings/DisplaySettings.tsx
 msgid "Blue"
 msgstr "ブルー"
-
-#: src/pages/app/AboutPage.tsx
-msgid "Browser extension"
-msgstr "ブラウザー拡張"
 
 #: src/components/KeyboardShortcutsHelp.tsx
 msgid "Browser extension required for Chrome"
@@ -397,11 +389,6 @@ msgstr ""
 #: src/pages/app/SettingsPage.tsx
 msgid "Display"
 msgstr "ディスプレイ"
-
-#: src/components/header/ProfileMenu.tsx
-#: src/pages/app/DonatePage.tsx
-msgid "Donate"
-msgstr "寄付"
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "Download"

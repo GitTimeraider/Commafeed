@@ -110,21 +110,17 @@ jobs:
           REF_NAME: ${{ github.ref_name }}
           SHA: ${{ github.sha }}
         run: |
-          # The image is named after the application rather than the repository. The pre-rebranding name is
-          # still published with the same tags so existing installations keep receiving updates.
-          GHCR_IMAGES=("ghcr.io/${OWNER,,}/madnessfeed" "ghcr.io/${OWNER,,}/commafeed")
+          # The image is named after the application rather than the repository.
+          GHCR_IMAGE="ghcr.io/${OWNER,,}/madnessfeed"
           # Docker tags only allow [A-Za-z0-9_.-], can't start with '.' or '-', and are at most 128 characters.
           GHCR_TAG_REF="$(printf '%s' "$REF_NAME" | tr -c 'A-Za-z0-9_.-' '-' | sed 's/^[.-]*//' | cut -c1-100)"
           GHCR_TAG_REF="${GHCR_TAG_REF:-branch}"
           GHCR_SHORT_SHA="${SHA:0:7}"
 
-          TAGS=()
-          for GHCR_IMAGE in "${GHCR_IMAGES[@]}"; do
-            TAGS+=("${GHCR_IMAGE}:${GHCR_TAG_REF}" "${GHCR_IMAGE}:${GHCR_TAG_REF}-${GHCR_SHORT_SHA}")
-            if [ "$REF_NAME" = "master" ]; then
-              TAGS+=("${GHCR_IMAGE}:latest")
-            fi
-          done
+          TAGS=("${GHCR_IMAGE}:${GHCR_TAG_REF}" "${GHCR_IMAGE}:${GHCR_TAG_REF}-${GHCR_SHORT_SHA}")
+          if [ "$REF_NAME" = "master" ]; then
+            TAGS+=("${GHCR_IMAGE}:latest")
+          fi
 
           {
             echo "GHCR_TAGS<<EOF"

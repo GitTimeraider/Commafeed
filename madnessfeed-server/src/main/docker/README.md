@@ -1,6 +1,6 @@
 # MadnessFeed Docker image
 
-Docker image for [MadnessFeed](https://github.com/GitTimeraider/Commafeed), a self-hosted RSS reader. It runs as any
+Docker image for [MadnessFeed](https://github.com/GitTimeraider/MadnessFeed), a self-hosted RSS reader. It runs as any
 user/group you choose (`PUID`/`PGID` or `--user`) and works with `--cap-drop=ALL`.
 
 ## Quickstart
@@ -31,17 +31,6 @@ services:
     ports:
       - 8082:8082
 ```
-
-### Upgrading from a CommaFeed image
-
-This image used to be published as `ghcr.io/gittimeraider/commafeed`, with its data in `/commafeed/data`. To upgrade:
-
-- change the image to `ghcr.io/gittimeraider/madnessfeed` (the old name keeps receiving the same builds for now, but
-  may stop in the future)
-- change the volume's container path from `/commafeed/data` to `/madnessfeed/data`. If you leave it at
-  `/commafeed/data`, the container notices and keeps using it, and logs a reminder at startup
-- rename your `COMMAFEED_*` environment variables to `MADNESSFEED_*`. The old names still work, but the new ones win if
-  both are set
 
 ## Configuration
 

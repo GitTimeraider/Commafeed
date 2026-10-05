@@ -29,7 +29,7 @@ class FeedEntryFilteringServiceTest {
         service = new FeedEntryFilteringService(config);
 
         entry = new FeedEntry();
-        entry.setUrl("https://github.com/Athou/commafeed");
+        entry.setUrl("https://github.com/GitTimeraider/MadnessFeed");
 
         FeedEntryContent content = new FeedEntryContent();
         content.setAuthor("Athou");
@@ -116,7 +116,7 @@ class FeedEntryFilteringServiceTest {
 
     @Test
     void endsWithExpression() throws FeedEntryFilterException {
-        Assertions.assertTrue(service.filterMatchesEntry("url.endsWith(\"commafeed\")", entry));
+        Assertions.assertTrue(service.filterMatchesEntry("url.endsWith(\"MadnessFeed\")", entry));
     }
 
     @Test

@@ -117,7 +117,7 @@ public class FeedREST {
 
     private static FeedEntry initTestEntry() {
         FeedEntry entry = new FeedEntry();
-        entry.setUrl("https://github.com/Athou/commafeed");
+        entry.setUrl("https://github.com/GitTimeraider/MadnessFeed");
 
         FeedEntryContent content = new FeedEntryContent();
         content.setAuthor("Athou");

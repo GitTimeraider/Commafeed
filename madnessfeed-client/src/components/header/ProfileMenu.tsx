@@ -15,7 +15,6 @@ import dayjs from "dayjs"
 import { type ReactNode, useEffect, useState } from "react"
 import {
     TbChartLine,
-    TbHeartFilled,
     TbHelp,
     TbLayoutList,
     TbList,
@@ -31,7 +30,7 @@ import {
 } from "react-icons/tb"
 import { throttle } from "throttle-debounce"
 import { client } from "@/app/client"
-import { redirectToAbout, redirectToAdminUsers, redirectToDonate, redirectToMetrics, redirectToSettings } from "@/app/redirect/thunks"
+import { redirectToAbout, redirectToAdminUsers, redirectToMetrics, redirectToSettings } from "@/app/redirect/thunks"
 import { useAppDispatch, useAppSelector } from "@/app/store"
 import type { ViewMode } from "@/app/types"
 import { setFontSizePercentage, setViewMode } from "@/app/user/slice"
@@ -239,16 +238,6 @@ export function ProfileMenu(props: Readonly<ProfileMenuProps>) {
                 )}
 
                 <Divider />
-
-                <Menu.Item
-                    leftSection={<TbHeartFilled size={iconSize} color="red" />}
-                    onClick={() => {
-                        dispatch(redirectToDonate())
-                        setOpened(false)
-                    }}
-                >
-                    <Trans>Donate</Trans>
-                </Menu.Item>
 
                 <Menu.Item
                     leftSection={<TbHelp size={iconSize} />}

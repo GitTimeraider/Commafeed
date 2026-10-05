@@ -17,10 +17,6 @@ msgstr ""
 msgid "<0>Have an account?</0><1>Log in!</1>"
 msgstr "<0>Har du ett konto?</0><1>Logga in!</1>"
 
-#: src/pages/app/DonatePage.tsx
-msgid "<0>Hey,</0><1>I'm Jérémie from Belgium and I've been working on CommaFeed in my free time for over 10 years now. Thanks for taking an interest in helping me continue supporting CommaFeed.</1>"
-msgstr "<0>Hej,</0><1>jag är Jérémie från Belgien och jag har arbetat på CommaFeed på min fritid i över 10 år nu. Tack för att du visar intresse för att hjälpa mig fortsätta stödja CommaFeed.</1>"
-
 #: src/pages/app/AboutPage.tsx
 msgid "<0>MadnessFeed is an open-source project. Sources are hosted on </0><1>GitHub</1>."
 msgstr "<0>MadnessFeed är ett projekt med öppen källkod. Källkoden finns på </0><1>GitHub</1>."
@@ -194,10 +190,6 @@ msgstr "Tillbaka till inloggning"
 #: src/components/settings/DisplaySettings.tsx
 msgid "Blue"
 msgstr "Blå"
-
-#: src/pages/app/AboutPage.tsx
-msgid "Browser extension"
-msgstr "Webbläsartillägg"
 
 #: src/components/KeyboardShortcutsHelp.tsx
 msgid "Browser extension required for Chrome"
@@ -397,11 +389,6 @@ msgstr ""
 #: src/pages/app/SettingsPage.tsx
 msgid "Display"
 msgstr "Visa"
-
-#: src/components/header/ProfileMenu.tsx
-#: src/pages/app/DonatePage.tsx
-msgid "Donate"
-msgstr "Donera"
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "Download"

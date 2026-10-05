@@ -34,5 +34,4 @@ RUN chmod +x /madnessfeed/madnessfeed /madnessfeed/entrypoint.sh
 WORKDIR /madnessfeed
 
 ENTRYPOINT ["/madnessfeed/entrypoint.sh"]
-# absolute path: the entrypoint may change the working directory to the legacy /commafeed data location
-CMD ["/madnessfeed/madnessfeed"]
+CMD ["./madnessfeed"]
