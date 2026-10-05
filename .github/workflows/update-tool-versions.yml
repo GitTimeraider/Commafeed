@@ -17,6 +17,7 @@ concurrency:
 env:
   BRANCH: automated/tool-versions
   BASE: develop
+  JAVA_VERSION: 25
 
 jobs:
   update:
@@ -31,6 +32,15 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.BASE }}
+
+      # Same JDK as the ci workflow: the script runs Maven for the wrapper update and to check google-java-format
+      # updates with the spotless plugin, and the runner's default JDK is too old for recent google-java-format.
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@27b360dbb857524eaf0b4c4cef364d38e5b4f173 # v1.6.7
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: "graalvm"
+          cache: "maven"
 
       - name: Update versions
         env:
@@ -64,19 +74,24 @@ jobs:
           git switch -c "$BRANCH"
           git commit -a -m "$TITLE" -m "$(cat "$CHANGES_FILE")"
 
-          # Nothing new since the last run: leave the branch and its CI results alone
-          if git fetch --depth=1 origin "$BRANCH" 2>/dev/null && git diff --quiet FETCH_HEAD HEAD; then
+          PR=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+
+          # Nothing new since the last run: leave the branch and its CI results alone. Without an open pull request
+          # (opening it failed last time) the branch is still re-pushed so the pull request is retried.
+          if [ -n "$PR" ] && git fetch --depth=1 origin "$BRANCH" 2>/dev/null && git diff --quiet FETCH_HEAD HEAD; then
             echo "$BRANCH already has these versions"
             exit 0
           fi
 
           git push --force origin "$BRANCH"
 
-          PR=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
           if [ -n "$PR" ]; then
             gh pr edit "$PR" --title "$TITLE" --body-file "$RUNNER_TEMP/body.md"
-          else
-            gh pr create --base "$BASE" --head "$BRANCH" --title "$TITLE" --body-file "$RUNNER_TEMP/body.md"
+          elif ! gh pr create --base "$BASE" --head "$BRANCH" --title "$TITLE" --body-file "$RUNNER_TEMP/body.md"; then
+            echo "::error::$BRANCH was pushed but the pull request could not be opened. If the error above says" \
+              "GitHub Actions is not permitted to create pull requests, enable \"Allow GitHub Actions to create and" \
+              "approve pull requests\" in Settings → Actions → General → Workflow permissions, then re-run this workflow."
+            exit 1
           fi
 
           gh workflow run ci.yml --ref "$BRANCH"

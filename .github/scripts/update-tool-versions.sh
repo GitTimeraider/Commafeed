@@ -51,12 +51,21 @@ if is_newer "$current" "$latest"; then
 	sed -i "s|<npm.version>$current</npm.version>|<npm.version>$latest</npm.version>|" "$CLIENT_POM"
 fi
 
-# google-java-format used by the spotless plugin: latest stable release
+# google-java-format used by the spotless plugin: latest stable release. Spotless calls google-java-format through
+# its internal API, so a new release can break the Spotless version Dependabot keeps us on (1.37.0 turned
+# JavaFormatterOptions.Style into a record, which Spotless 3.10.3 fails on with NoSuchMethodError). The new version is
+# kept only if spotless:apply runs with it, which also reformats the sources for any formatting changes it brings.
+# Otherwise it's skipped until Dependabot updates Spotless.
 current=$(pom_property "$SERVER_POM" google-java-format.version)
 latest=$(maven_central_latest com/google/googlejavaformat/google-java-format '^[0-9]+\.[0-9]+(\.[0-9]+)?$')
 if is_newer "$current" "$latest"; then
-	record "google-java-format" "$current" "$latest"
 	sed -i "s|<google-java-format.version>$current</google-java-format.version>|<google-java-format.version>$latest</google-java-format.version>|" "$SERVER_POM"
+	if ./mvnw --batch-mode --no-transfer-progress --quiet --projects commafeed-server spotless:apply; then
+		record "google-java-format" "$current" "$latest"
+	else
+		echo "::warning::Skipping google-java-format $latest: the spotless plugin can't run it yet"
+		git checkout -- commafeed-server
+	fi
 fi
 
 # Maven wrapper: latest Maven 3.x (Maven 4 is a major upgrade, done by hand) and latest wrapper plugin
