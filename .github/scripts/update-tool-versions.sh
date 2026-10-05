@@ -60,12 +60,18 @@ current=$(pom_property "$SERVER_POM" google-java-format.version)
 latest=$(maven_central_latest com/google/googlejavaformat/google-java-format '^[0-9]+\.[0-9]+(\.[0-9]+)?$')
 if is_newer "$current" "$latest"; then
 	sed -i "s|<google-java-format.version>$current</google-java-format.version>|<google-java-format.version>$latest</google-java-format.version>|" "$SERVER_POM"
-	if ./mvnw --batch-mode --no-transfer-progress --quiet --projects commafeed-server spotless:apply; then
+	spotless_log=$(mktemp)
+	if ./mvnw --batch-mode --no-transfer-progress --quiet --projects commafeed-server spotless:apply >"$spotless_log" 2>&1; then
 		record "google-java-format" "$current" "$latest"
 	else
+		# the expected outcome until Spotless catches up, so its (long) output is folded away in the job log
 		echo "::warning::Skipping google-java-format $latest: the spotless plugin can't run it yet"
+		echo "::group::spotless:apply output with google-java-format $latest"
+		cat "$spotless_log"
+		echo "::endgroup::"
 		git checkout -- commafeed-server
 	fi
+	rm -f "$spotless_log"
 fi
 
 # Maven wrapper: latest Maven 3.x (Maven 4 is a major upgrade, done by hand) and latest wrapper plugin
