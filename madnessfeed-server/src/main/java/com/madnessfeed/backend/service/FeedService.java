@@ -1,0 +1,45 @@
+package com.madnessfeed.backend.service;
+
+import com.madnessfeed.backend.Digests;
+import com.madnessfeed.backend.Urls;
+import com.madnessfeed.backend.dao.FeedDAO;
+import com.madnessfeed.backend.feed.FeedUtils;
+import com.madnessfeed.backend.model.Feed;
+import com.madnessfeed.backend.model.Models;
+
+import jakarta.inject.Singleton;
+
+import lombok.RequiredArgsConstructor;
+
+import java.time.Instant;
+
+@Singleton
+@RequiredArgsConstructor
+public class FeedService {
+
+    private final FeedDAO feedDAO;
+
+    public synchronized Feed findOrCreate(String url) {
+        String normalizedUrl = Urls.normalize(url);
+        String normalizedUrlHash = Digests.sha1Hex(normalizedUrl);
+        Feed feed = feedDAO.findByUrl(normalizedUrl, normalizedUrlHash);
+        if (feed == null) {
+            feed = new Feed();
+            feed.setUrl(url);
+            feed.setNormalizedUrl(normalizedUrl);
+            feed.setNormalizedUrlHash(normalizedUrlHash);
+            feed.setDisabledUntil(Models.MINIMUM_INSTANT);
+            feedDAO.persist(feed);
+        }
+        return feed;
+    }
+
+    public void update(Feed feed) {
+        String normalized = Urls.normalize(feed.getUrl());
+        feed.setNormalizedUrl(normalized);
+        feed.setNormalizedUrlHash(Digests.sha1Hex(normalized));
+        feed.setLastUpdated(Instant.now());
+        feed.setEtagHeader(FeedUtils.truncate(feed.getEtagHeader(), 255));
+        feedDAO.merge(feed);
+    }
+}

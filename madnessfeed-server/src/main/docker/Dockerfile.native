@@ -1,0 +1,37 @@
+FROM debian:13.7@sha256:9cc080028c43b27d2074d63a5f9caf7166d731494965616c1a6d2827a004585c
+ARG TARGETARCH
+
+EXPOSE 8082
+
+# Install gosu (used by the entrypoint to drop from root to the PUID/PGID user).
+# GOSU_VERSION and the checksums are kept up to date by .github/workflows/update-tool-versions.yml.
+ENV GOSU_VERSION=1.19
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends curl ca-certificates; \
+    curl -fsSL -o /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-${TARGETARCH}"; \
+    case "${TARGETARCH}" in \
+        amd64) echo "52c8749d0142edd234e9d6bd5237dff2d81e71f43537e2f4f66f75dd4b243dd0  /usr/local/bin/gosu" | sha256sum -c -;; \
+        arm64) echo "3a8ef022d82c0bc4a98bcb144e77da714c25fcfa64dccc57f6aba7ae47ff1a44  /usr/local/bin/gosu" | sha256sum -c -;; \
+        *) echo "Unsupported architecture: ${TARGETARCH}" >&2; exit 1;; \
+    esac; \
+    chmod +x /usr/local/bin/gosu; \
+    apt-get purge -y --auto-remove curl; \
+    rm -rf /var/lib/apt/lists/*
+
+# Default user/group, overridable at runtime with the PUID/PGID environment variables
+RUN groupadd -o -g 1000 madnessfeed \
+    && useradd -o -u 1000 -g madnessfeed -M -d /madnessfeed madnessfeed \
+    && mkdir -p /madnessfeed/data \
+    && chown -R madnessfeed:madnessfeed /madnessfeed
+
+VOLUME /madnessfeed/data
+
+COPY artifacts/madnessfeed-*-${TARGETARCH}-runner /madnessfeed/madnessfeed
+COPY madnessfeed-server/src/main/docker/entrypoint.sh /madnessfeed/entrypoint.sh
+RUN chmod +x /madnessfeed/madnessfeed /madnessfeed/entrypoint.sh
+
+WORKDIR /madnessfeed
+
+ENTRYPOINT ["/madnessfeed/entrypoint.sh"]
+CMD ["./madnessfeed"]
