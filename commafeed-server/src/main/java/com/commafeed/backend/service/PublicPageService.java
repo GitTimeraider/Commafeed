@@ -2,14 +2,17 @@ package com.commafeed.backend.service;
 
 import com.commafeed.backend.dao.FeedCategoryDAO;
 import com.commafeed.backend.dao.FeedSubscriptionDAO;
+import com.commafeed.backend.dao.PublicPageDAO;
 import com.commafeed.backend.dao.UserDAO;
 import com.commafeed.backend.model.FeedCategory;
 import com.commafeed.backend.model.FeedSubscription;
+import com.commafeed.backend.model.PublicPage;
 import com.commafeed.backend.model.User;
 
 import jakarta.inject.Singleton;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,31 +27,33 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Computes what is visible on the public, read-only page of a user.
+ * Manages the public, read-only pages of users and computes what is visible on them.
  *
- * <p>Each category is individually marked as public. Only feeds that are directly in a public
- * category (or uncategorized feeds, if enabled) are visible. Private categories are never exposed,
- * a public category whose parent is private is attached to its closest public ancestor instead.
+ * <p>A user can have several public pages, each with its own address and selection of categories.
+ * Only feeds that are directly in a selected category (or uncategorized feeds, if enabled) are
+ * visible. Categories that aren't selected are never exposed, a selected category whose parent
+ * isn't selected is attached to its closest selected ancestor instead.
  */
+@Slf4j
 @Singleton
 @RequiredArgsConstructor
 public class PublicPageService {
 
     private final UserDAO userDAO;
+    private final PublicPageDAO publicPageDAO;
     private final FeedCategoryDAO feedCategoryDAO;
     private final FeedSubscriptionDAO feedSubscriptionDAO;
 
     /**
-     * @return the user owning the given public page token, only if that user is enabled and has
-     *     enabled its public page
+     * @return the public page with the given token, only if it is enabled and its user is enabled
      */
-    public Optional<User> findPublicPageUser(String token) {
+    public Optional<PublicPage> findPublicPage(String token) {
         if (StringUtils.isBlank(token)) {
             return Optional.empty();
         }
-        return Optional.ofNullable(userDAO.findByPublicPageToken(token))
-                .filter(u -> !u.isDisabled())
-                .filter(User::isPublicPageEnabled);
+        return Optional.ofNullable(publicPageDAO.findByToken(token))
+                .filter(PublicPage::isEnabled)
+                .filter(p -> !p.getUser().isDisabled());
     }
 
     /**
@@ -59,14 +64,55 @@ public class PublicPageService {
                 + UUID.randomUUID().toString().replace("-", "");
     }
 
-    public PublicContent getPublicContent(User user) {
+    /** Removes a category that is about to be deleted from the public pages of its user. */
+    public void removeCategory(User user, FeedCategory category) {
+        for (PublicPage page : publicPageDAO.findAll(user)) {
+            page.getCategoryIds().remove(category.getId());
+        }
+    }
+
+    /**
+     * Moves the settings of the single public page users had before multiple pages were supported
+     * to a {@link PublicPage}, keeping its token so that existing addresses keep working.
+     */
+    public void migrateLegacyPublicPages() {
+        for (User user : userDAO.findWithLegacyPublicPage()) {
+            List<FeedCategory> categories = feedCategoryDAO.findAll(user);
+
+            PublicPage page = new PublicPage();
+            page.setUser(user);
+            page.setEnabled(user.isPublicPageEnabled());
+            page.setShowUncategorized(user.isPublicPageUncategorized());
+            page.setToken(
+                    user.getPublicPageToken() == null
+                            ? generateToken()
+                            : user.getPublicPageToken());
+            page.setCategoryIds(
+                    categories.stream()
+                            .filter(FeedCategory::isPublicCategory)
+                            .map(FeedCategory::getId)
+                            .collect(Collectors.toCollection(HashSet::new)));
+
+            user.setPublicPageEnabled(false);
+            user.setPublicPageUncategorized(false);
+            user.setPublicPageToken(null);
+            categories.forEach(c -> c.setPublicCategory(false));
+
+            publicPageDAO.persist(page);
+            log.info("moved the public page of user {} to the public pages table", user.getName());
+        }
+    }
+
+    public PublicContent getPublicContent(PublicPage page) {
+        User user = page.getUser();
         List<FeedCategory> allCategories = feedCategoryDAO.findAll(user);
         Map<Long, FeedCategory> categoriesById =
                 allCategories.stream()
                         .collect(Collectors.toMap(FeedCategory::getId, Function.identity()));
 
+        Set<Long> selectedIds = page.getCategoryIds();
         List<FeedCategory> publicCategories =
-                allCategories.stream().filter(FeedCategory::isPublicCategory).toList();
+                allCategories.stream().filter(c -> selectedIds.contains(c.getId())).toList();
         Set<Long> publicCategoryIds =
                 publicCategories.stream().map(FeedCategory::getId).collect(Collectors.toSet());
 
@@ -75,16 +121,18 @@ public class PublicPageService {
                         .filter(
                                 s ->
                                         s.getCategory() == null
-                                                ? user.isPublicPageUncategorized()
+                                                ? page.isShowUncategorized()
                                                 : publicCategoryIds.contains(
                                                         s.getCategory().getId()))
                         .toList();
 
-        return new PublicContent(categoriesById, publicCategories, publicSubscriptions);
+        return new PublicContent(
+                categoriesById, publicCategoryIds, publicCategories, publicSubscriptions);
     }
 
     public record PublicContent(
             Map<Long, FeedCategory> categoriesById,
+            Set<Long> publicCategoryIds,
             List<FeedCategory> publicCategories,
             List<FeedSubscription> publicSubscriptions) {
 
@@ -109,7 +157,7 @@ public class PublicPageService {
                 if (parent == null) {
                     return null;
                 }
-                if (parent.isPublicCategory()) {
+                if (publicCategoryIds.contains(parentId)) {
                     return parentId;
                 }
                 parentId = getParentId(parent);

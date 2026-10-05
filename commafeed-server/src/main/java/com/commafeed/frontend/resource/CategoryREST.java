@@ -14,6 +14,7 @@ import com.commafeed.backend.model.UserSettings.ReadingMode;
 import com.commafeed.backend.model.UserSettings.ReadingOrder;
 import com.commafeed.backend.service.FeedEntryService;
 import com.commafeed.backend.service.FeedSubscriptionService;
+import com.commafeed.backend.service.PublicPageService;
 import com.commafeed.frontend.model.Category;
 import com.commafeed.frontend.model.Entries;
 import com.commafeed.frontend.model.Entry;
@@ -95,6 +96,7 @@ public class CategoryREST {
     private final FeedSubscriptionDAO feedSubscriptionDAO;
     private final FeedEntryService feedEntryService;
     private final FeedSubscriptionService feedSubscriptionService;
+    private final PublicPageService publicPageService;
     private final CommaFeedConfiguration config;
     private final UriInfo uri;
 
@@ -406,6 +408,7 @@ public class CategoryREST {
                 }
             }
 
+            publicPageService.removeCategory(user, cat);
             feedCategoryDAO.delete(cat);
             return Response.ok().build();
         } else {

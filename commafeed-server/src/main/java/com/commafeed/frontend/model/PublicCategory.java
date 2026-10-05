@@ -22,6 +22,11 @@ public class PublicCategory implements Serializable {
     @Schema(description = "category name", required = true)
     private String name;
 
+    @Schema(
+            description =
+                    "name of the public page, only set on the root category, if the page has one")
+    private String pageName;
+
     @Schema(description = "category children categories", required = true)
     private List<PublicCategory> children = new ArrayList<>();
 

@@ -31,6 +31,8 @@ public class FeedCategory extends AbstractModel {
 
     private int position;
 
+    // legacy single public page, moved to PublicPage on startup by
+    // PublicPageService#migrateLegacyPublicPages
     @Column(name = "public_category", nullable = false)
     private boolean publicCategory;
 }

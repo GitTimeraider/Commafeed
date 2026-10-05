@@ -2,7 +2,7 @@
 
 Fork of https://github.com/Athou/commafeed
 Additional features comapred to original (Might not be fully up-to-date)
-- Option for an public page which is read-only, only shows selected categories and can be used to share a specific RSS feed dashboard
+- Option for public pages which are read-only, each with its own address and selection of categories, and can be used to share specific RSS feed dashboards
 - Option for MFA (TOTP or passkey) added to the login (with option to reset it)
 - Additional security including the option to restrict access to the login page to specific subnets while still allowing the public page to be reached
 - Reduced memory usage
@@ -28,8 +28,8 @@ read-only selection of them on a public page, and keep your account locked down 
 
 **Sharing**
 
-- An optional **public page**: a read-only view of the categories you choose, which anyone can open without an account
-  (see [Public page](#public-page))
+- Optional **public pages**: read-only views of the categories you choose, which anyone can open without an account.
+  Each page has its own address and selection of categories (see [Public page](#public-page))
 
 **Security**
 
@@ -244,16 +244,22 @@ To protect your network, CommaFeed refuses to fetch feeds from local addresses (
 
 ## Public page
 
-The public page shows the categories you choose to anyone, without an account. Visitors can only read: they can't see
-your other categories, settings or reading activity, and they can't change anything.
+A public page shows the categories you choose to anyone, without an account. Visitors can only read: they can't see
+your other categories, settings or reading activity, and they can't change anything. You can have several public pages,
+each with its own address and its own selection of categories, for example one for tech news and one for your hobbies.
 
-1. Go to **Settings → Public page** and turn on **Enable public page**.
-2. Tick the categories and subcategories to share. Each one is selected on its own; ticking a category doesn't include
+1. Go to **Settings → Public page** and click **Add public page** (or open an existing page in the list).
+2. Optionally give the page a **Name**. It's shown next to "CommaFeed" at the top of the page and in the browser tab.
+3. Turn on **Enable public page**.
+4. Tick the categories and subcategories to share. Each one is selected on its own; ticking a category doesn't include
    its subcategories. Feeds without a category can be shared too.
-3. Click **Save**, then copy the address shown.
+5. Click **Save**, then copy the address shown.
 
-The address contains a random code instead of your user name. Click **Generate new address** at any time to replace it:
-the old address stops working immediately.
+Each address contains a random code instead of your user name. Click **Generate new address** at any time to replace it:
+the old address stops working immediately. **Delete** removes a page and its address.
+
+If you used the public page before multiple pages were supported, it's moved to the list automatically on upgrade, with
+the same address and categories.
 
 Public pages stay reachable from every network, even when
 [access is restricted to your networks](#restricting-access-to-your-networks).

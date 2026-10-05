@@ -133,9 +133,10 @@ export const client = {
         getProfile: async () => await axiosInstance.get<UserModel>("user/profile"),
         saveProfile: async (req: ProfileModificationRequest) => await axiosInstance.post("user/profile", req),
         deleteProfile: async () => await axiosInstance.post("user/profile/deleteAccount"),
-        getPublicPageSettings: async () => await axiosInstance.get<PublicPageSettings>("user/publicPage"),
-        savePublicPageSettings: async (req: PublicPageSettings) => await axiosInstance.post("user/publicPage", req),
-        regeneratePublicPageToken: async () => await axiosInstance.post("user/publicPage/regenerateToken"),
+        getPublicPages: async () => await axiosInstance.get<PublicPageSettings[]>("user/publicPages"),
+        savePublicPage: async (req: PublicPageSettings) => await axiosInstance.post<number>("user/publicPages/save", req),
+        deletePublicPage: async (req: IDRequest) => await axiosInstance.post("user/publicPages/delete", req),
+        regeneratePublicPageToken: async (req: IDRequest) => await axiosInstance.post("user/publicPages/regenerateToken", req),
     },
     publicPage: {
         getTree: async (token: string) => await publicAxiosInstance.get<PublicCategory>(`${encodeURIComponent(token)}/tree`),
