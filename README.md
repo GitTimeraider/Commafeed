@@ -12,14 +12,7 @@ Additional features comapred to original (Might not be fully up-to-date)
 A self-hosted RSS reader with a clean, distraction-free interface. Follow your feeds from any device, share
 read-only selections of them on one or more public pages, and keep your account locked down with two-factor authentication.
 
-Fork of https://github.com/Athou/commafeed
-Additional features comapred to original (Might not be fully up-to-date)
-- Option for an public page which is read-only, only shows selected categories and can be used to share a specific RSS feed dashboard
-- Option for MFA (TOTP or passkey) added to the login (with option to reset it)
-- Additional security including the option to restrict access to the login page to specific subnets while still allowing the public page to be reached
-- Reduced memory usage
-
-![CommaFeed](documentation/screenshot.png)
+![MadnessFeed](documentation/screenshot.png)
 
 ## Highlights
 
