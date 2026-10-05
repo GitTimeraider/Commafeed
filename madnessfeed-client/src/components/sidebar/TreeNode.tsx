@@ -38,7 +38,7 @@ const useStyles = tss
         } else if (hasWarning) {
             color = theme.colors.yellow[6]
         } else if (colorScheme === "dark") {
-            color = hasUnread ? theme.colors.dark[0] : theme.colors.dark[3]
+            color = hasUnread ? theme.colors.dark[0] : theme.colors.dark[2]
         } else {
             color = hasUnread ? theme.black : theme.colors.gray[6]
         }
