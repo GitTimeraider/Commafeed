@@ -253,7 +253,6 @@ class HttpGetterTest {
                 e instanceof ConnectTimeoutException
                         // A NoRouteToHostException can also be thrown in some cases
                         // depending on the underlying network configuration
-                        // https://github.com/Athou/commafeed/issues/1876
                         || e instanceof NoRouteToHostException,
                 "Expected ConnectTimeoutException or NoRouteToHostException, but got: "
                         + e.getClass().getName());

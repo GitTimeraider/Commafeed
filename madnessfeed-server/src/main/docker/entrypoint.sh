@@ -6,16 +6,6 @@ IDS_SET="${PUID+x}${PGID+x}"
 PUID="${PUID:-1000}"
 PGID="${PGID:-1000}"
 
-# Images published before the rename from CommaFeed to MadnessFeed kept their data in /commafeed/data. If a volume is
-# still mounted there, keep using it (the database lives in ./data, relative to the working directory) so that
-# upgrading doesn't silently start from an empty database.
-DATA_DIR=/madnessfeed/data
-if [ -d /commafeed/data ]; then
-    echo "entrypoint: found a volume mounted at the old /commafeed/data path, using it. Mount it at /madnessfeed/data instead when convenient." >&2
-    DATA_DIR=/commafeed/data
-    cd /commafeed
-fi
-
 if [ "$(id -u)" != "0" ]; then
     # Started with docker's --user: already unprivileged, nothing to switch.
     if [ -n "$IDS_SET" ]; then
@@ -70,7 +60,7 @@ fi
 
 # Best-effort: this is a no-op (and needs CAP_CHOWN) if the data directory
 # is already owned by PUID:PGID, e.g. pre-chowned on the host.
-chown -R madnessfeed:madnessfeed "$DATA_DIR" 2>/dev/null ||
-    echo "entrypoint: could not chown $DATA_DIR (missing CAP_CHOWN?), continuing" >&2
+chown -R madnessfeed:madnessfeed /madnessfeed/data 2>/dev/null ||
+    echo "entrypoint: could not chown /madnessfeed/data (missing CAP_CHOWN?), continuing" >&2
 
 exec gosu madnessfeed:madnessfeed "$@"

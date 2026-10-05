@@ -137,7 +137,7 @@ function Footer() {
         <Group justify="space-between">
             <Group>
                 <span>© MadnessFeed</span>
-                <Anchor variant="text" href="https://github.com/GitTimeraider/Commafeed" target="_blank" rel="noreferrer">
+                <Anchor variant="text" href="https://github.com/GitTimeraider/MadnessFeed" target="_blank" rel="noreferrer">
                     <SiGithub />
                 </Anchor>
             </Group>

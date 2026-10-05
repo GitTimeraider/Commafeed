@@ -93,7 +93,7 @@ export function AboutPage() {
                     <Box mt="md">
                         <Trans>
                             <span>MadnessFeed is an open-source project. Sources are hosted on </span>
-                            <Anchor href="https://github.com/GitTimeraider/Commafeed" target="_blank" rel="noreferrer">
+                            <Anchor href="https://github.com/GitTimeraider/MadnessFeed" target="_blank" rel="noreferrer">
                                 GitHub
                             </Anchor>
                             .
@@ -105,11 +105,6 @@ export function AboutPage() {
                 </Section>
                 <Section title={<Trans>Goodies</Trans>} icon={<TbPuzzle size={24} />}>
                     <List>
-                        <List.Item>
-                            <Anchor href={Constants.browserExtensionUrl} target="_blank" rel="noreferrer">
-                                <Trans>Browser extension</Trans>
-                            </Anchor>
-                        </List.Item>
                         <List.Item>
                             <Trans>Subscribe URL</Trans>
                             <span> </span>

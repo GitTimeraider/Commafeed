@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/react/macro"
-import { Anchor, Box, Kbd, Stack, Table } from "@mantine/core"
+import { Box, Kbd, Stack, Table } from "@mantine/core"
 import { useOs } from "@mantine/hooks"
-import { Constants } from "@/app/constants"
 
 export function KeyboardShortcutsHelp() {
     const isMacOS = useOs() === "macos"
@@ -233,9 +232,7 @@ export function KeyboardShortcutsHelp() {
             </Table>
             <Box>
                 <span>* </span>
-                <Anchor href={Constants.browserExtensionUrl} target="_blank" rel="noreferrer">
-                    <Trans>Browser extension required for Chrome</Trans>
-                </Anchor>
+                <Trans>Browser extension required for Chrome</Trans>
             </Box>
         </Stack>
     )

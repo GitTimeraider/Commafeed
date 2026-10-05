@@ -5,7 +5,8 @@
 - Rename the application from CommaFeed to MadnessFeed: user interface, documentation, settings (`madnessfeed.*` /
   `MADNESSFEED_*`), Docker image (`ghcr.io/gittimeraider/madnessfeed`, data in `/madnessfeed/data`), Maven modules and
   Java packages (`com.madnessfeed`). The old `commafeed.*` / `COMMAFEED_*` settings, the old image name and the old
-  `/commafeed/data` volume path keep working. Entries below this one predate the rename and use the old name.
+  `/commafeed/data` volume path are no longer supported. Entries below this one predate the rename and use the old name.
+- Remove the Donate page, which asked for donations to the original CommaFeed author.
 - Add `madnessfeed.allowed-networks` (`MADNESSFEED_ALLOWED_NETWORKS`): when set, only clients from these networks (and
   localhost) can use the application and the login page. Clients from other networks can only open public pages.
 - Add two-factor authentication: an authenticator app (TOTP) and/or passkeys, configured in Settings > Security. A user

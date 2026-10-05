@@ -16,8 +16,7 @@ export const reducers = {
 }
 
 const loadLocalSettings = (): LocalSettings => {
-    // settings saved before the rename from CommaFeed are kept under the old key
-    const json = localStorage.getItem("madnessfeed-local-settings") ?? localStorage.getItem("commafeed-local-settings")
+    const json = localStorage.getItem("madnessfeed-local-settings")
     return {
         ...initialLocalSettings,
         ...(json ? JSON.parse(json) : {}),

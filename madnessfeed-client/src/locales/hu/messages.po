@@ -17,10 +17,6 @@ msgstr ""
 msgid "<0>Have an account?</0><1>Log in!</1>"
 msgstr "<0>Van fiókja?</0><1>Jelentkezzen be!</1>"
 
-#: src/pages/app/DonatePage.tsx
-msgid "<0>Hey,</0><1>I'm Jérémie from Belgium and I've been working on CommaFeed in my free time for over 10 years now. Thanks for taking an interest in helping me continue supporting CommaFeed.</1>"
-msgstr "<0>Szia,</0><1>Jérémie vagyok Belgiumból, és immár több mint 10 éve foglalkozom a CommaFeeddzel a szabadidőmben. Köszönöm, hogy segítesz a CommaFeed támogatásának folytatásában.</1>"
-
 #: src/pages/app/AboutPage.tsx
 msgid "<0>MadnessFeed is an open-source project. Sources are hosted on </0><1>GitHub</1>."
 msgstr "<0>A MadnessFeed egy nyílt forráskódú projekt. A források a </0><1>GitHubon</1> érhetőek el."
@@ -194,10 +190,6 @@ msgstr "Vissza a bejelentkezéshez"
 #: src/components/settings/DisplaySettings.tsx
 msgid "Blue"
 msgstr "Kék"
-
-#: src/pages/app/AboutPage.tsx
-msgid "Browser extension"
-msgstr "Böngésző kiterjesztés"
 
 #: src/components/KeyboardShortcutsHelp.tsx
 msgid "Browser extension required for Chrome"
@@ -397,11 +389,6 @@ msgstr ""
 #: src/pages/app/SettingsPage.tsx
 msgid "Display"
 msgstr "Kijelző"
-
-#: src/components/header/ProfileMenu.tsx
-#: src/pages/app/DonatePage.tsx
-msgid "Donate"
-msgstr "Adományozás"
 
 #: src/components/settings/ProfileSettings.tsx
 msgid "Download"
