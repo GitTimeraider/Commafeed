@@ -1,6 +1,8 @@
-# CommaFeed
+# MadnessFeed
 
-Fork of https://github.com/Athou/commafeed
+MadnessFeed is a fork of [CommaFeed](https://github.com/Athou/commafeed). Coming from a CommaFeed installation? See
+[Upgrading from CommaFeed](#upgrading-from-commafeed).
+
 Additional features comapred to original (Might not be fully up-to-date)
 - Option for multiple read-only public pages, each with its own address, name and selection of categories, which can be used to share different RSS feed dashboards
 - Option for MFA (TOTP or passkey) added to the login (with option to reset it)
@@ -10,7 +12,7 @@ Additional features comapred to original (Might not be fully up-to-date)
 A self-hosted RSS reader with a clean, distraction-free interface. Follow your feeds from any device, share
 read-only selections of them on one or more public pages, and keep your account locked down with two-factor authentication.
 
-![CommaFeed](documentation/screenshot.png)
+![MadnessFeed](documentation/screenshot.png)
 
 ## Highlights
 
@@ -57,10 +59,10 @@ read-only selections of them on one or more public pages, and keep your account 
 ### Docker
 
 ```sh
-docker run --name commafeed --detach --publish 8082:8082 --restart unless-stopped \
-    --volume /path/to/commafeed/data:/commafeed/data \
+docker run --name madnessfeed --detach --publish 8082:8082 --restart unless-stopped \
+    --volume /path/to/madnessfeed/data:/madnessfeed/data \
     --env PUID=99 --env PGID=100 \
-    --memory 256M ghcr.io/gittimeraider/commafeed:latest
+    --memory 256M ghcr.io/gittimeraider/madnessfeed:latest
 ```
 
 Open http://localhost:8082/. The first visit asks you to create the administrator account.
@@ -72,14 +74,14 @@ on unRAID, or the output of `id` on a regular Linux host).
 
 ```yaml
 services:
-  commafeed:
-    image: ghcr.io/gittimeraider/commafeed:latest
+  madnessfeed:
+    image: ghcr.io/gittimeraider/madnessfeed:latest
     restart: unless-stopped
     environment:
       - PUID=99
       - PGID=100
     volumes:
-      - ./data:/commafeed/data
+      - ./data:/madnessfeed/data
     deploy:
       resources:
         limits:
@@ -88,26 +90,26 @@ services:
       - 8082:8082
 ```
 
-The [Docker image guide](commafeed-server/src/main/docker/README.md) covers image tags, running with `--user` and
+The [Docker image guide](madnessfeed-server/src/main/docker/README.md) covers image tags, running with `--user` and
 `--cap-drop=ALL`, and unRAID setup.
 
-Everything CommaFeed stores (accounts, feeds, articles, two-factor settings, passkeys) lives in the database. With the
-default embedded database, that's the `/commafeed/data` volume: keep it and nothing is lost when you update or recreate
+Everything MadnessFeed stores (accounts, feeds, articles, two-factor settings, passkeys) lives in the database. With the
+default embedded database, that's the `/madnessfeed/data` volume: keep it and nothing is lost when you update or recreate
 the container.
 
 ## Configuration
 
-CommaFeed runs without any configuration. Every setting is optional and can be given in any of these ways:
+MadnessFeed runs without any configuration. Every setting is optional and can be given in any of these ways:
 
-- environment variables, in UPPER_SNAKE_CASE: `commafeed.allowed-networks` becomes `COMMAFEED_ALLOWED_NETWORKS`
+- environment variables, in UPPER_SNAKE_CASE: `madnessfeed.allowed-networks` becomes `MADNESSFEED_ALLOWED_NETWORKS`
   (this is the usual way with Docker)
 - a `config/application.properties` file in the working directory
 - a `.env` file in the working directory
-- command line arguments, like `-Dcommafeed.allowed-networks=192.168.1.0/24`
+- command line arguments, like `-Dmadnessfeed.allowed-networks=192.168.1.0/24`
 
-The properties file has one advantage: CommaFeed warns about unknown keys and typos in it.
+The properties file has one advantage: MadnessFeed warns about unknown keys and typos in it.
 
-All CommaFeed settings, with their defaults and descriptions, are listed in
+All MadnessFeed settings, with their defaults and descriptions, are listed in
 [documentation/application.properties](documentation/application.properties). The underlying framework settings
 (prefixed with `quarkus.`) are described in the [Quarkus configuration reference](https://quarkus.io/guides/all-config).
 
@@ -116,10 +118,10 @@ All CommaFeed settings, with their defaults and descriptions, are listed in
 | Environment variable                           | Purpose                                                                                                                                     |
 |------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
 | `QUARKUS_HTTP_AUTH_SESSION_ENCRYPTION_KEY`     | Secret used to encrypt the login cookie, at least 16 characters. Without it, a random key is generated at each start and everyone has to log in again after a restart. |
-| `COMMAFEED_ALLOWED_NETWORKS`                   | Networks allowed to use the application and the login page. See [Restricting access](#restricting-access-to-your-networks).               |
-| `COMMAFEED_PASSKEY_ALLOWED_FRAME_ORIGINS`      | Dashboards (e.g. Organizr) allowed to show CommaFeed in an iframe when using a passkey. See [Passkeys inside a dashboard](#passkeys-inside-a-dashboard-organizr-). |
-| `COMMAFEED_USERS_ALLOW_REGISTRATIONS`          | Whether visitors can create their own account (`false` by default).                                                                       |
-| `COMMAFEED_HTTP_CLIENT_BLOCK_LOCAL_ADDRESSES`  | Set to `false` to follow feeds hosted on your local network. See the [FAQ](#getting-access-to-local-address-blocked-when-adding-a-feed). |
+| `MADNESSFEED_ALLOWED_NETWORKS`                   | Networks allowed to use the application and the login page. See [Restricting access](#restricting-access-to-your-networks).               |
+| `MADNESSFEED_PASSKEY_ALLOWED_FRAME_ORIGINS`      | Dashboards (e.g. Organizr) allowed to show MadnessFeed in an iframe when using a passkey. See [Passkeys inside a dashboard](#passkeys-inside-a-dashboard-organizr-). |
+| `MADNESSFEED_USERS_ALLOW_REGISTRATIONS`          | Whether visitors can create their own account (`false` by default).                                                                       |
+| `MADNESSFEED_HTTP_CLIENT_BLOCK_LOCAL_ADDRESSES`  | Set to `false` to follow feeds hosted on your local network. See the [FAQ](#getting-access-to-local-address-blocked-when-adding-a-feed). |
 
 ### Using another database
 
@@ -127,9 +129,9 @@ The Docker image uses the embedded H2 database. For PostgreSQL, MySQL or MariaDB
 [build from source](#building-from-source) with the matching profile and set:
 
 - `quarkus.datasource.jdbc.url`, for example:
-    - PostgreSQL: `jdbc:postgresql://localhost:5432/commafeed`
-    - MySQL: `jdbc:mysql://localhost/commafeed?autoReconnect=true&failOverReadOnly=false&maxReconnects=20&rewriteBatchedStatements=true&timezone=UTC`
-    - MariaDB: `jdbc:mariadb://localhost/commafeed?autoReconnect=true&failOverReadOnly=false&maxReconnects=20&rewriteBatchedStatements=true&timezone=UTC`
+    - PostgreSQL: `jdbc:postgresql://localhost:5432/madnessfeed`
+    - MySQL: `jdbc:mysql://localhost/madnessfeed?autoReconnect=true&failOverReadOnly=false&maxReconnects=20&rewriteBatchedStatements=true&timezone=UTC`
+    - MariaDB: `jdbc:mariadb://localhost/madnessfeed?autoReconnect=true&failOverReadOnly=false&maxReconnects=20&rewriteBatchedStatements=true&timezone=UTC`
 - `quarkus.datasource.username`
 - `quarkus.datasource.password`
 
@@ -137,7 +139,7 @@ The Docker image uses the embedded H2 database. For PostgreSQL, MySQL or MariaDB
 
 ### Basics
 
-- CommaFeed speaks plain HTTP on port 8082. If you use it outside your home network, put it behind a reverse proxy that
+- MadnessFeed speaks plain HTTP on port 8082. If you use it outside your home network, put it behind a reverse proxy that
   provides HTTPS (Nginx Proxy Manager, Caddy, Traefik, SWAG, ...) rather than publishing the port to the internet.
 - Set `QUARKUS_HTTP_AUTH_SESSION_ENCRYPTION_KEY` to a long random secret. Anyone who knows it can forge login cookies.
 - Turn on [two-factor authentication](#two-factor-authentication) for your account.
@@ -152,7 +154,7 @@ Each user can add a second step to their login in **Settings → Security**:
   Bitwarden or any other TOTP app, then confirm with the 6-digit code it shows.
 - **Passkeys**: your phone, your computer's fingerprint reader, face recognition or PIN, or a hardware security key.
   Passkeys need HTTPS (or `http://localhost`), and each one only works on the web address it was added from. If you move
-  CommaFeed to another domain, add your passkeys again.
+  MadnessFeed to another domain, add your passkeys again.
 
 Either one is enough to log in. Once two-factor authentication is on for an account:
 
@@ -163,27 +165,27 @@ Either one is enough to log in. Once two-factor authentication is on for an acco
   like a password, and generate a new one in **Settings → Profile** if it leaks.
 
 **Lost your phone or passkey?** On the login page, enter your user name and password, click **Lost access to your
-authenticator?**, then **Write a reset code in the server logs**. CommaFeed writes a single-use code to its log, valid
+authenticator?**, then **Write a reset code in the server logs**. MadnessFeed writes a single-use code to its log, valid
 for 15 minutes. It is never shown in the browser, so only someone with access to the server can read it:
 
 ```sh
 docker logs <container-name> 2>&1 | grep "Reset code"
 ```
 
-On unRAID: **Docker** tab → click the CommaFeed icon → **Logs**. Entering the code on the login page turns two-factor
+On unRAID: **Docker** tab → click the MadnessFeed icon → **Logs**. Entering the code on the login page turns two-factor
 authentication off for that account and logs you in, so you can set it up again.
 
 ### Passkeys inside a dashboard (Organizr, ...)
 
-Browsers mark a passkey used inside an iframe of another web address, and CommaFeed refuses it by default so that
-another site can't trick you into logging in through a hidden frame. To use passkeys while CommaFeed is shown inside a
+Browsers mark a passkey used inside an iframe of another web address, and MadnessFeed refuses it by default so that
+another site can't trick you into logging in through a hidden frame. To use passkeys while MadnessFeed is shown inside a
 dashboard:
 
-1. Tell CommaFeed which dashboard to trust, as a comma-separated list of addresses (scheme, host and port only, no
+1. Tell MadnessFeed which dashboard to trust, as a comma-separated list of addresses (scheme, host and port only, no
    path):
 
    ```sh
-   --env COMMAFEED_PASSKEY_ALLOWED_FRAME_ORIGINS=https://dashboard.example.com
+   --env MADNESSFEED_PASSKEY_ALLOWED_FRAME_ORIGINS=https://dashboard.example.com
    ```
 
 2. Allow passkeys in the dashboard's iframe: it needs
@@ -201,23 +203,23 @@ dashboard:
    `'iframeAllow' => 'clipboard-read,clipboard-write,publickey-credentials-get,publickey-credentials-create',`. Reload
    Organizr in the browser. Saving the iFrame Allow setting again in Organizr's UI may drop the extra values.
 
-A rejected passkey is written to the CommaFeed log (`passkey verification failed ...`) with the reason.
+A rejected passkey is written to the MadnessFeed log (`passkey verification failed ...`) with the reason.
 
 ### Restricting access to your networks
 
-Set `COMMAFEED_ALLOWED_NETWORKS` to the networks that may use CommaFeed, as a comma-separated list of
+Set `MADNESSFEED_ALLOWED_NETWORKS` to the networks that may use MadnessFeed, as a comma-separated list of
 [CIDR ranges](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) or single addresses (IPv4 and IPv6):
 
 ```sh
---env COMMAFEED_ALLOWED_NETWORKS=192.168.1.0/24,10.8.0.0/24
+--env MADNESSFEED_ALLOWED_NETWORKS=192.168.1.0/24,10.8.0.0/24
 ```
 
-Visitors from those networks (and from the server itself) use CommaFeed normally. Everyone else can only open
+Visitors from those networks (and from the server itself) use MadnessFeed normally. Everyone else can only open
 [public pages](#public-pages). They get a "Not available from your network" page instead of the login page, and the
 server refuses every other request: logging in, the API, the mobile app APIs and live updates. Leave the variable unset
 to allow all networks, which is the default.
 
-**Behind a reverse proxy**, CommaFeed sees every request as coming from the proxy. Tell it to use the client address
+**Behind a reverse proxy**, MadnessFeed sees every request as coming from the proxy. Tell it to use the client address
 the proxy forwards, and which proxy to trust for that:
 
 ```sh
@@ -226,21 +228,21 @@ the proxy forwards, and which proxy to trust for that:
 --env QUARKUS_HTTP_PROXY_TRUSTED_PROXIES=172.18.0.5
 ```
 
-Replace `172.18.0.5` with the address of your reverse proxy as CommaFeed sees it (a single address, a CIDR range or a
+Replace `172.18.0.5` with the address of your reverse proxy as MadnessFeed sees it (a single address, a CIDR range or a
 host name). **Don't leave `QUARKUS_HTTP_PROXY_TRUSTED_PROXIES` out**: without it, anyone can claim to be on your
-network by sending a fake `X-Forwarded-For` header. CommaFeed logs a warning at startup if this happens. Make sure the
-proxy sets `X-Forwarded-For` (most do by default) and that CommaFeed's port can't be reached directly, without going
+network by sending a fake `X-Forwarded-For` header. MadnessFeed logs a warning at startup if this happens. Make sure the
+proxy sets `X-Forwarded-For` (most do by default) and that MadnessFeed's port can't be reached directly, without going
 through the proxy.
 
-**Checking which address CommaFeed sees.** Docker's networking sometimes replaces the client address with the address
+**Checking which address MadnessFeed sees.** Docker's networking sometimes replaces the client address with the address
 of the Docker network's gateway (e.g. `172.17.0.1`). Never allow a Docker network range such as `172.16.0.0/12` in
-`COMMAFEED_ALLOWED_NETWORKS`: in that situation, it would allow every visitor. To see the addresses CommaFeed sees,
-enable logging of refused requests with `QUARKUS_LOG_CATEGORY__COM_COMMAFEED_SECURITY_NETWORK__LEVEL=DEBUG`, open
-CommaFeed and look for `refused ... from <address>` in the logs.
+`MADNESSFEED_ALLOWED_NETWORKS`: in that situation, it would allow every visitor. To see the addresses MadnessFeed sees,
+enable logging of refused requests with `QUARKUS_LOG_CATEGORY__COM_MADNESSFEED_SECURITY_NETWORK__LEVEL=DEBUG`, open
+MadnessFeed and look for `refused ... from <address>` in the logs.
 
 ### Feeds on your local network
 
-To protect your network, CommaFeed refuses to fetch feeds from local addresses (see the
+To protect your network, MadnessFeed refuses to fetch feeds from local addresses (see the
 [FAQ](#getting-access-to-local-address-blocked-when-adding-a-feed)).
 
 ## Public pages
@@ -260,7 +262,7 @@ To create a page:
 
 1. Go to **Settings → Public page** and click **Add public page**. To change an existing page, click it in the list
    instead.
-2. Optionally give the page a **Name**. It's shown next to "CommaFeed" at the top of the page and in the browser tab.
+2. Optionally give the page a **Name**. It's shown next to "MadnessFeed" at the top of the page and in the browser tab.
 3. Turn on **Enable public page**.
 4. Tick the categories and subcategories to share. Each one is selected on its own; ticking a category doesn't include
    its subcategories. Feeds without a category can be shared too.
@@ -280,7 +282,7 @@ Public pages stay reachable from every network, even when
 
 ## Mobile apps
 
-CommaFeed works with mobile apps that support the Fever or Google Reader API (the latter is often listed as
+MadnessFeed works with mobile apps that support the Fever or Google Reader API (the latter is often listed as
 "FreshRSS" or "Google Reader API" in apps).
 
 1. Open **Settings → Profile** and generate an **API key** if you don't have one yet.
@@ -290,11 +292,28 @@ CommaFeed works with mobile apps that support the Fever or Google Reader API (th
 ## Updating
 
 A new image is published for every change to the repository. To update, pull
-`ghcr.io/gittimeraider/commafeed:latest` and recreate the container. On unRAID: **Docker** tab →
+`ghcr.io/gittimeraider/madnessfeed:latest` and recreate the container. On unRAID: **Docker** tab →
 **Check for Updates** → **Apply Update**. Database changes are applied automatically at startup.
 
 `latest` always follows the main branch. To update only when you decide to, use a tag pinned to one version, like
-`master-a1b2c3d`. Available tags are listed under **Packages** → `commafeed` on the repository's GitHub page.
+`master-a1b2c3d`. Available tags are listed under **Packages** → `madnessfeed` on the repository's GitHub page.
+
+### Upgrading from CommaFeed
+
+This project used to be called CommaFeed. Existing installations keep working after the rename, but you should move to
+the new names when convenient:
+
+| Before                                | Now                                     | If you don't change it                                                   |
+|---------------------------------------|-----------------------------------------|--------------------------------------------------------------------------|
+| `ghcr.io/gittimeraider/commafeed`     | `ghcr.io/gittimeraider/madnessfeed`     | The old image name still receives the same builds for now.              |
+| Volume mounted at `/commafeed/data`   | Volume mounted at `/madnessfeed/data`   | The container detects the old path, keeps using it and logs a reminder. |
+| `COMMAFEED_*` environment variables   | `MADNESSFEED_*` environment variables   | Still read. When both are set, the `MADNESSFEED_*` one wins.            |
+| `commafeed.*` properties              | `madnessfeed.*` properties              | Still read (Quarkus may warn about them as unrecognized keys).          |
+| `com.commafeed` log categories        | `com.madnessfeed` log categories        | No longer applied: rename them.                                         |
+
+Your database, accounts, feeds, two-factor settings and passkeys are not affected. Passkeys and authenticator app
+entries created before the rename keep working; authenticator apps simply keep showing "CommaFeed" for codes added
+before the rename. Browser settings stored locally (layout, theme, ...) are carried over automatically.
 
 ## Building from source
 
@@ -307,16 +326,16 @@ A new image is published for every change to the repository. To update, pull
   or Docker/Podman to build inside a container.
 - `-DskipTests` skips the tests for a faster build.
 
-The result is in `commafeed-server/target/`:
+The result is in `madnessfeed-server/target/`:
 
-- `commafeed-<version>-<database>-jvm.zip`: extract it and run `java -jar quarkus-run.jar` (Java 25)
-- `commafeed-<version>-<database>-<platform>-<arch>-runner`: the native executable, if you used `-Pnative`
+- `madnessfeed-<version>-<database>-jvm.zip`: extract it and run `java -jar quarkus-run.jar` (Java 25)
+- `madnessfeed-<version>-<database>-<platform>-<arch>-runner`: the native executable, if you used `-Pnative`
 
 The native executable is recommended: it starts faster and uses less memory.
 
 ### Memory usage
 
-The native build runs well within 256 MB. You can cap its memory with `-Xmx`, e.g. `./commafeed-runner -Xmx256m`.
+The native build runs well within 256 MB. You can cap its memory with `-Xmx`, e.g. `./madnessfeed-runner -Xmx256m`.
 
 With the Java build, `-Xmx256m` caps the memory too. To make Java give unused memory back to the system, add:
 
@@ -326,9 +345,9 @@ With the Java build, `-Xmx256m` caps the memory too. To make Java give unused me
 
 ### Getting "Access to local address blocked" when adding a feed
 
-CommaFeed refuses to fetch feeds from local and private addresses, so that users can't use it to reach other services
+MadnessFeed refuses to fetch feeds from local and private addresses, so that users can't use it to reach other services
 on your network ([server-side request forgery](https://en.wikipedia.org/wiki/Server-side_request_forgery)). If you
-need feeds from your local network, set `COMMAFEED_HTTP_CLIENT_BLOCK_LOCAL_ADDRESSES=false`, but only if you trust
+need feeds from your local network, set `MADNESSFEED_HTTP_CLIENT_BLOCK_LOCAL_ADDRESSES=false`, but only if you trust
 every user of your instance.
 
 ### I have to log in again after every restart
@@ -337,12 +356,12 @@ Set `QUARKUS_HTTP_AUTH_SESSION_ENCRYPTION_KEY` to a fixed secret of at least 16 
 
 ### Passkeys don't work
 
-Passkeys need a secure connection: open CommaFeed over HTTPS (through your reverse proxy), or on `http://localhost`. A
+Passkeys need a secure connection: open MadnessFeed over HTTPS (through your reverse proxy), or on `http://localhost`. A
 passkey only works on the exact web address it was added from.
 
 ### Listening on a single network interface
 
-CommaFeed listens on all interfaces. To limit it, set `quarkus.http.host`. When you set it to a local address like
+MadnessFeed listens on all interfaces. To limit it, set `quarkus.http.host`. When you set it to a local address like
 `127.0.0.1`, host validation turns on automatically, which blocks requests coming through a reverse proxy. Allow your
 public host name to fix it:
 
@@ -355,28 +374,28 @@ quarkus.http.host-validation.allowed-hosts=rss.example.com
 
 ## Translations
 
-Translations are in [commafeed-client/src/locales](commafeed-client/src/locales). To add a language:
+Translations are in [madnessfeed-client/src/locales](madnessfeed-client/src/locales). To add a language:
 
 1. Add its two-letter [ISO 639-1 code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) to the `locales` list in
-   `commafeed-client/.linguirc` and `commafeed-client/src/i18n.ts`.
-2. Run `npm run i18n:extract` in `commafeed-client`.
-3. Translate the new `commafeed-client/src/locales/<code>/messages.po` file.
+   `madnessfeed-client/.linguirc` and `madnessfeed-client/src/i18n.ts`.
+2. Run `npm run i18n:extract` in `madnessfeed-client`.
+3. Translate the new `madnessfeed-client/src/locales/<code>/messages.po` file.
 
 ## Development
 
-The project has two parts: a Java backend ([Quarkus](https://quarkus.io/)) in `commafeed-server` and a
-React/TypeScript frontend in `commafeed-client`.
+The project has two parts: a Java backend ([Quarkus](https://quarkus.io/)) in `madnessfeed-server` and a
+React/TypeScript frontend in `madnessfeed-client`.
 
-**Backend**: open `commafeed-server` in a Java IDE with the Lombok plugin, then run `./mvnw quarkus:dev`.
+**Backend**: open `madnessfeed-server` in a Java IDE with the Lombok plugin, then run `./mvnw quarkus:dev`.
 
-**Frontend**: in `commafeed-client`, run `npm install`, then `npm run dev`.
+**Frontend**: in `madnessfeed-client`, run `npm install`, then `npm run dev`.
 
 The development server runs on http://localhost:8082 and forwards API requests to the backend on port 8083.
 
 Before sending changes, run the checks that CI runs:
 
-- `./mvnw -pl commafeed-server spotless:apply verify` for the backend (formatting, checkstyle, tests)
-- `npm run lint` and `npm run test` in `commafeed-client` for the frontend
+- `./mvnw -pl madnessfeed-server spotless:apply verify` for the backend (formatting, checkstyle, tests)
+- `npm run lint` and `npm run test` in `madnessfeed-client` for the frontend
 
 ### CI and images
 
@@ -389,7 +408,7 @@ The [ci workflow](.github/workflows/ci.yml) runs:
 To publish a fresh image without changing anything, for example to pick up updated base image packages, open the
 **Actions** tab, choose **Rebuild Docker image**, click **Run workflow** and pick a branch.
 
-Each push leaves images in the registry. To clean them up, open **Packages** → `commafeed` on the repository's GitHub
+Each push leaves images in the registry. To clean them up, open **Packages** → `madnessfeed` on the repository's GitHub
 page and delete the versions you no longer need. Don't delete the one tagged `latest` or one your server is pinned to.
 
 Dependencies are checked weekly by Dependabot.

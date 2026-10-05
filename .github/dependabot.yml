@@ -18,14 +18,14 @@ updates:
         update-types: ["minor", "patch"]
     ignore:
       # Our own client module, not published to Maven Central.
-      - dependency-name: "com.commafeed:commafeed-client"
+      - dependency-name: "com.madnessfeed:madnessfeed-client"
       # io.quarkus artifacts share quarkus.version with io.quarkus.platform, which is released about a week later.
       # Following io.quarkus would bump the property before the matching platform BOM exists, so only follow
       # io.quarkus.platform.
       - dependency-name: "io.quarkus:*"
 
   - package-ecosystem: "npm"
-    directory: "/commafeed-client"
+    directory: "/madnessfeed-client"
     target-branch: "develop"
     schedule:
       interval: "weekly"
@@ -39,7 +39,7 @@ updates:
         update-types: ["minor", "patch"]
 
   - package-ecosystem: "docker"
-    directory: "/commafeed-server/src/main/docker"
+    directory: "/madnessfeed-server/src/main/docker"
     target-branch: "develop"
     schedule:
       interval: "weekly"

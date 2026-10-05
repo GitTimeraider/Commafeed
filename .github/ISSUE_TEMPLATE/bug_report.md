@@ -26,7 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **Environment (please complete the following information):**
 
 - Docker image tag or commit [e.g. master-a1b2c3d]:
-- CommaFeed version [e.g. 5.1.0 (a3dcb2c)]:
+- MadnessFeed version [e.g. 5.1.0 (a3dcb2c)]:
 - Browser [e.g. chrome, firefox]:
 - Device [e.g. desktop, mobile]:
 
