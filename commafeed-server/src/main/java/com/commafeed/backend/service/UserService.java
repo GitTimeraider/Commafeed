@@ -5,6 +5,7 @@ import com.commafeed.CommaFeedConstants;
 import com.commafeed.backend.Digests;
 import com.commafeed.backend.dao.FeedCategoryDAO;
 import com.commafeed.backend.dao.FeedSubscriptionDAO;
+import com.commafeed.backend.dao.PublicPageDAO;
 import com.commafeed.backend.dao.UserDAO;
 import com.commafeed.backend.dao.UserPasskeyDAO;
 import com.commafeed.backend.dao.UserRoleDAO;
@@ -37,6 +38,7 @@ public class UserService {
     private final UserDAO userDAO;
     private final UserRoleDAO userRoleDAO;
     private final UserPasskeyDAO userPasskeyDAO;
+    private final PublicPageDAO publicPageDAO;
     private final UserSettingsDAO userSettingsDAO;
 
     private final PasswordEncryptionService encryptionService;
@@ -153,6 +155,7 @@ public class UserService {
         userSettingsDAO.delete(userSettingsDAO.findByUser(user));
         userRoleDAO.delete(userRoleDAO.findAll(user));
         userPasskeyDAO.delete(userPasskeyDAO.findAll(user));
+        publicPageDAO.delete(publicPageDAO.findAll(user));
         feedSubscriptionDAO.delete(feedSubscriptionDAO.findAll(user));
         feedCategoryDAO.delete(feedCategoryDAO.findAll(user));
         userDAO.delete(user);

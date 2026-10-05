@@ -1,7 +1,9 @@
 package com.commafeed;
 
+import com.commafeed.backend.dao.UnitOfWork;
 import com.commafeed.backend.feed.FeedRefreshEngine;
 import com.commafeed.backend.feed.ImageProxyUrl;
+import com.commafeed.backend.service.PublicPageService;
 import com.commafeed.backend.task.TaskScheduler;
 import com.commafeed.security.password.PasswordConstraintValidator;
 
@@ -24,6 +26,8 @@ public class CommaFeedApplication {
     private final FeedRefreshEngine feedRefreshEngine;
     private final TaskScheduler taskScheduler;
     private final CommaFeedConfiguration config;
+    private final UnitOfWork unitOfWork;
+    private final PublicPageService publicPageService;
 
     public void start(@Observes StartupEvent ev) {
         log.info("starting up...");
@@ -45,6 +49,8 @@ public class CommaFeedApplication {
             throw new IllegalStateException(
                     "password recovery is enabled but no public base url is set");
         }
+
+        unitOfWork.run(publicPageService::migrateLegacyPublicPages);
 
         feedRefreshEngine.start();
         taskScheduler.start();

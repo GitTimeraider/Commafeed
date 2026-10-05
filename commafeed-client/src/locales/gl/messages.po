@@ -38,6 +38,10 @@ msgstr ""
 msgid "2. Enter the 6-digit code displayed by the app"
 msgstr ""
 
+#: src/components/settings/PublicPageSettings.tsx
+msgid "A public page is a read-only page that anyone can open without logging in. It only shows the entries of the categories selected for it. Nothing else (settings, feed management, read status, starred entries, tags, ...) is accessible from it. Each public page has its own address and its own selection of categories."
+msgstr ""
+
 #: src/pages/auth/LoginPage.tsx
 msgid "A reset code has been written in the server logs. It is valid for 15 minutes."
 msgstr ""
@@ -66,6 +70,10 @@ msgstr ""
 #: src/pages/app/AddPage.tsx
 msgid "Add category"
 msgstr "Engadir categoría"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Add public page"
+msgstr ""
 
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Add user"
@@ -133,6 +141,10 @@ msgstr "Token de aplicación"
 #: src/pages/app/CategoryDetailsPage.tsx
 msgid "Are you sure you want to delete category <0>{categoryName}</0>?"
 msgstr "Tes certeza de querer eliminar a categoría <0>{categoryName}</0>?"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Are you sure you want to delete this public page? Its address will stop working."
+msgstr ""
 
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Are you sure you want to delete user <0>{userName}</0> ?"
@@ -346,6 +358,7 @@ msgstr "Data de creación"
 msgid "days"
 msgstr "días"
 
+#: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/SecuritySettings.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
 msgid "Delete"
@@ -358,6 +371,10 @@ msgstr "Eliminar conta"
 #: src/pages/app/CategoryDetailsPage.tsx
 msgid "Delete Category"
 msgstr "Eliminar categoría"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Delete public page"
+msgstr ""
 
 #: src/components/settings/SecuritySettings.tsx
 msgid "Delete the passkey"
@@ -391,6 +408,7 @@ msgstr ""
 msgid "Disable two-factor authentication and log in"
 msgstr ""
 
+#: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/SecuritySettings.tsx
 msgid "Disabled"
 msgstr ""
@@ -443,6 +461,7 @@ msgid "Enable public page"
 msgstr ""
 
 #: src/components/admin/UserEdit.tsx
+#: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/SecuritySettings.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 msgid "Enabled"
@@ -758,6 +777,7 @@ msgid "N/A"
 msgstr "N/A"
 
 #: src/components/admin/UserEdit.tsx
+#: src/components/settings/PublicPageSettings.tsx
 #: src/components/settings/SecuritySettings.tsx
 #: src/pages/admin/AdminUsersPage.tsx
 #: src/pages/app/CategoryDetailsPage.tsx
@@ -916,6 +936,10 @@ msgstr "Ficheiro OPML"
 #: src/components/content/add/ImportOpml.tsx
 msgid "OPML file is required"
 msgstr "Requírese un ficheiro OPML"
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Optional, shown next to CommaFeed at the top of the public page."
+msgstr ""
 
 #: src/pages/auth/LoginPage.tsx
 msgid "or"
@@ -1260,14 +1284,6 @@ msgstr "Proba"
 msgid "Test notification sent successfully."
 msgstr "Notificación de proba enviada correctamente."
 
-#: src/components/settings/PublicPageSettings.tsx
-msgid "The address of the public page will be shown here after saving."
-msgstr ""
-
-#: src/components/settings/PublicPageSettings.tsx
-msgid "The public page is a read-only page that anyone can open without logging in. It only shows the entries of the categories selected below. Nothing else (settings, feed management, read status, starred entries, tags, ...) is accessible from it."
-msgstr ""
-
 #: src/components/content/add/Subscribe.tsx
 msgid "The URL for the feed you want to subscribe to. You can also use the website's url directly and CommaFeed will try to find the feed in the page."
 msgstr "URL da canle á que queres subscribirte. Podes usar a url do sitio web directamente e CommaFeed intentará atopar a canle na páxina."
@@ -1343,6 +1359,10 @@ msgstr ""
 
 #: src/pages/auth/LoginPage.tsx
 msgid "Two-factor authentication will be disabled for your account. You can set it up again in the settings after logging in."
+msgstr ""
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "Unnamed public page"
 msgstr ""
 
 #: src/components/header/Header.tsx
@@ -1425,6 +1445,10 @@ msgstr ""
 
 #: src/components/settings/PublicPageSettings.tsx
 msgid "You don't have any categories yet."
+msgstr ""
+
+#: src/components/settings/PublicPageSettings.tsx
+msgid "You don't have any public pages yet."
 msgstr ""
 
 #: src/pages/app/FeedEntriesPage.tsx

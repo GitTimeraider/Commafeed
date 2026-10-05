@@ -1,7 +1,14 @@
 # CommaFeed
 
-A self-hosted RSS reader with a clean, distraction-free interface. Follow your feeds from any device, share a
-read-only selection of them on a public page, and keep your account locked down with two-factor authentication.
+Fork of https://github.com/Athou/commafeed
+Additional features comapred to original (Might not be fully up-to-date)
+- Option for multiple read-only public pages, each with its own address, name and selection of categories, which can be used to share different RSS feed dashboards
+- Option for MFA (TOTP or passkey) added to the login (with option to reset it)
+- Additional security including the option to restrict access to the login page to specific subnets while still allowing the public pages to be reached
+- Reduced memory usage
+
+A self-hosted RSS reader with a clean, distraction-free interface. Follow your feeds from any device, share
+read-only selections of them on one or more public pages, and keep your account locked down with two-factor authentication.
 
 Fork of https://github.com/Athou/commafeed
 Additional features comapred to original (Might not be fully up-to-date)
@@ -28,8 +35,9 @@ Additional features comapred to original (Might not be fully up-to-date)
 
 **Sharing**
 
-- An optional **public page**: a read-only view of the categories you choose, which anyone can open without an account
-  (see [Public page](#public-page))
+- Optional **public pages**: read-only views of the categories you choose, which anyone can open without an account.
+  You can create as many as you like, each with its own address, name and selection of categories (see
+  [Public pages](#public-pages))
 
 **Security**
 
@@ -212,7 +220,7 @@ Set `COMMAFEED_ALLOWED_NETWORKS` to the networks that may use CommaFeed, as a co
 ```
 
 Visitors from those networks (and from the server itself) use CommaFeed normally. Everyone else can only open
-[public pages](#public-page). They get a "Not available from your network" page instead of the login page, and the
+[public pages](#public-pages). They get a "Not available from your network" page instead of the login page, and the
 server refuses every other request: logging in, the API, the mobile app APIs and live updates. Leave the variable unset
 to allow all networks, which is the default.
 
@@ -242,18 +250,37 @@ CommaFeed and look for `refused ... from <address>` in the logs.
 To protect your network, CommaFeed refuses to fetch feeds from local addresses (see the
 [FAQ](#getting-access-to-local-address-blocked-when-adding-a-feed)).
 
-## Public page
+## Public pages
 
-The public page shows the categories you choose to anyone, without an account. Visitors can only read: they can't see
+A public page shows the categories you choose to anyone, without an account. Visitors can only read: they can't see
 your other categories, settings or reading activity, and they can't change anything.
 
-1. Go to **Settings → Public page** and turn on **Enable public page**.
-2. Tick the categories and subcategories to share. Each one is selected on its own; ticking a category doesn't include
-   its subcategories. Feeds without a category can be shared too.
-3. Click **Save**, then copy the address shown.
+You can create as many public pages as you like, for example one for tech news and one for your hobbies. Each page has
+its own address, its own name, its own selection of categories and its own on/off switch, so you can share different
+categories with different people, or turn one page off without affecting the others. A category can be shown on several
+pages at once.
 
-The address contains a random code instead of your user name. Click **Generate new address** at any time to replace it:
-the old address stops working immediately.
+All pages are managed in **Settings → Public page**, which lists every page with an Enabled/Disabled badge. Click a page
+to open its settings.
+
+To create a page:
+
+1. Go to **Settings → Public page** and click **Add public page**. To change an existing page, click it in the list
+   instead.
+2. Optionally give the page a **Name**. It's shown next to "CommaFeed" at the top of the page and in the browser tab.
+3. Turn on **Enable public page**.
+4. Tick the categories and subcategories to share. Each one is selected on its own; ticking a category doesn't include
+   its subcategories. Feeds without a category can be shared too.
+5. Click **Save**, then copy the address shown.
+
+Repeat these steps for every page you want. Each page gets its own address.
+
+Each address contains a random code instead of your user name. Click **Generate new address** on a page at any time to
+replace that page's address: its old address stops working immediately, the addresses of your other pages don't change.
+**Delete** removes a page and its address.
+
+If you used the public page before multiple pages were supported, it's moved to the list automatically on upgrade, with
+the same address and categories, and shows up as "Unnamed public page" until you give it a name.
 
 Public pages stay reachable from every network, even when
 [access is restricted to your networks](#restricting-access-to-your-networks).
