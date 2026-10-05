@@ -14,7 +14,7 @@
 	<properties>
 		<!-- Node.js LTS and npm are kept up to date by .github/workflows/update-tool-versions.yml -->
 		<node.version>v24.21.0</node.version>
-		<npm.version>12.0.2</npm.version>
+		<npm.version>12.2.0</npm.version>
 	</properties>
 
 	<build>
