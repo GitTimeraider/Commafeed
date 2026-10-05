@@ -7,9 +7,9 @@ set -euo pipefail
 
 CHANGES_FILE="${CHANGES_FILE:-/dev/null}"
 
-CLIENT_POM="commafeed-client/pom.xml"
-SERVER_POM="commafeed-server/pom.xml"
-DOCKERFILE="commafeed-server/src/main/docker/Dockerfile.native"
+CLIENT_POM="madnessfeed-client/pom.xml"
+SERVER_POM="madnessfeed-server/pom.xml"
+DOCKERFILE="madnessfeed-server/src/main/docker/Dockerfile.native"
 WRAPPER_PROPERTIES=".mvn/wrapper/maven-wrapper.properties"
 # Tianon Gravi's signing key for gosu releases, as published in https://github.com/tianon/gosu#installation
 GOSU_KEY_FINGERPRINT="B42F6819007F00F88E364FD4036A9C25BF357DD4"
@@ -61,7 +61,7 @@ latest=$(maven_central_latest com/google/googlejavaformat/google-java-format '^[
 if is_newer "$current" "$latest"; then
 	sed -i "s|<google-java-format.version>$current</google-java-format.version>|<google-java-format.version>$latest</google-java-format.version>|" "$SERVER_POM"
 	spotless_log=$(mktemp)
-	if ./mvnw --batch-mode --no-transfer-progress --quiet --projects commafeed-server spotless:apply >"$spotless_log" 2>&1; then
+	if ./mvnw --batch-mode --no-transfer-progress --quiet --projects madnessfeed-server spotless:apply >"$spotless_log" 2>&1; then
 		record "google-java-format" "$current" "$latest"
 	else
 		# the expected outcome until Spotless catches up, so its (long) output is folded away in the job log
@@ -69,7 +69,7 @@ if is_newer "$current" "$latest"; then
 		echo "::group::spotless:apply output with google-java-format $latest"
 		cat "$spotless_log"
 		echo "::endgroup::"
-		git checkout -- commafeed-server
+		git checkout -- madnessfeed-server
 	fi
 	rm -f "$spotless_log"
 fi

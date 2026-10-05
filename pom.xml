@@ -3,10 +3,10 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.commafeed</groupId>
-	<artifactId>commafeed</artifactId>
+	<groupId>com.madnessfeed</groupId>
+	<artifactId>madnessfeed</artifactId>
 	<version>7.3.2</version>
-	<name>CommaFeed</name>
+	<name>MadnessFeed</name>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -42,8 +42,8 @@
 	</build>
 
 	<modules>
-		<module>commafeed-client</module>
-		<module>commafeed-server</module>
+		<module>madnessfeed-client</module>
+		<module>madnessfeed-server</module>
 	</modules>
 
 </project>

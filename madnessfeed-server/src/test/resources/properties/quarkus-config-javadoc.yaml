@@ -1,0 +1,186 @@
+---
+extension:
+  groupId: "com.madnessfeed"
+  artifactId: "madnessfeed-server"
+  name: "MadnessFeed Server"
+  nameSource: "POM_XML"
+  detected: true
+elements:
+  com.madnessfeed.MadnessFeedConfiguration.HttpClient.maxResponseSize:
+    description: "If a feed is larger than this, it will be discarded to prevent memory\
+      \ issues while parsing the feed."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.passwordRecoveryEnabled:
+    description: "Enable password recovery via email.\n\nQuarkus mailer will need\
+      \ to be configured."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.imageProxyEnabled:
+    description: "If enabled, images in feed entries will be proxied through the server\
+      \ instead of accessed directly by the browser.\n\nThis is useful if madnessfeed\
+      \ is accessed through a restricting proxy that blocks some feeds that are followed."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.FeedRefresh.forceRefreshCooldownDuration:
+    description: "Duration after which the \"Fetch all my feeds now\" action is available\
+      \ again after use to avoid spamming feeds."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.Database.queryTimeout:
+    description: "Timeout applied to all database queries.\n\n0 to disable."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.Database.Cleanup.statusesMaxAge:
+    description: "Maximum age of feed entry statuses (read/unread) in the database.\
+      \ Older statuses will be deleted.\n\n0 to disable."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.FeedRefresh.filteringExpressionEvaluationTimeout:
+    description: "Duration after which the evaluation of a filtering expresion to\
+      \ mark an entry as read is considered to have timed out."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.Database.Cleanup.maxFeedCapacity:
+    description: "Maximum number of entries per feed to keep in the database.\n\n\
+      0 to disable."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.FeedRefresh.maxInterval:
+    description: "Maximum amount of time MadnessFeed will wait before refreshing a feed.\
+      \ This is used as an upper bound when:\n\n<ul>\n<li>an error occurs while refreshing\
+      \ a feed and we're backing off exponentially</li>\n<li>we receive a Cache-Control\
+      \ header from the feed</li>\n<li>we receive a Retry-After header from the feed</li>\n\
+      </ul>"
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.Database.cleanup:
+    description: "Database cleanup settings"
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.FeedRefresh.databaseThreads:
+    description: "Amount of threads used to insert new entries in the database."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.HttpClient.connectTimeout:
+    description: "Time to wait for a connection to be established."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.Database.Cleanup.batchSize:
+    description: "Rows to delete per query while cleaning up old entries."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.HttpClient.responseTimeout:
+    description: "Time to wait for the full response to be received."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.Users.strictPasswordPolicy:
+    description: "Whether to enable strict password validation (1 uppercase char,\
+      \ 1 lowercase char, 1 digit, 1 special char)."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.Database.Cleanup.maxFeedsPerUser:
+    description: "Limit the number of feeds a user can subscribe to.\n\n0 to disable."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.database:
+    description: "Database settings"
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.HttpClientCache.maximumMemorySize:
+    description: "Maximum amount of memory the cache can use."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.HttpClient.sslHandshakeTimeout:
+    description: "Time to wait for SSL handshake to complete."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.users:
+    description: "Users settings"
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.FeedRefresh.intervalEmpirical:
+    description: "If enabled, MadnessFeed will calculate the next refresh time based\
+      \ on the feed's average time between entries and the time since\nthe last entry\
+      \ was published. The interval will be sometimes between the default refresh\
+      \ interval\n(`madnessfeed.feed-refresh.interval`) and the maximum refresh interval\
+      \ (`madnessfeed.feed-refresh.max-interval`).\n\nSee {@link FeedRefreshIntervalCalculator}\
+      \ for details."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.feedRefresh:
+    description: "Feed refresh engine settings"
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.googleAuthKey:
+    description: "Google Auth key for fetching Youtube channel favicons."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.HttpClient.socketTimeout:
+    description: "Time to wait between two packets before timeout."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.FeedRefresh.httpThreads:
+    description: "Amount of http threads used to fetch feeds."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.HttpClient.connectionTimeToLive:
+    description: "Time to live for a connection in the pool."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.HttpClient.cache:
+    description: "HTTP client cache configuration"
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.websocket:
+    description: "Websocket settings"
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.googleAnalyticsTrackingCode:
+    description: "Google Analytics tracking code."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.Users.allowRegistrations:
+    description: "Whether to let users create accounts for themselves."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.Websocket.treeReloadInterval:
+    description: "If the websocket connection is disabled or the connection is lost,\
+      \ the client will reload the feed tree at this interval."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.httpClient:
+    description: "HTTP client configuration"
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.FeedRefresh.errors:
+    description: "Feed refresh engine error handling settings"
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration:
+    description: "MadnessFeed configuration"
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.HttpClient.blockLocalAddresses:
+    description: "Prevent access to local addresses to mitigate server-side request\
+      \ forgery (SSRF) attacks, which could potentially expose internal\nresources.\n\
+      \nYou may want to disable this if you subscribe to feeds that are only available\
+      \ on your local network and you trust all users of\nyour MadnessFeed instance."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.announcement:
+    description: "Message displayed in a notification at the bottom of the page."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.HttpClientCache.expiration:
+    description: "Duration after which an entry is removed from the cache."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.FeedRefreshErrorHandling.backoffInterval:
+    description: "Duration to wait before retrying after an error. Will be multiplied\
+      \ by the number of errors since the last successful fetch."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.Websocket.pingInterval:
+    description: "Interval at which the client will send a ping message on the websocket\
+      \ to keep the connection alive."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.FeedRefresh.interval:
+    description: "Default amount of time MadnessFeed will wait before refreshing a feed."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.FeedRefreshErrorHandling.retriesBeforeBackoff:
+    description: "Number of retries before backoff is applied."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.Database.Cleanup.entriesMaxAge:
+    description: "Maximum age of feed entries in the database. Older entries will\
+      \ be deleted.\n\n0 to disable."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.HttpClientCache.enabled:
+    description: "Whether to enable the cache. This cache is used to avoid spamming\
+      \ feeds in short bursts (e.g. when subscribing to a feed for the\nfirst time\
+      \ or when clicking \"fetch all my feeds now\")."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.HttpClient.idleConnectionsEvictionInterval:
+    description: "Time between eviction runs for idle connections."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.FeedRefresh.userInactivityPeriod:
+    description: "Duration after which a user is considered inactive. Feeds for inactive\
+      \ users are not refreshed until they log in again.\n\n0 to disable."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.Users.createDemoAccount:
+    description: "Whether to create a demo account the first time the app starts."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.hideFromWebCrawlers:
+    description: "Whether to expose a robots.txt file that disallows web crawlers\
+      \ and search engine indexers."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.Websocket.enabled:
+    description: "Enable websocket connection so the server can notify web clients\
+      \ that there are new entries for feeds."
+    format: "JAVADOC"
+  com.madnessfeed.MadnessFeedConfiguration.HttpClient.userAgent:
+    description: "User-Agent string that will be used by the http client, leave empty\
+      \ for the default one."
+    format: "JAVADOC"
