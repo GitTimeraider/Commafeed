@@ -1,5 +1,8 @@
 # MadnessFeed
 
+<p align="center" width="100%">
+    <img width="33%" src="https://github.com/GitTimeraider/Assets/blob/main/MadnessFeed/img/MadFeed_icon.png">
+</p>
 Based on [CommaFeed](https://github.com/Athou/commafeed).
 
 Additional features compared to original (Might not be fully up-to-date)
