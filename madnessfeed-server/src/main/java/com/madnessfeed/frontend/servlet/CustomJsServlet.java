@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
+import java.util.Objects;
+
 @Path("/custom_js.js")
 @Produces("application/javascript")
 @RequiredArgsConstructor
@@ -38,6 +40,6 @@ public class CustomJsServlet {
             return "";
         }
 
-        return settings.getCustomJs();
+        return Objects.toString(settings.getCustomJs(), "");
     }
 }
