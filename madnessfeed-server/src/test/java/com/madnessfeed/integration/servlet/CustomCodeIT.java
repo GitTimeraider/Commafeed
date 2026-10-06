@@ -63,4 +63,39 @@ class CustomCodeIT extends BaseIT {
                 .statusCode(HttpStatus.SC_OK)
                 .body(CoreMatchers.is("custom-css"));
     }
+
+    @Test
+    void unsetCustomCodeReturnsEmptyBody() {
+        Settings settings =
+                RestAssured.given()
+                        .get("rest/user/settings")
+                        .then()
+                        .statusCode(200)
+                        .extract()
+                        .as(Settings.class);
+
+        // save settings without any custom code
+        settings.setCustomJs(null);
+        settings.setCustomCss(null);
+        RestAssured.given()
+                .body(settings)
+                .contentType(ContentType.JSON)
+                .post("rest/user/settings")
+                .then()
+                .statusCode(HttpStatus.SC_OK);
+
+        // servlets must return 200 with the declared content type, not 204
+        RestAssured.given()
+                .get("custom_js.js")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .contentType(CoreMatchers.containsString("application/javascript"))
+                .body(CoreMatchers.is(""));
+        RestAssured.given()
+                .get("custom_css.css")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .contentType(CoreMatchers.containsString("text/css"))
+                .body(CoreMatchers.is(""));
+    }
 }

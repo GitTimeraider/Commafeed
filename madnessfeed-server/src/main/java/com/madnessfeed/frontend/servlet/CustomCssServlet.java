@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
+import java.util.Objects;
+
 @Path("/custom_css.css")
 @Produces("text/css")
 @RequiredArgsConstructor
@@ -38,6 +40,6 @@ public class CustomCssServlet {
             return "";
         }
 
-        return settings.getCustomCss();
+        return Objects.toString(settings.getCustomCss(), "");
     }
 }
