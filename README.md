@@ -3,7 +3,7 @@
 <p align="center" width="100%">
     <img width="33%" src="https://github.com/GitTimeraider/Assets/blob/main/MadnessFeed/img/MadFeed_icon.png">
 </p>
-Based on [CommaFeed](https://github.com/Athou/commafeed).
+Based on CommaFeed https://github.com/Athou/commafeed
 
 Additional features compared to original (Might not be fully up-to-date)
 - Option for multiple read-only public pages, each with its own address, name and selection of categories, which can be used to share different RSS feed dashboards
