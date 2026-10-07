@@ -123,6 +123,7 @@ All MadnessFeed settings, with their defaults and descriptions, are listed in
 | `QUARKUS_HTTP_AUTH_SESSION_ENCRYPTION_KEY`     | Secret used to encrypt the login cookie, at least 16 characters. Without it, a random key is generated at each start and everyone has to log in again after a restart. |
 | `MADNESSFEED_ALLOWED_NETWORKS`                   | Networks allowed to use the application and the login page. See [Restricting access](#restricting-access-to-your-networks).               |
 | `MADNESSFEED_PASSKEY_ALLOWED_FRAME_ORIGINS`      | Dashboards (e.g. Organizr) allowed to show MadnessFeed in an iframe when using a passkey. See [Passkeys inside a dashboard](#passkeys-inside-a-dashboard-organizr-). |
+| `QUARKUS_HTTP_AUTH_FORM_COOKIE_SAME_SITE`      | Set to `none` to stay logged in when MadnessFeed is shown in an iframe of a dashboard on another domain or IP address (e.g. Homarr). See [Showing MadnessFeed inside a dashboard](#showing-madnessfeed-inside-a-dashboard-homarr-organizr-). |
 | `MADNESSFEED_USERS_ALLOW_REGISTRATIONS`          | Whether visitors can create their own account (`false` by default).                                                                       |
 | `MADNESSFEED_HTTP_CLIENT_BLOCK_LOCAL_ADDRESSES`  | Set to `false` to follow feeds hosted on your local network. See the [FAQ](#getting-access-to-local-address-blocked-when-adding-a-feed). |
 
@@ -177,6 +178,37 @@ docker logs <container-name> 2>&1 | grep "Reset code"
 
 On unRAID: **Docker** tab → click the MadnessFeed icon → **Logs**. Entering the code on the login page turns two-factor
 authentication off for that account and logs you in, so you can set it up again.
+
+### Showing MadnessFeed inside a dashboard (Homarr, Organizr, ...)
+
+By default the login cookie is only sent when the page around MadnessFeed is on the same site. If MadnessFeed is at
+`https://news.example.com`, it works inside an iframe on `https://example.com` or `https://dash.example.com`, but inside
+a dashboard on another domain or on an IP address like `http://192.168.1.10:7575`, the browser drops the cookie: the
+login (including the two-factor step) succeeds and you land right back on the login page.
+
+To allow it:
+
+1. Serve MadnessFeed over HTTPS. Browsers only send cookies into another site's iframe when they are marked `Secure`,
+   and MadnessFeed only marks them so when it knows the request came over HTTPS. Behind a reverse proxy, that needs the
+   three `QUARKUS_HTTP_PROXY_*` settings shown under
+   [Restricting access to your networks](#restricting-access-to-your-networks), and the proxy must send
+   `X-Forwarded-Proto: https` (Nginx Proxy Manager, Caddy, Traefik and SWAG do by default).
+2. Add this environment variable to the MadnessFeed container and recreate it:
+
+   ```sh
+   --env QUARKUS_HTTP_AUTH_FORM_COOKIE_SAME_SITE=none
+   ```
+
+3. Log out and log in again inside the dashboard, so the browser receives the new cookie.
+
+Things to know:
+
+- This makes the browser send your login cookie to MadnessFeed from any site, so a malicious page you visit could make
+  your browser send requests to MadnessFeed while you are logged in. Only turn it on if you need it, and combine it with
+  [restricting access to your networks](#restricting-access-to-your-networks).
+- Safari, Brave and private/incognito windows block cookies in other sites' iframes entirely, whatever the setting.
+  Chrome, Edge and Firefox accept them unless you turned on "Block third-party cookies".
+- For passkeys inside the dashboard, also follow [Passkeys inside a dashboard](#passkeys-inside-a-dashboard-organizr-).
 
 ### Passkeys inside a dashboard (Organizr, ...)
 
