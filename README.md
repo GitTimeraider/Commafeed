@@ -11,6 +11,11 @@ Additional features compared to original (Might not be fully up-to-date)
 - Additional security including the option to restrict access to the login page to specific subnets while still allowing the public pages to be reached
 - Reduced memory usage
 - And more...
+- 
+### Disclaimers: 
+#### Even though guided and checked, AI is responsible for over half of the coding. 
+Also keep in mind that this software is mostly developed for personal use by myself and thus might not receive all feature requests desired and even be discontinued.
+################################################################
 
 A self-hosted RSS reader with a clean, distraction-free interface. Follow your feeds from any device, share
 read-only selections of them on one or more public pages, and keep your account locked down with two-factor authentication.
