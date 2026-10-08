@@ -5,17 +5,16 @@
 </p>
 Based on CommaFeed https://github.com/Athou/commafeed
 
+#### Disclaimer: 
+While guided and checked, AI is responsible for half of the coding. Development is also 100% for own personal use, no promises.
+__________________________________
+
 Additional features compared to original (Might not be fully up-to-date)
 - Option for multiple read-only public pages, each with its own address, name and selection of categories, which can be used to share different RSS feed dashboards
 - Option for MFA (TOTP or passkey) added to the login (with option to reset it)
 - Additional security including the option to restrict access to the login page to specific subnets while still allowing the public pages to be reached
 - Reduced memory usage
 - And more...
-- 
-### Disclaimers: 
-#### Even though guided and checked, AI is responsible for over half of the coding. 
-Also keep in mind that this software is mostly developed for personal use by myself and thus might not receive all feature requests desired and even be discontinued.
-################################################################
 
 A self-hosted RSS reader with a clean, distraction-free interface. Follow your feeds from any device, share
 read-only selections of them on one or more public pages, and keep your account locked down with two-factor authentication.
