@@ -146,4 +146,27 @@ class FeedFaviconServiceTest {
         Assertions.assertNotNull(result);
         Assertions.assertTrue(result.mediaType().isCompatible(MediaType.valueOf("image/gif")));
     }
+
+    @Test
+    void testCachesFavicon() {
+        Favicon validFavicon = new Favicon(new byte[1000], "image/png");
+        Mockito.when(fetcher1.fetch(feed)).thenReturn(validFavicon);
+
+        Assertions.assertEquals(validFavicon, service.fetchFavicon(feed));
+        Assertions.assertEquals(validFavicon, service.fetchFavicon(feed));
+
+        Mockito.verify(fetcher1, Mockito.times(1)).fetch(feed);
+    }
+
+    @Test
+    void testFetchesAgainWhenIconUrlChanges() {
+        Favicon validFavicon = new Favicon(new byte[1000], "image/png");
+        Mockito.when(fetcher1.fetch(feed)).thenReturn(validFavicon);
+
+        service.fetchFavicon(feed);
+        feed.setIconUrl("https://example.com/icon.png");
+        service.fetchFavicon(feed);
+
+        Mockito.verify(fetcher1, Mockito.times(2)).fetch(feed);
+    }
 }
