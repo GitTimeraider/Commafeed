@@ -4,7 +4,7 @@ import { MantineProvider, v8CssVariablesResolver } from "@mantine/core"
 import { ModalsProvider } from "@mantine/modals"
 import { Notifications } from "@mantine/notifications"
 import type React from "react"
-import { useEffect } from "react"
+import { lazy, Suspense, useEffect } from "react"
 import { HashRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom"
 import { Constants } from "@/app/constants"
 import { redirectTo } from "@/app/redirect/slice"
@@ -13,26 +13,42 @@ import { reloadServerInfos } from "@/app/server/thunks"
 import { useAppDispatch, useAppSelector } from "@/app/store"
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Header } from "@/components/header/Header"
+import { Loader } from "@/components/Loader"
 import { Tree } from "@/components/sidebar/Tree"
 import { useI18n } from "@/i18n"
 import { AccessRestrictedPage } from "@/pages/AccessRestrictedPage"
-import { AdminUsersPage } from "@/pages/admin/AdminUsersPage"
-import { MetricsPage } from "@/pages/admin/MetricsPage"
-import { AboutPage } from "@/pages/app/AboutPage"
-import { AddPage } from "@/pages/app/AddPage"
-import { CategoryDetailsPage } from "@/pages/app/CategoryDetailsPage"
-import { FeedDetailsPage } from "@/pages/app/FeedDetailsPage"
 import { FeedEntriesPage } from "@/pages/app/FeedEntriesPage"
 import Layout from "@/pages/app/Layout"
-import { SettingsPage } from "@/pages/app/SettingsPage"
-import { TagDetailsPage } from "@/pages/app/TagDetailsPage"
-import { InitialSetupPage } from "@/pages/auth/InitialSetupPage"
-import { LoginPage } from "@/pages/auth/LoginPage"
-import { PasswordRecoveryPage } from "@/pages/auth/PasswordRecoveryPage"
-import { PasswordResetPage } from "@/pages/auth/PasswordResetPage"
-import { RegistrationPage } from "@/pages/auth/RegistrationPage"
 import { PublicPage } from "@/pages/PublicPage"
-import { WelcomePage } from "@/pages/WelcomePage"
+
+// Pages that are rarely opened are loaded when needed, so that the pages people read their feeds on (including public
+// pages, often embedded in an iframe of another website) download and start faster. The feed details page alone
+// brings the filtering expression editor, the largest library of the app.
+function lazyPage<P extends object>(load: () => Promise<React.ComponentType<P>>) {
+    const Page = lazy(async () => ({ default: await load() }))
+    return function LazyPage(props: P) {
+        return (
+            <Suspense fallback={<Loader />}>
+                <Page {...props} />
+            </Suspense>
+        )
+    }
+}
+
+const AdminUsersPage = lazyPage(async () => (await import("@/pages/admin/AdminUsersPage")).AdminUsersPage)
+const MetricsPage = lazyPage(async () => (await import("@/pages/admin/MetricsPage")).MetricsPage)
+const AboutPage = lazyPage(async () => (await import("@/pages/app/AboutPage")).AboutPage)
+const AddPage = lazyPage(async () => (await import("@/pages/app/AddPage")).AddPage)
+const CategoryDetailsPage = lazyPage(async () => (await import("@/pages/app/CategoryDetailsPage")).CategoryDetailsPage)
+const FeedDetailsPage = lazyPage(async () => (await import("@/pages/app/FeedDetailsPage")).FeedDetailsPage)
+const SettingsPage = lazyPage(async () => (await import("@/pages/app/SettingsPage")).SettingsPage)
+const TagDetailsPage = lazyPage(async () => (await import("@/pages/app/TagDetailsPage")).TagDetailsPage)
+const InitialSetupPage = lazyPage(async () => (await import("@/pages/auth/InitialSetupPage")).InitialSetupPage)
+const LoginPage = lazyPage(async () => (await import("@/pages/auth/LoginPage")).LoginPage)
+const PasswordRecoveryPage = lazyPage(async () => (await import("@/pages/auth/PasswordRecoveryPage")).PasswordRecoveryPage)
+const PasswordResetPage = lazyPage(async () => (await import("@/pages/auth/PasswordResetPage")).PasswordResetPage)
+const RegistrationPage = lazyPage(async () => (await import("@/pages/auth/RegistrationPage")).RegistrationPage)
+const WelcomePage = lazyPage(async () => (await import("@/pages/WelcomePage")).WelcomePage)
 
 function Providers(
     props: Readonly<{
