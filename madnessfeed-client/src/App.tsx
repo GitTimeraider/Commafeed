@@ -24,24 +24,31 @@ import { PublicPage } from "@/pages/PublicPage"
 // Pages that are rarely opened are loaded when needed, so that the pages people read their feeds on (including public
 // pages, often embedded in an iframe of another website) download and start faster. The feed details page alone
 // brings the filtering expression editor, the largest library of the app.
-const AdminUsersPage = lazy(async () => ({ default: (await import("@/pages/admin/AdminUsersPage")).AdminUsersPage }))
-const MetricsPage = lazy(async () => ({ default: (await import("@/pages/admin/MetricsPage")).MetricsPage }))
-const AboutPage = lazy(async () => ({ default: (await import("@/pages/app/AboutPage")).AboutPage }))
-const AddPage = lazy(async () => ({ default: (await import("@/pages/app/AddPage")).AddPage }))
-const CategoryDetailsPage = lazy(async () => ({ default: (await import("@/pages/app/CategoryDetailsPage")).CategoryDetailsPage }))
-const FeedDetailsPage = lazy(async () => ({ default: (await import("@/pages/app/FeedDetailsPage")).FeedDetailsPage }))
-const SettingsPage = lazy(async () => ({ default: (await import("@/pages/app/SettingsPage")).SettingsPage }))
-const TagDetailsPage = lazy(async () => ({ default: (await import("@/pages/app/TagDetailsPage")).TagDetailsPage }))
-const InitialSetupPage = lazy(async () => ({ default: (await import("@/pages/auth/InitialSetupPage")).InitialSetupPage }))
-const LoginPage = lazy(async () => ({ default: (await import("@/pages/auth/LoginPage")).LoginPage }))
-const PasswordRecoveryPage = lazy(async () => ({ default: (await import("@/pages/auth/PasswordRecoveryPage")).PasswordRecoveryPage }))
-const PasswordResetPage = lazy(async () => ({ default: (await import("@/pages/auth/PasswordResetPage")).PasswordResetPage }))
-const RegistrationPage = lazy(async () => ({ default: (await import("@/pages/auth/RegistrationPage")).RegistrationPage }))
-const WelcomePage = lazy(async () => ({ default: (await import("@/pages/WelcomePage")).WelcomePage }))
-
-function LazyPage(props: Readonly<{ children: React.ReactNode }>) {
-    return <Suspense fallback={<Loader />}>{props.children}</Suspense>
+function lazyPage<P extends object>(load: () => Promise<React.ComponentType<P>>) {
+    const Page = lazy(async () => ({ default: await load() }))
+    return function LazyPage(props: P) {
+        return (
+            <Suspense fallback={<Loader />}>
+                <Page {...props} />
+            </Suspense>
+        )
+    }
 }
+
+const AdminUsersPage = lazyPage(async () => (await import("@/pages/admin/AdminUsersPage")).AdminUsersPage)
+const MetricsPage = lazyPage(async () => (await import("@/pages/admin/MetricsPage")).MetricsPage)
+const AboutPage = lazyPage(async () => (await import("@/pages/app/AboutPage")).AboutPage)
+const AddPage = lazyPage(async () => (await import("@/pages/app/AddPage")).AddPage)
+const CategoryDetailsPage = lazyPage(async () => (await import("@/pages/app/CategoryDetailsPage")).CategoryDetailsPage)
+const FeedDetailsPage = lazyPage(async () => (await import("@/pages/app/FeedDetailsPage")).FeedDetailsPage)
+const SettingsPage = lazyPage(async () => (await import("@/pages/app/SettingsPage")).SettingsPage)
+const TagDetailsPage = lazyPage(async () => (await import("@/pages/app/TagDetailsPage")).TagDetailsPage)
+const InitialSetupPage = lazyPage(async () => (await import("@/pages/auth/InitialSetupPage")).InitialSetupPage)
+const LoginPage = lazyPage(async () => (await import("@/pages/auth/LoginPage")).LoginPage)
+const PasswordRecoveryPage = lazyPage(async () => (await import("@/pages/auth/PasswordRecoveryPage")).PasswordRecoveryPage)
+const PasswordResetPage = lazyPage(async () => (await import("@/pages/auth/PasswordResetPage")).PasswordResetPage)
+const RegistrationPage = lazyPage(async () => (await import("@/pages/auth/RegistrationPage")).RegistrationPage)
+const WelcomePage = lazyPage(async () => (await import("@/pages/WelcomePage")).WelcomePage)
 
 function Providers(
     props: Readonly<{
@@ -98,132 +105,34 @@ function AppRoutes() {
     return (
         <Routes>
             <Route path="/" element={<Navigate to={`/app/category/${Constants.categories.all.id}`} replace />} />
-            <Route
-                path="welcome"
-                element={
-                    <LazyPage>
-                        <WelcomePage />
-                    </LazyPage>
-                }
-            />
-            <Route
-                path="setup"
-                element={
-                    <LazyPage>
-                        <InitialSetupPage />
-                    </LazyPage>
-                }
-            />
-            <Route
-                path="login"
-                element={
-                    <LazyPage>
-                        <LoginPage />
-                    </LazyPage>
-                }
-            />
-            <Route
-                path="register"
-                element={
-                    <LazyPage>
-                        <RegistrationPage />
-                    </LazyPage>
-                }
-            />
-            <Route
-                path="passwordRecovery"
-                element={
-                    <LazyPage>
-                        <PasswordRecoveryPage />
-                    </LazyPage>
-                }
-            />
-            <Route
-                path="passwordReset"
-                element={
-                    <LazyPage>
-                        <PasswordResetPage />
-                    </LazyPage>
-                }
-            />
+            <Route path="welcome" element={<WelcomePage />} />
+            <Route path="setup" element={<InitialSetupPage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegistrationPage />} />
+            <Route path="passwordRecovery" element={<PasswordRecoveryPage />} />
+            <Route path="passwordReset" element={<PasswordResetPage />} />
             <Route path="public/:token" element={<PublicPage />} />
             <Route path="public/:token/:type/:id" element={<PublicPage />} />
             <Route path="app" element={<Layout header={<Header />} sidebar={<Tree />} sidebarVisible={sidebarVisible} />}>
                 <Route path="category">
                     <Route path=":id" element={<FeedEntriesPage sourceType="category" />} />
-                    <Route
-                        path=":id/details"
-                        element={
-                            <LazyPage>
-                                <CategoryDetailsPage />
-                            </LazyPage>
-                        }
-                    />
+                    <Route path=":id/details" element={<CategoryDetailsPage />} />
                 </Route>
                 <Route path="feed">
                     <Route path=":id" element={<FeedEntriesPage sourceType="feed" />} />
-                    <Route
-                        path=":id/details"
-                        element={
-                            <LazyPage>
-                                <FeedDetailsPage />
-                            </LazyPage>
-                        }
-                    />
+                    <Route path=":id/details" element={<FeedDetailsPage />} />
                 </Route>
                 <Route path="tag">
                     <Route path=":id" element={<FeedEntriesPage sourceType="tag" />} />
-                    <Route
-                        path=":id/details"
-                        element={
-                            <LazyPage>
-                                <TagDetailsPage />
-                            </LazyPage>
-                        }
-                    />
+                    <Route path=":id/details" element={<TagDetailsPage />} />
                 </Route>
-                <Route
-                    path="add"
-                    element={
-                        <LazyPage>
-                            <AddPage />
-                        </LazyPage>
-                    }
-                />
-                <Route
-                    path="settings"
-                    element={
-                        <LazyPage>
-                            <SettingsPage />
-                        </LazyPage>
-                    }
-                />
+                <Route path="add" element={<AddPage />} />
+                <Route path="settings" element={<SettingsPage />} />
                 <Route path="admin">
-                    <Route
-                        path="users"
-                        element={
-                            <LazyPage>
-                                <AdminUsersPage />
-                            </LazyPage>
-                        }
-                    />
-                    <Route
-                        path="metrics"
-                        element={
-                            <LazyPage>
-                                <MetricsPage />
-                            </LazyPage>
-                        }
-                    />
+                    <Route path="users" element={<AdminUsersPage />} />
+                    <Route path="metrics" element={<MetricsPage />} />
                 </Route>
-                <Route
-                    path="about"
-                    element={
-                        <LazyPage>
-                            <AboutPage />
-                        </LazyPage>
-                    }
-                />
+                <Route path="about" element={<AboutPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
