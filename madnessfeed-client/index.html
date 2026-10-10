@@ -9,6 +9,24 @@
     <meta name="referrer" content="no-referrer" />
 
     <title>MadnessFeed</title>
+    <script>
+        // Public pages are often shown in an iframe of another website: ask for their content now, while the scripts are
+        // still downloading, instead of one request after the other once the page has started (see publicPagePrefetch.ts)
+        ;(() => {
+            const match = /^#\/public\/([^/?#]+)(?:\/(category|feed)\/([^/?#]+))?\/?$/.exec(location.hash)
+            if (!match || !window.fetch) return
+            const token = decodeURIComponent(match[1])
+            const type = match[2] ?? "category"
+            const id = match[3] ? decodeURIComponent(match[3]) : "all"
+            const base = `rest/public/${encodeURIComponent(token)}`
+            const get = url => fetch(url, { headers: { Accept: "application/json" } }).then(r => (r.ok ? r.json() : Promise.reject(r.status)))
+            const params = new URLSearchParams({ type, id, offset: "0", limit: "20" })
+            window.madnessFeedPublicPagePrefetch = { token, type, id, tree: get(`${base}/tree`), entries: get(`${base}/entries?${params}`) }
+            // the page may not use them (e.g. the address changes before it starts), don't report those as unhandled
+            window.madnessFeedPublicPagePrefetch.tree.catch(() => {})
+            window.madnessFeedPublicPagePrefetch.entries.catch(() => {})
+        })()
+    </script>
 </head>
 <body>
 <div id="root"></div>

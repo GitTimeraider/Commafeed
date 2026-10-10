@@ -28,6 +28,7 @@ import { TbExternalLink, TbFolder, TbLayoutList } from "react-icons/tb"
 import { Link, useParams } from "react-router-dom"
 import { client } from "@/app/client"
 import { Constants } from "@/app/constants"
+import { takePrefetchedEntries, takePrefetchedTree } from "@/app/publicPagePrefetch"
 import type { Entry, PublicCategory, PublicEntriesSourceType } from "@/app/types"
 import { FeedEntryBody } from "@/components/content/FeedEntryBody"
 import { FeedFavicon } from "@/components/content/FeedFavicon"
@@ -211,10 +212,12 @@ function PublicEntries(
         setLoading(true)
         setError(false)
         try {
-            const result = await client.publicPage.getEntries(token, { type, id, offset, limit: PAGE_SIZE })
+            const fetchEntries = async () => (await client.publicPage.getEntries(token, { type, id, offset, limit: PAGE_SIZE })).data
+            const prefetched = offset === 0 ? takePrefetchedEntries(token, type, id) : undefined
+            const result = prefetched ? await prefetched.catch(fetchEntries) : await fetchEntries()
             if (request !== requestCounter.current) return
-            setEntries(current => (offset === 0 ? result.data.entries : [...current, ...result.data.entries]))
-            setHasMore(result.data.hasMore)
+            setEntries(current => (offset === 0 ? result.entries : [...current, ...result.entries]))
+            setHasMore(result.hasMore)
         } catch {
             if (request === requestCounter.current) {
                 setError(true)
@@ -285,7 +288,11 @@ export function PublicPage() {
     const id = params.id ?? Constants.categories.all.id
     const [navbarOpened, { toggle: toggleNavbar, close: closeNavbar }] = useDisclosure(false)
 
-    const tree = useAsync(async () => (await client.publicPage.getTree(token)).data, [token])
+    const tree = useAsync(async () => {
+        const fetchTree = async () => (await client.publicPage.getTree(token)).data
+        const prefetched = takePrefetchedTree(token)
+        return prefetched ? await prefetched.catch(fetchTree) : await fetchTree()
+    }, [token])
 
     const pageName = tree.result?.pageName
     useEffect(() => {
