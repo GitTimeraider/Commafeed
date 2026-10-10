@@ -9,6 +9,7 @@ import {
     setMarkAllAsReadConfirmationDialogOpen,
     setSearch,
 } from "@/app/entries/slice"
+import { prefetchedOr, takePrefetchedAppEntries } from "@/app/prefetch"
 import type { RootState } from "@/app/store"
 import { reloadTree, selectNextUnreadTreeItem } from "@/app/tree/thunks"
 import type { Entry, MarkRequest, TagRequest } from "@/app/types"
@@ -31,8 +32,8 @@ export const loadEntries = createAppAsyncThunk(
 
         const state = thunkApi.getState()
         const endpoint = getEndpoint(arg.source.type)
-        const result = await endpoint(buildGetEntriesPaginatedRequest(state, arg.source, 0))
-        return result.data
+        const request = buildGetEntriesPaginatedRequest(state, arg.source, 0)
+        return await prefetchedOr(takePrefetchedAppEntries(arg.source.type, request), async () => (await endpoint(request)).data)
     }
 )
 
@@ -53,6 +54,7 @@ const buildGetEntriesPaginatedRequest = (state: RootState, source: EntrySource, 
     order: state.user.settings?.readingOrder,
     readType: state.entries.search ? "all" : state.user.settings?.readingMode,
     offset,
+    // index.html asks for the first entries the same way, keep both in step
     limit: 50,
     tag: source.type === "tag" ? source.id : undefined,
     keywords: state.entries.search,
