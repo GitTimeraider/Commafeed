@@ -10,21 +10,56 @@
 
     <title>MadnessFeed</title>
     <script>
-        // Public pages are often shown in an iframe of another website: ask for their content now, while the scripts are
-        // still downloading, instead of one request after the other once the page has started (see publicPagePrefetch.ts)
+        // Ask for the data of the first screen now, while the scripts are still downloading, instead of one request after
+        // the other once the page has started. The page takes these responses (see prefetch.ts); one it does not use
+        // (e.g. the address changed, or not logged in) is ignored and asked for again.
         ;(() => {
-            const match = /^#\/public\/([^/?#]+)(?:\/(category|feed)\/([^/?#]+))?\/?$/.exec(location.hash)
-            if (!match || !window.fetch) return
-            const token = decodeURIComponent(match[1])
-            const type = match[2] ?? "category"
-            const id = match[3] ? decodeURIComponent(match[3]) : "all"
-            const base = `rest/public/${encodeURIComponent(token)}`
+            if (!window.fetch) return
             const get = url => fetch(url, { headers: { Accept: "application/json" } }).then(r => (r.ok ? r.json() : Promise.reject(r.status)))
-            const params = new URLSearchParams({ type, id, offset: "0", limit: "20" })
-            window.madnessFeedPublicPagePrefetch = { token, type, id, tree: get(`${base}/tree`), entries: get(`${base}/entries?${params}`) }
-            // the page may not use them (e.g. the address changes before it starts), don't report those as unhandled
-            window.madnessFeedPublicPagePrefetch.tree.catch(() => {})
-            window.madnessFeedPublicPagePrefetch.entries.catch(() => {})
+            const keep = promise => {
+                promise.catch(() => {})
+                return promise
+            }
+            window.madnessFeedServerInfosPrefetch = keep(get("rest/server/get"))
+
+            // public page: its categories and first entries, often shown in an iframe of another website
+            const publicPage = /^#\/public\/([^/?#]+)(?:\/(category|feed)\/([^/?#]+))?\/?$/.exec(location.hash)
+            if (publicPage) {
+                const token = decodeURIComponent(publicPage[1])
+                const type = publicPage[2] ?? "category"
+                const id = publicPage[3] ? decodeURIComponent(publicPage[3]) : "all"
+                const base = `rest/public/${encodeURIComponent(token)}`
+                const params = new URLSearchParams({ type, id, offset: "0", limit: "20" })
+                window.madnessFeedPublicPagePrefetch = {
+                    token,
+                    type,
+                    id,
+                    tree: keep(get(`${base}/tree`)),
+                    entries: keep(get(`${base}/entries?${params}`)),
+                }
+                return
+            }
+
+            // application: what the layout waits for, then the entries of the category, feed or tag in the address (the
+            // start page shows all entries) with the reading order and mode of the settings, as loadEntries() asks for them
+            const app = /^(?:#?\/?|#\/app\/(category|feed|tag)\/([^/?#]+)\/?)$/.exec(location.hash)
+            if (!app) return
+            const sourceType = app[1] ?? "category"
+            const sourceId = app[2] ? decodeURIComponent(app[2]) : "all"
+            const settings = keep(get("rest/user/settings"))
+            const entries = settings.then(s => {
+                const request = { id: sourceType === "tag" ? "all" : sourceId, order: s.readingOrder, readType: s.readingMode, offset: 0, limit: 50 }
+                if (sourceType === "tag") request.tag = sourceId
+                const endpoint = sourceType === "feed" ? "rest/feed/entries" : "rest/category/entries"
+                return get(`${endpoint}?${new URLSearchParams(request)}`).then(data => ({ sourceType, request, data }))
+            })
+            window.madnessFeedAppPrefetch = {
+                settings,
+                profile: keep(get("rest/user/profile")),
+                tree: keep(get("rest/category/get")),
+                tags: keep(get("rest/entry/tags")),
+                entries: keep(entries),
+            }
         })()
     </script>
 </head>

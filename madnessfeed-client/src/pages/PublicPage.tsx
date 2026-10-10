@@ -28,7 +28,7 @@ import { TbExternalLink, TbFolder, TbLayoutList } from "react-icons/tb"
 import { Link, useParams } from "react-router-dom"
 import { client } from "@/app/client"
 import { Constants } from "@/app/constants"
-import { takePrefetchedEntries, takePrefetchedTree } from "@/app/publicPagePrefetch"
+import { prefetchedOr, takePrefetchedPublicEntries, takePrefetchedPublicTree } from "@/app/prefetch"
 import type { Entry, PublicCategory, PublicEntriesSourceType } from "@/app/types"
 import { FeedEntryBody } from "@/components/content/FeedEntryBody"
 import { FeedFavicon } from "@/components/content/FeedFavicon"
@@ -37,6 +37,7 @@ import { Logo } from "@/components/Logo"
 import { RelativeDate } from "@/components/RelativeDate"
 import { tss } from "@/tss"
 
+// index.html asks for the first entries with the same limit, keep both in step
 const PAGE_SIZE = 20
 
 function sourcePath(token: string, type: PublicEntriesSourceType, id: string) {
@@ -213,8 +214,7 @@ function PublicEntries(
         setError(false)
         try {
             const fetchEntries = async () => (await client.publicPage.getEntries(token, { type, id, offset, limit: PAGE_SIZE })).data
-            const prefetched = offset === 0 ? takePrefetchedEntries(token, type, id) : undefined
-            const result = prefetched ? await prefetched.catch(fetchEntries) : await fetchEntries()
+            const result = await prefetchedOr(offset === 0 ? takePrefetchedPublicEntries(token, type, id) : undefined, fetchEntries)
             if (request !== requestCounter.current) return
             setEntries(current => (offset === 0 ? result.entries : [...current, ...result.entries]))
             setHasMore(result.hasMore)
@@ -288,11 +288,10 @@ export function PublicPage() {
     const id = params.id ?? Constants.categories.all.id
     const [navbarOpened, { toggle: toggleNavbar, close: closeNavbar }] = useDisclosure(false)
 
-    const tree = useAsync(async () => {
-        const fetchTree = async () => (await client.publicPage.getTree(token)).data
-        const prefetched = takePrefetchedTree(token)
-        return prefetched ? await prefetched.catch(fetchTree) : await fetchTree()
-    }, [token])
+    const tree = useAsync(
+        async () => await prefetchedOr(takePrefetchedPublicTree(token), async () => (await client.publicPage.getTree(token)).data),
+        [token]
+    )
 
     const pageName = tree.result?.pageName
     useEffect(() => {
